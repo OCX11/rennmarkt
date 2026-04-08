@@ -15,6 +15,12 @@ from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
 
+# New local scrapers (aliased to avoid shadowing legacy functions)
+from scraper_autotrader import scrape_autotrader as _scrape_autotrader_new
+from scraper_carscom import scrape_carscom as _scrape_carscom_new
+from scraper_ebay import scrape_ebay as _scrape_ebay_new
+from scraper_rennlist import scrape_rennlist as _scrape_rennlist_new
+
 log = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -2670,32 +2676,30 @@ def scrape_rennlist() -> list:
 # Master dealer registry
 # ---------------------------------------------------------------------------
 DEALERS = [
-    {"name": "Holt Motorsports",            "scrape": scrape_holtmotorsports},
-    {"name": "Ryan Friedman Motor Cars",    "scrape": scrape_ryanfriedmanmotorcars},
-    {"name": "Velocity Porsche",            "scrape": scrape_velocitypcars},
-    {"name": "Road Scholars",               "scrape": scrape_roadscholars},
-    {"name": "Gaudin Classic",              "scrape": scrape_gaudinclassic},
-    {"name": "UDrive Automobiles",          "scrape": scrape_udriveautomobiles},
-    {"name": "Motorcars of the Main Line",  "scrape": scrape_motorcarsofthemainline},
-    {"name": "Grand Prix Motors",           "scrape": scrape_grandprimotors},
-    # External auction/marketplace
-    {"name": "Rennlist",                    "scrape": scrape_rennlist},
+    # ── Auction / marketplace scrapers (local Playwright/API) ──────────────
     {"name": "Bring a Trailer",             "scrape": scrape_bat},
     {"name": "PCA Mart",                    "scrape": scrape_pcamart},
     {"name": "pcarmarket",                  "scrape": scrape_pcarmarket},
-    {"name": "eBay Motors",                 "scrape": scrape_ebay},
-    # Apify-based scrapers
-    {"name": "AutoTrader",                  "scrape": scrape_autotrader_apify},
-    {"name": "Cars.com",                    "scrape": scrape_carsdotcom_apify},
-    # DISABLED — classic.com: third-party API requires approval (contact insight@classic.com).
-    #   Cloudflare Turnstile also blocks headless scrapers. Re-enable via API once key obtained.
-    # {"name": "classic.com", "scrape": scrape_classic},
-    #
-    # DISABLED — cars.com HTML scraper: IP-level TCP block from this network.
-    # {"name": "cars.com", "scrape": scrape_carscom},
-    #
-    # DISABLED — AutoTrader HTML scraper: IP-level block.
-    # {"name": "AutoTrader", "scrape": scrape_autotrader},
+
+    # ── Retail scrapers (local Playwright/API) ─────────────────────────────
+    {"name": "AutoTrader",                  "scrape": _scrape_autotrader_new},
+    {"name": "Cars.com",                    "scrape": _scrape_carscom_new},
+    {"name": "eBay Motors",                 "scrape": _scrape_ebay_new},
+    {"name": "Rennlist",                    "scrape": _scrape_rennlist_new},
+
+    # ── DISABLED — independent dealers (low volume, slow, pollute dashboard) ──
+    # {"name": "Holt Motorsports",            "scrape": scrape_holtmotorsports},
+    # {"name": "Ryan Friedman Motor Cars",    "scrape": scrape_ryanfriedmanmotorcars},
+    # {"name": "Velocity Porsche",            "scrape": scrape_velocitypcars},
+    # {"name": "Road Scholars",               "scrape": scrape_roadscholars},
+    # {"name": "Gaudin Classic",              "scrape": scrape_gaudinclassic},
+    # {"name": "UDrive Automobiles",          "scrape": scrape_udriveautomobiles},
+    # {"name": "Motorcars of the Main Line",  "scrape": scrape_motorcarsofthemainline},
+    # {"name": "Grand Prix Motors",           "scrape": scrape_grandprimotors},
+
+    # ── DISABLED — Apify-based (credits exhausted, replaced by local scrapers) ──
+    # {"name": "AutoTrader",                  "scrape": scrape_autotrader_apify},
+    # {"name": "Cars.com",                    "scrape": scrape_carsdotcom_apify},
 ]
 
 

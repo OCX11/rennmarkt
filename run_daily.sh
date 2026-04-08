@@ -46,6 +46,14 @@ fi
 
 echo "=== $(date '+%Y-%m-%d %H:%M:%S') Done ===" >> "$LOG"
 
+# ── Push updated dashboard to GitHub Pages ───────────────────────────────────
+cd "$SCRIPT_DIR"
+git add docs/index.html docs/live_feed.html docs/daily_report.html docs/market_report.html docs/weekly_report.html docs/monthly_report.html 2>> "$LOG" || true
+if ! git diff --cached --quiet; then
+    git commit -m "Dashboard update $(date '+%Y-%m-%d %H:%M')" >> "$LOG" 2>&1 || true
+    git push origin main >> "$LOG" 2>&1 || true
+fi
+
 # Keep log under 5MB (rotate if exceeded)
 if [ "$(wc -c < "$LOG")" -gt 5242880 ]; then
     mv "$LOG" "${LOG}.1"

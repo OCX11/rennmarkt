@@ -255,7 +255,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 			</p> 
 			
 			<p style="display: block; color:#fff !important; font-weight:normal;">
-				<span style="color:white;  text-shadow:2px 2px #000;  ">Parade registration opened January 28th</span> &nbsp; <b><a href="https://pca.org/pca-login/parade-registration" style="color:#ffd800;" title="">REGISTER HERE</a></b>
+				<span style="color:white;  text-shadow:2px 2px #000;  ">Parade registration phase II opens April 15th</span> &nbsp; <b><a href="https://pca.org/pca-login/parade-registration" style="color:#ffd800;" title="">REGISTER HERE</a></b>
 			</p>
 			
 		  </div>
@@ -1349,21 +1349,21 @@ $(document).ready(function(){
               <div class="item-img">
                 	<div class="item-img-info">
 						<div class="mart-container">
-	                	<a href="https://mart.pca.org/ads/71437" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 2019 Macan S">
-                		<img src="https://mart.pca.org/includes/images/martAdImages/71437/71437_C319E8D9416E144B39C06689F8FED010D799D6EE35501C8DD58A08BCD496E8B1.jpg" alt="Porsche Club of America - The Mart - 2019 Macan S" style="max-height:220px; min-height:220px;"></a>
+	                	<a href="https://mart.pca.org/ads/80273" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 2024 911 Carrera S">
+                		<img src="https://mart.pca.org/includes/images/martAdImages/80273/80273_1EC984BECE37E0DCE57DA7BB5DB2C530A56C12F86CBCC02EE3771DCC9C949C5B.jpg" alt="Porsche Club of America - The Mart - 2024 911 Carrera S" style="max-height:220px; min-height:220px;"></a>
                   
                   		</div>
                 </div>
               </div>
               <div class="item-info">
                 <div class="info-inner">
-                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/71437" target="_blank" title="Porsche Club of America - The Mart - 2019 Macan S"><span class="bold">2019 Macan S</span></a> </div>
+                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/80273" target="_blank" title="Porsche Club of America - The Mart - 2024 911 Carrera S"><span class="bold">2024 911 Carrera S</span></a> </div>
                   <div class="item-content">
                     <div class="item-price">
-                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$28,000.00</span> </span> </div>
+                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$151,500.00</span> </span> </div>
                     </div>
                     <div class="other-info" style="text-align:left;">
-                      2019 MACAN S - SAPPHIRE BLUE METALLIC.  GORGEOUS COLOR.    CPO WARRANTY UNTIL 6/2025.    HAVE OWNED ...
+                      THIS IS A SUPER CLEAN 2024 911 CARRERA S... SUNROOF DELETE, FOR THE DRIVING ENTHUSIAST WITH A FOCUS ...
                     </div>
                   </div>
                 </div>
@@ -1376,21 +1376,21 @@ $(document).ready(function(){
               <div class="item-img">
                 	<div class="item-img-info">
 						<div class="mart-container">
-	                	<a href="https://mart.pca.org/ads/81272" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 2003 Boxster">
-                		<img src="https://mart.pca.org/includes/images/martAdImages/81272/81272_AF5C66AA70685524D0621E5985C3FE7E2B5A0DC53988D4E56214FD9831308CCD.jpg" alt="Porsche Club of America - The Mart - 2003 Boxster" style="max-height:220px; min-height:220px;"></a>
+	                	<a href="https://mart.pca.org/ads/81461" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 2018 911 Carrera">
+                		<img src="https://mart.pca.org/includes/images/martAdImages/81461/81461_6E80DF2D7E41CE2ACC75396D84D9324184E9DCAE2747DF4915F9C26081ADA816.jpg" alt="Porsche Club of America - The Mart - 2018 911 Carrera" style="max-height:220px; min-height:220px;"></a>
                   <div class="sale-label sale-top-left">NEW LISTING!</div>
                   		</div>
                 </div>
               </div>
               <div class="item-info">
                 <div class="info-inner">
-                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/81272" target="_blank" title="Porsche Club of America - The Mart - 2003 Boxster"><span class="bold">2003 Boxster</span></a> </div>
+                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/81461" target="_blank" title="Porsche Club of America - The Mart - 2018 911 Carrera"><span class="bold">2018 911 Carrera</span></a> </div>
                   <div class="item-content">
                     <div class="item-price">
-                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$10,000.00</span> </span> </div>
+                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$84,500.00</span> </span> </div>
                     </div>
                     <div class="other-info" style="text-align:left;">
-                      SELLING MY 2003 BOXSTER BASE.  61K MILES, ARTIC SILVER EXTERIOR, BLACK LEATHER INTERIOR, 5 SPD MANUA...
+                      911 CARRERA FOR SALE.  2018 MODEL WITH 35,833 MILES. EXCELLENT CONDITION. 3.0 L TWIN TURBO 6, SPORT ...
                     </div>
                   </div>
                 </div>
@@ -1403,102 +1403,21 @@ $(document).ready(function(){
               <div class="item-img">
                 	<div class="item-img-info">
 						<div class="mart-container">
-	                	<a href="https://mart.pca.org/ads/81270" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 2024 911 Carrera T">
-                		<img src="https://mart.pca.org/includes/images/martAdImages/81270/81270_3F1E1F0D3F05754DC9CC13A1C9C74995867269521EF11AEF6D5181D178FA9370.jpg" alt="Porsche Club of America - The Mart - 2024 911 Carrera T" style="max-height:220px; min-height:220px;"></a>
-                  <div class="sale-label sale-top-left">NEW LISTING!</div>
-                  		</div>
-                </div>
-              </div>
-              <div class="item-info">
-                <div class="info-inner">
-                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/81270" target="_blank" title="Porsche Club of America - The Mart - 2024 911 Carrera T"><span class="bold">2024 911 Carrera T</span></a> </div>
-                  <div class="item-content">
-                    <div class="item-price">
-                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$155,000.00</span> </span> </div>
-                    </div>
-                    <div class="other-info" style="text-align:left;">
-                      FOR SALE IS MY GORGEOUS 2024 PORSCHE 992.1 CARRERA T WITH THE AMAZING 7-SPEED MANUAL TRANSMISSION. I...
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-		
-          <div class="item">
-            <div class="item-inner">
-              <div class="item-img">
-                	<div class="item-img-info">
-						<div class="mart-container">
-	                	<a href="https://mart.pca.org/ads/81271" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 2018 Macan S">
-                		<img src="https://mart.pca.org/includes/images/martAdImages/81271/81271_8A081673478A89D70BBB1D327327567195E7337DC25365712130DEF87A909BCB.jpg" alt="Porsche Club of America - The Mart - 2018 Macan S" style="max-height:220px; min-height:220px;"></a>
-                  <div class="sale-label sale-top-left">NEW LISTING!</div>
-                  		</div>
-                </div>
-              </div>
-              <div class="item-info">
-                <div class="info-inner">
-                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/81271" target="_blank" title="Porsche Club of America - The Mart - 2018 Macan S"><span class="bold">2018 Macan S</span></a> </div>
-                  <div class="item-content">
-                    <div class="item-price">
-                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$19,000.00</span> </span> </div>
-                    </div>
-                    <div class="other-info" style="text-align:left;">
-                      GET INTO A PORSCHE FOR THOUSANDS BELOW FAIR VALUE. MECHANICS SPECIAL.  P0024 CAM TIMING CODE PRESENT...
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-		
-          <div class="item">
-            <div class="item-inner">
-              <div class="item-img">
-                	<div class="item-img-info">
-						<div class="mart-container">
-	                	<a href="https://mart.pca.org/ads/81268" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 992.1 Sport Seat Bolster Set">
-                		<img src="https://mart.pca.org/includes/images/martAdImages/81268/81268_20DC4BCF120E9A05615B1474DE2F45D4433F91A285E4B83013AAC817C06F9414.jpg" alt="Porsche Club of America - The Mart - 992.1 Sport Seat Bolster Set" style="max-height:220px; min-height:220px;"></a>
-                  <div class="sale-label sale-top-left">NEW LISTING!</div>
-                  		</div>
-                </div>
-              </div>
-              <div class="item-info">
-                <div class="info-inner">
-                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/81268" target="_blank" title="Porsche Club of America - The Mart - 992.1 Sport Seat Bolster Set"><span class="bold">992.1 Sport Seat Bolster Set</span></a> </div>
-                  <div class="item-content">
-                    <div class="item-price">
-                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$400.00</span> </span> </div>
-                    </div>
-                    <div class="other-info" style="text-align:left;">
-                      MANUFACTURED BY EXCLUSIVE OPTION BERKELEY CA.    1 SET 992 LWB SEAT BOLSTER PROTECTOR SET- BLACK OEM...
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-		
-          <div class="item">
-            <div class="item-inner">
-              <div class="item-img">
-                	<div class="item-img-info">
-						<div class="mart-container">
-	                	<a href="https://mart.pca.org/ads/80332" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 2012 Cayman R">
-                		<img src="https://mart.pca.org/includes/images/martAdImages/80332/80332_EE603D9EDE148D6C80552AFEF4D6A29BD08FA016FF765A8B6A8789DC6A6423AB.jpg" alt="Porsche Club of America - The Mart - 2012 Cayman R" style="max-height:220px; min-height:220px;"></a>
+	                	<a href="https://mart.pca.org/ads/65937" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 2013 911 Carrera 4S">
+                		<img src="https://mart.pca.org/includes/images/martAdImages/65937/65937_2B8E61C26DCAF4B99870FDEF518B6ACD.jpg" alt="Porsche Club of America - The Mart - 2013 911 Carrera 4S" style="max-height:220px; min-height:220px;"></a>
                   
                   		</div>
                 </div>
               </div>
               <div class="item-info">
                 <div class="info-inner">
-                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/80332" target="_blank" title="Porsche Club of America - The Mart - 2012 Cayman R"><span class="bold">2012 Cayman R</span></a> </div>
+                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/65937" target="_blank" title="Porsche Club of America - The Mart - 2013 911 Carrera 4S"><span class="bold">2013 911 Carrera 4S</span></a> </div>
                   <div class="item-content">
                     <div class="item-price">
-                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$53,000.00</span> </span> </div>
+                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$55,000.00</span> </span> </div>
                     </div>
                     <div class="other-info" style="text-align:left;">
-                      SELLING MY 2012 CAYMAN R (PDK) THAT’S BEEN SET UP PRIMARILY FOR HPDE/TRACK USE. I’M THE CURRENT STEW...
+                      2ND OWNER, ALL RECORDS, AND SO FLAWLESS THE DEALER CPO'D THIS CAR AT 99K MILES!  THERE ARE MINIMAL R...
                     </div>
                   </div>
                 </div>
@@ -1511,21 +1430,21 @@ $(document).ready(function(){
               <div class="item-img">
                 	<div class="item-img-info">
 						<div class="mart-container">
-	                	<a href="https://mart.pca.org/ads/81269" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 2020 911 Carrera S">
-                		<img src="https://mart.pca.org/includes/images/martAdImages/81269/81269_F015BA1FF100B147DEF566DF5129CC807AF46A856148B82386F80E0ED35239D9.jpg" alt="Porsche Club of America - The Mart - 2020 911 Carrera S" style="max-height:220px; min-height:220px;"></a>
-                  <div class="sale-label sale-top-left">NEW LISTING!</div>
+	                	<a href="https://mart.pca.org/ads/80354" target="_blank" class="product-image" title="Porsche Club of America - The Mart - Early 911 912 Wood Steering Wheel , Rear Tail light Housings">
+                		<img src="https://mart.pca.org/includes/images/martAdImages/80354/80354_0E7F59CE69991A6DF4FD67326B59227113EDF24FCAE62B90DDD29F660232F17B.jpg" alt="Porsche Club of America - The Mart - Early 911 912 Wood Steering Wheel , Rear Tail light Housings" style="max-height:220px; min-height:220px;"></a>
+                  
                   		</div>
                 </div>
               </div>
               <div class="item-info">
                 <div class="info-inner">
-                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/81269" target="_blank" title="Porsche Club of America - The Mart - 2020 911 Carrera S"><span class="bold">2020 911 Carrera S</span></a> </div>
+                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/80354" target="_blank" title="Porsche Club of America - The Mart - Early 911 912 Wood Steering Wheel , Rear Tail light Housings"><span class="bold">Early 911 912 Wood Steering Wheel , Rear Tail light Housings</span></a> </div>
                   <div class="item-content">
                     <div class="item-price">
-                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$126,500.00</span> </span> </div>
+                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$800.00</span> </span> </div>
                     </div>
                     <div class="other-info" style="text-align:left;">
-                      THIS IS A BEAUTIFUL, HIGH-PERFORMANCE CAR IN PERFECT CONDITION.  IT IS A ONE-OWNER CAR WITH JUST OVE...
+                      AS PICTURED THIS RARE VDM STEERING WHEEL ORIGINAL WOOD  AND STEEL THAT IS WORTHY OF A RESTORATION. S...
                     </div>
                   </div>
                 </div>
@@ -1538,24 +1457,107 @@ $(document).ready(function(){
               <div class="item-img">
                 	<div class="item-img-info">
 						<div class="mart-container">
-	                	<a href="https://mart.pca.org/ads/81266" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 1988 944 Turbo S">
-                		<img src="https://mart.pca.org/includes/images/martAdImages/81266/81266_329090416DA6F1E2512A31C7755B9D6604CC9438169F5D282A0C95CC0DC3B2D8.jpg" alt="Porsche Club of America - The Mart - 1988 944 Turbo S" style="max-height:220px; min-height:220px;"></a>
+	                	<a href="https://mart.pca.org/ads/81202" target="_blank" class="product-image" title="Porsche Club of America - The Mart - Forgeline GS1R wheels Porsche">
+                		<img src="https://mart.pca.org/includes/images/martAdImages/81202/81202_EBB10D78BE6E20F67A5D7E9945E015A691E5A2F8CC4E4D5D7D0CE2F9A6F74F0E.jpg" alt="Porsche Club of America - The Mart - Forgeline GS1R wheels Porsche" style="max-height:220px; min-height:220px;"></a>
+                  
+                  		</div>
+                </div>
+              </div>
+              <div class="item-info">
+                <div class="info-inner">
+                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/81202" target="_blank" title="Porsche Club of America - The Mart - Forgeline GS1R wheels Porsche"><span class="bold">Forgeline GS1R wheels Porsche</span></a> </div>
+                  <div class="item-content">
+                    <div class="item-price">
+                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$3,250.00</span> </span> </div>
+                    </div>
+                    <div class="other-info" style="text-align:left;">
+                      FORGELINE WHEELS GA1R IN SATIN BLACK
+FRONT 19X9 ET 50
+REAR 19X11 ET 47 
+CONFIRMED FITMENT FOR 981...
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+		
+          <div class="item">
+            <div class="item-inner">
+              <div class="item-img">
+                	<div class="item-img-info">
+						<div class="mart-container">
+	                	<a href="https://mart.pca.org/ads/81455" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 2001 911 Carrera">
+                		<img src="https://mart.pca.org/includes/images/martAdImages/81455/81455_2EAF2C7BBEAB4D3E1BAE7EFA0013ED9AB3D5355C9CD42EE7DEC3AE9A5C01131A.jpg" alt="Porsche Club of America - The Mart - 2001 911 Carrera" style="max-height:220px; min-height:220px;"></a>
                   <div class="sale-label sale-top-left">NEW LISTING!</div>
                   		</div>
                 </div>
               </div>
               <div class="item-info">
                 <div class="info-inner">
-                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/81266" target="_blank" title="Porsche Club of America - The Mart - 1988 944 Turbo S"><span class="bold">1988 944 Turbo S</span></a> </div>
+                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/81455" target="_blank" title="Porsche Club of America - The Mart - 2001 911 Carrera"><span class="bold">2001 911 Carrera</span></a> </div>
                   <div class="item-content">
                     <div class="item-price">
-                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$30,000.00</span> </span> </div>
+                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$2,800.00</span> </span> </div>
                     </div>
                     <div class="other-info" style="text-align:left;">
-                      FOR SALE - 1988 PORSCHE 944 TURBO S - TRACK BUILD
-
-- LM3Z PAINT CODE - SILVER ROSE METALLIC
-- 95,...
+                      996 ROLLER. GREAT START TO A TRACK CAR. NO TITLE. NO HOOD. $4000
+EDIT: ILL TAKE 2800 WITHOUT THE RE...
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+		
+          <div class="item">
+            <div class="item-inner">
+              <div class="item-img">
+                	<div class="item-img-info">
+						<div class="mart-container">
+	                	<a href="https://mart.pca.org/ads/81456" target="_blank" class="product-image" title="Porsche Club of America - The Mart - 2014 911 Carrera">
+                		<img src="https://mart.pca.org/includes/images/martAdImages/81456/81456_AAAB36411F2709BBB5BCA41B86A348DEF0C042CAD876A164888F31223E60E7AB.jpg" alt="Porsche Club of America - The Mart - 2014 911 Carrera" style="max-height:220px; min-height:220px;"></a>
+                  <div class="sale-label sale-top-left">NEW LISTING!</div>
+                  		</div>
+                </div>
+              </div>
+              <div class="item-info">
+                <div class="info-inner">
+                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/81456" target="_blank" title="Porsche Club of America - The Mart - 2014 911 Carrera"><span class="bold">2014 911 Carrera</span></a> </div>
+                  <div class="item-content">
+                    <div class="item-price">
+                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$67,800.00</span> </span> </div>
+                    </div>
+                    <div class="other-info" style="text-align:left;">
+                      2014 MANUAL 7-SPEED IN EXCELLENT CONDITION. EXCEPTIONALLY WELL CARED FOR; 3RD OWNER VEHICLE. VERY WE...
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+		
+          <div class="item">
+            <div class="item-inner">
+              <div class="item-img">
+                	<div class="item-img-info">
+						<div class="mart-container">
+	                	<a href="https://mart.pca.org/ads/81453" target="_blank" class="product-image" title="Porsche Club of America - The Mart - Kline Inconel  Exhaust w/ Over Axle Pipes (718 GT4 / Spyder / GTS 4.0)">
+                		<img src="https://mart.pca.org/includes/images/martAdImages/81453/81453_90A6676F60F4FB19C706D57A66F3B5C2A2801AF7FC240766DD69E4545A28AF49.jpg" alt="Porsche Club of America - The Mart - Kline Inconel  Exhaust w/ Over Axle Pipes (718 GT4 / Spyder / GTS 4.0)" style="max-height:220px; min-height:220px;"></a>
+                  <div class="sale-label sale-top-left">NEW LISTING!</div>
+                  		</div>
+                </div>
+              </div>
+              <div class="item-info">
+                <div class="info-inner">
+                  <div class="item-title" style="min-height:70px;"><a href="https://mart.pca.org/ads/81453" target="_blank" title="Porsche Club of America - The Mart - Kline Inconel  Exhaust w/ Over Axle Pipes (718 GT4 / Spyder / GTS 4.0)"><span class="bold">Kline Inconel  Exhaust w/ Over Axle Pipes (718 GT4 / Spyder / GTS 4.0)</span></a> </div>
+                  <div class="item-content">
+                    <div class="item-price">
+                      <div class="price-box"><span class="regular-price"><span class="price" style="font-size:28px;">$5,000.00</span> </span> </div>
+                    </div>
+                    <div class="other-info" style="text-align:left;">
+                      KLINE INNOVATION VALVETRONIC INCONEL EXHAUST W/ OVER AXLE PIPES (718 GT4 / SPYDER / GTS 4.0)
+INCRED...
                     </div>
                   </div>
                 </div>
@@ -1607,16 +1609,20 @@ $(document).ready(function(){
           	
 
 	            <div class="co-info">
-            	<h5><a href="https://pca.org/tech/what-is-the-tire-rim-config-on-a-2020-macan-s" title="Porsche Club of America - Tech Q&A - What is the tire/rim config on a 2020 Macan S"><span class="pca-maroon bold capitalit" style="color:#900000;">What is the tire/rim config on a 2020 Macan S</span></a></h5>
-				<h6 style="margin-top:-1px;"><a href="https://pca.org/tech/model/144">System Administrator</a> | <a href="https://pca.org/tech/cat/wheels and tires">Wheels and Tires</a></h6>
+            	<h5><a href="https://pca.org/tech/door-alignment-issues" title="Porsche Club of America - Tech Q&A - Door alignment issues"><span class="pca-maroon bold capitalit" style="color:#900000;">Door alignment issues</span></a></h5>
+				<h6 style="margin-top:-1px;"><a href="https://pca.org/tech/model/93"></a>  <a href="https://pca.org/tech/cat/body">Body</a></h6>
+				
+					<div style="margin-top:1px; font-size:12px;">I have a '76 914 that had the typical hell hole issues. The longs were Swiss cheese in places, but the doors opened and close with zero issue. The car does not appear to have been in any accidents other than a a decent crease in the passenger door. I...</div>
 				
     	        </div>
     	        <div style="height:.5em; clear:both;"></div>
 			
 
 	            <div class="co-info">
-            	<h5><a href="https://pca.org/tech/installing-new-front-brakes-on-911-9971-" title="Porsche Club of America - Tech Q&A - Installing new front brakes on 911 997.1 "><span class="pca-maroon bold capitalit" style="color:#900000;">Installing new front brakes on 911 997.1 </span></a></h5>
-				<h6 style="margin-top:-1px;"><a href="https://pca.org/tech/model/17"></a>  <a href="https://pca.org/tech/cat/brakes">Brakes</a></h6>
+            	<h5><a href="https://pca.org/tech/headliner-repair-for-cayman-987" title="Porsche Club of America - Tech Q&A - headliner repair for cayman 987"><span class="pca-maroon bold capitalit" style="color:#900000;">headliner repair for cayman 987</span></a></h5>
+				<h6 style="margin-top:-1px;"><a href="https://pca.org/tech/model/140"> Vice President</a> | <a href="https://pca.org/tech/cat/interior-upholstery">Interior/Upholstery</a></h6>
+				
+					<div style="margin-top:1px; font-size:12px;">The headliner in my 2012 Cayman R has come down and is obstructing the view in my rear view mirror.  I need to have it fixed locally (I can take it up to 120 miles away if needed).  Any recommendations near Merced, CA. Zip code is 95340....</div>
 				
     	        </div>
     	        <div style="height:.5em; clear:both;"></div>
@@ -1799,7 +1805,7 @@ $(document).ready(function(){
           <div class="col-sm-4 col-xs-12 coppyright">&copy; 2026 The Porsche Club of America Inc.  All rights reserved </div>
           <div class="col-xs-12 col-sm-4">
             <div class="payment-accept"> 
-		       	<span style="color:#4F5458; font-size:10px; line-height:10px;">bt=0.181 </span>
+		       	<span style="color:#4F5458; font-size:10px; line-height:10px;">bt=0.161 </span>
 				<div id="loadingtime" style="color:#090909; font-size:10px; line-height:10px;"></div>			
             	
             	

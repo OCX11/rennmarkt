@@ -23,6 +23,9 @@ cd "$SCRIPT_DIR"
 # ── Main scrape + daily report (every run) ─────────────────────────────────
 # Each step runs independently — a failure in one does not abort the others.
 "$PYTHON" main.py >> "$LOG" 2>&1 || echo "=== main.py exited $? ===" >> "$LOG"
+
+# Sync PCA Mart cached images to docs/ so GitHub Pages can serve them
+rsync -a --ignore-existing "$SCRIPT_DIR/static/img_cache/" "$SCRIPT_DIR/docs/img_cache/" 2>/dev/null || true
 "$PYTHON" enrich_listings.py >> "$LOG" 2>&1 || echo "=== enrich_listings.py exited $? ===" >> "$LOG"
 # enrich_rennlist.py disabled — Rennlist now handled by scraper_rennlist.py
 # "$PYTHON" enrich_rennlist.py >> "$LOG" 2>&1 || echo "=== enrich_rennlist.py exited $? ===" >> "$LOG"

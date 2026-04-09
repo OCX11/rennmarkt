@@ -245,6 +245,9 @@ def _card(car: dict, fmv_score: dict) -> str:
     mileage  = car.get("mileage")
     url      = car.get("listing_url", "") or "#"
     img      = car.get("image_url", "") or ""
+    # Rewrite PCA Mart local cache paths for GitHub Pages
+    if img and img.startswith("/static/img_cache/"):
+        img = "img_cache/" + img.split("/")[-1]
     created  = car.get("created_at", "") or car.get("date_first_seen", "")
     location = car.get("location", "") or ""
     trans    = car.get("transmission", "") or ""

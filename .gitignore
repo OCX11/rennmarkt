@@ -7,7 +7,7 @@ __pycache__/
 data/
 logs/
 static/img_cache/
-docs/img_cache/
+# docs/img_cache/ — kept in git so GitHub Pages can serve PCA Mart images
 distill_drops/
 distill_poller_state.json
 .github_token

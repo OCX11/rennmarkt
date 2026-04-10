@@ -92,22 +92,27 @@ def _load_proxy():
 _load_proxy()
 
 
-def _us_proxy_url():
+def _city_proxy_url(city):
     """
-    Return a DataImpulse proxy URL with US country targeting (__cr.us suffix).
-    AutoTrader blocks non-US IPs; this ensures curl_cffi requests exit via a US node.
-    Falls back to the base proxy URL if not a DataImpulse proxy.
+    Return a DataImpulse proxy URL with city targeting (semicolon syntax).
+    City-targeted IPs have far better Akamai reputation than country-level __cr.us.
+    Chicago IPs are empirically the most reliable for AutoTrader.
     """
-    if not _PROXY_URL or not _PROXY_CFG.get("enabled") or _PROXY_DEAD:
+    if not _PROXY_CFG.get("enabled") or _PROXY_DEAD:
         return None
     username = _PROXY_CFG.get("username", "")
     if username and "dataimpulse" in _PROXY_CFG.get("host", "").lower():
-        us_user = f"{username}__cr.us"
+        city_user = "{user}__cr.us;city.{city}".format(user=username, city=city)
         return (
-            f"{_PROXY_CFG['protocol']}://{us_user}:{_PROXY_CFG['password']}"
-            f"@{_PROXY_CFG['host']}:{_PROXY_CFG['port']}"
+            "{proto}://{user}:{pwd}@{host}:{port}".format(
+                proto=_PROXY_CFG.get("protocol", "http"),
+                user=city_user,
+                pwd=_PROXY_CFG.get("password", ""),
+                host=_PROXY_CFG.get("host", ""),
+                port=_PROXY_CFG.get("port", ""),
+            )
         )
-    return _PROXY_URL
+    return _PROXY_URL or None
 
 
 def _disable_proxy():
@@ -118,14 +123,23 @@ def _disable_proxy():
         log.warning("Proxy unavailable — AutoTrader scrape will be skipped this cycle (no naked-IP fallback)")
 
 
-def _pw_proxy():
-    """Return Playwright proxy dict if proxy is alive, else None."""
-    if not _PROXY_URL or not _PROXY_CFG.get("enabled") or _PROXY_DEAD:
+def _pw_proxy(city="chicago"):
+    """Return Playwright proxy dict with city targeting if proxy is alive, else None."""
+    if not _PROXY_CFG.get("enabled") or _PROXY_DEAD:
         return None
+    username = _PROXY_CFG.get("username", "")
+    if username and "dataimpulse" in _PROXY_CFG.get("host", "").lower():
+        city_user = "{user}__cr.us;city.{city}".format(user=username, city=city)
+    else:
+        city_user = username
     return {
-        "server": f"{_PROXY_CFG['protocol']}://{_PROXY_CFG['host']}:{_PROXY_CFG['port']}",
-        "username": _PROXY_CFG["username"],
-        "password": _PROXY_CFG["password"],
+        "server": "{proto}://{host}:{port}".format(
+            proto=_PROXY_CFG.get("protocol", "http"),
+            host=_PROXY_CFG.get("host", ""),
+            port=_PROXY_CFG.get("port", ""),
+        ),
+        "username": city_user,
+        "password": _PROXY_CFG.get("password", ""),
     }
 
 
@@ -384,10 +398,17 @@ def _extract_listings_from_html(html):
 
 
 # ---------------------------------------------------------------------------
-# curl_cffi — Chrome TLS impersonation (bypasses Akamai TLS fingerprinting)
+# curl_cffi — Safari TLS impersonation (bypasses Akamai TLS fingerprinting)
 # ---------------------------------------------------------------------------
 _CFFI_AVAILABLE = None
-_CFFI_IMPERSONATE = "safari17_0"  # Safari 17 TLS fingerprint — bypasses Akamai; chrome124 gets blocked
+
+# Safari profiles bypass Akamai — Chrome profiles (chrome110-124) are consistently blocked.
+# Try safari17_0 first; safari15_3 as fallback.
+_CFFI_PROFILES = ("safari17_0", "safari15_3")
+
+# Chicago DataImpulse IPs have the best Akamai reputation.
+# Try chicago first, then other US cities as fallback.
+_PROXY_CITIES = ("chicago", "phoenix", "dallas", "houston")
 
 
 def _curl_cffi_available():
@@ -403,31 +424,40 @@ def _curl_cffi_available():
 
 def _fetch_curl_cffi(url):
     """
-    Fetch a page using curl_cffi with Safari TLS impersonation + US-targeted proxy.
-    Bypasses Akamai TLS fingerprint checks. Always uses DataImpulse US proxy.
+    Fetch a page using curl_cffi with Safari TLS impersonation + city-targeted proxy.
+
+    Akamai blocks Chrome TLS fingerprints and country-level (__cr.us) proxy IPs are
+    ~50% blocked. City-targeted IPs (especially chicago) have much better reputation.
+    Retries across safari profiles and cities until one succeeds.
     Returns HTML string or None.
     """
     if not _curl_cffi_available():
         return None
-    proxy_url = _us_proxy_url()
-    if not proxy_url:
+    if not _PROXY_CFG.get("enabled") or _PROXY_DEAD:
         log.warning("curl_cffi: proxy not available — skipping")
         return None
     from curl_cffi import requests as cr
-    proxies = {"http": proxy_url, "https": proxy_url}
-    try:
-        r = cr.get(url, impersonate=_CFFI_IMPERSONATE, timeout=25,
-                   proxies=proxies, allow_redirects=True)
-        if _is_blocked(r.text):
-            log.info("curl_cffi: block page at %s (len=%d)", url, len(r.text))
-            return None
-        if "__NEXT_DATA__" not in r.text:
-            log.info("curl_cffi: no __NEXT_DATA__ at %s (len=%d)", url, len(r.text))
-            return None
-        return r.text
-    except Exception as e:
-        log.debug("curl_cffi error: %s", e)
-        return None
+    for city in _PROXY_CITIES:
+        proxy_url = _city_proxy_url(city)
+        if not proxy_url:
+            continue
+        proxies = {"http": proxy_url, "https": proxy_url}
+        for profile in _CFFI_PROFILES:
+            try:
+                r = cr.get(url, impersonate=profile, timeout=25,
+                           proxies=proxies, allow_redirects=True)
+                if _is_blocked(r.text) or len(r.text) < 10000:
+                    log.debug("curl_cffi %s/%s: block page (len=%d)", city, profile, len(r.text))
+                    continue
+                if "__NEXT_DATA__" not in r.text:
+                    log.debug("curl_cffi %s/%s: no __NEXT_DATA__ (len=%d)", city, profile, len(r.text))
+                    continue
+                log.info("curl_cffi succeeded: city=%s profile=%s len=%d", city, profile, len(r.text))
+                return r.text
+            except Exception as e:
+                log.debug("curl_cffi %s/%s error: %s", city, profile, e)
+    log.info("curl_cffi: all city/profile combos blocked for %s", url)
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -506,21 +536,28 @@ def _fetch_rest_api(num_records, first_record):
         "Referer": "https://www.autotrader.com/cars-for-sale/used-cars/porsche/porsche/",
     }
     data = None
-    # Try curl_cffi first (Safari TLS fingerprint + US proxy bypasses Akamai)
+    # Try curl_cffi first (Safari TLS + city proxy bypasses Akamai)
     if _curl_cffi_available():
         from curl_cffi import requests as cr
-        _cffi_proxy = _us_proxy_url()
-        _cffi_proxies = {"http": _cffi_proxy, "https": _cffi_proxy} if _cffi_proxy else None
-        try:
-            r = cr.get(url, impersonate=_CFFI_IMPERSONATE, timeout=25,
-                       headers=ajax_headers, proxies=_cffi_proxies, allow_redirects=True)
-            ct = r.headers.get("content-type", "")
-            if "text/html" in ct or _is_blocked(r.text):
-                log.info("  REST API (curl_cffi): block page (len=%d)", len(r.text))
-            else:
-                data = r.json()
-        except Exception as e:
-            log.debug("  REST API curl_cffi error: %s", e)
+        for _city in _PROXY_CITIES:
+            _cffi_proxy = _city_proxy_url(_city)
+            if not _cffi_proxy:
+                continue
+            _cffi_proxies = {"http": _cffi_proxy, "https": _cffi_proxy}
+            for _profile in _CFFI_PROFILES:
+                try:
+                    r = cr.get(url, impersonate=_profile, timeout=25,
+                               headers=ajax_headers, proxies=_cffi_proxies, allow_redirects=True)
+                    ct = r.headers.get("content-type", "")
+                    if "text/html" in ct or _is_blocked(r.text):
+                        log.debug("  REST API (curl_cffi) %s/%s: block page", _city, _profile)
+                        continue
+                    data = r.json()
+                    break
+                except Exception as e:
+                    log.debug("  REST API curl_cffi %s/%s error: %s", _city, _profile, e)
+            if data is not None:
+                break
 
     # Fall back to requests
     if data is None:
@@ -902,6 +939,20 @@ def scrape_autotrader():
             # All HTML strategies failed — try REST API
             log.info("AutoTrader: HTML fetch failed on page %d — trying REST API", page + 1)
             raw = _fetch_rest_api(num_records, first_record)
+
+        # Retry once on page 1 zero-results: proxy likely rotated to a blocked IP.
+        # A 3-second pause forces a new IP assignment from the pool.
+        if not raw and page == 0:
+            log.info("AutoTrader: 0 listings on page 1 — retrying in 3s with fresh proxy IP")
+            time.sleep(3)
+            html = _fetch_page(url)
+            if html:
+                raw = _extract_listings_from_html(html)
+            else:
+                raw = _fetch_rest_api(num_records, first_record)
+            if not raw:
+                log.warning("AutoTrader: retry also returned 0 listings — giving up this cycle")
+                break
 
         if not raw:
             log.info("AutoTrader: 0 listings on page %d — end of results", page + 1)

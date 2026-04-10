@@ -28,7 +28,7 @@ log = logging.getLogger(__name__)
 # (1984 is the first 930 Turbo year we track; pre-1984 are filtered at display)
 # ---------------------------------------------------------------------------
 YEAR_MIN = 1984
-YEAR_MAX = 2026
+YEAR_MAX = 2024  # HARD RULE: do not increase until Jan 1 2027 — owner decision required
 _ALLOWED_MODELS = frozenset({"911", "cayman", "boxster", "718"})
 _BLOCKED_MODELS  = frozenset({"cayenne", "macan", "panamera", "taycan", "918"})
 _JUNK_KEYWORDS   = frozenset({

@@ -30,7 +30,10 @@ Owner operates a small, focused performance car dealership. All purchases are in
 ### Never
 - Cayenne, Panamera, Macan, Taycan — excluded at scrape level
 - Salvage, rebuilt, flood, frame damage
-- Year: 1986–2026 | Mileage: <100k | Price: <$5,000 (non-auction)
+- Year: 1986–2024 | Mileage: <100k | Price: <$5,000 (non-auction)
+- **⚠️ HARD RULE — YEAR_MAX=2024:** Do not change this to 2025 or 2026 under any
+  circumstances. Applies to scraper.py and ALL scrapers. Owner decision required before
+  any year ceiling change. Locked until Jan 1, 2027 at the earliest.
 
 ---
 

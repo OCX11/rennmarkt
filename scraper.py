@@ -20,6 +20,7 @@ from scraper_autotrader import scrape_autotrader as _scrape_autotrader_new
 from scraper_carscom import scrape_carscom as _scrape_carscom_new
 from scraper_ebay import scrape_ebay as _scrape_ebay_new
 from scraper_rennlist import scrape_rennlist as _scrape_rennlist_new
+from scraper_bfb import scrape_bfb as _scrape_bfb_new
 
 log = logging.getLogger(__name__)
 
@@ -1522,14 +1523,19 @@ def scrape_pcamart():
 
 
 def scrape_pcarmarket():
-    """pcarmarket.com — Porsche-only marketplace, Playwright required.
-    Listings are at /marketplace; cards are <a href="/auction/..."> links.
-    Title format: 'MarketPlace: YEAR Porsche CHASSIS-OR-MODEL TRIM— Active None'"""
+    """pcarmarket.com — Porsche auction + marketplace, Playwright required.
+    Scrapes two pages:
+      /auctions/   — time-limited auctions (most active car listings)
+      /marketplace — buy-now listings (additional cars)
+    Both pages use <a href="/auction/..."> cards rendered by Vue.js."""
     if not _playwright_available():
         log.warning("pcarmarket scraper requires Playwright")
         return []
 
     BASE = "https://www.pcarmarket.com"
+    # /auctions/ is primary (contains the bulk of active car auctions);
+    # /marketplace carries buy-now cars that don't appear there.
+    PAGES = ["/auctions/", "/marketplace"]
 
     # Map Porsche chassis codes to canonical model names used by _is_valid_listing
     _CHASSIS = {
@@ -1545,41 +1551,36 @@ def scrape_pcarmarket():
     }
 
     cars = []
-    try:
-        from playwright.sync_api import sync_playwright
-        with sync_playwright() as p:
-            browser = _pw_launch(p)
-            pg = _stealth_page(browser)
-            pg.goto(f"{BASE}/marketplace",
-                    wait_until="domcontentloaded", timeout=45000)
-            try:
-                pg.wait_for_selector("a[href*='/auction/']", timeout=15000)
-            except Exception:
-                pass
-            # Extra pause for Vue.js SPA hydration
-            pg.wait_for_timeout(3000)
-            html = pg.content()
-            browser.close()
+    seen = set()  # dedup across both pages by URL
 
+    def _parse_html(html):
         soup = BeautifulSoup(html, "lxml")
         # Remove <noscript> SSR fallback links — they appear before the real
         # rendered cards, steal URL dedup slots, and contain no images.
         for ns in soup.find_all("noscript"):
             ns.decompose()
-        seen = set()
         for a in soup.select("a[href*='/auction/']"):
             href = a.get("href", "")
             url = href if href.startswith("http") else f"{BASE}{href}"
             text = a.get_text(" ", strip=True)
-            # Strip "SAVE LISTING" prefix — present on every real rendered card
+
+            # --- title normalisation ---
+            # Strip "SAVE LISTING" prefix (present on every rendered card)
             text = re.sub(r"^SAVE\s+LISTING\s*", "", text, flags=re.I).strip()
-            # Strip "MarketPlace: " prefix and "— Active/Sold/Pending ..." suffix
+            # Strip "MarketPlace: " prefix (buy-now cards only)
             text = re.sub(r"^MarketPlace:\s*", "", text, flags=re.I).strip()
+            # Strip auction-page suffixes: "ENDS IN Xh Xm …" / "HIGH BID $…"
+            text = re.sub(r"\s+ENDS\s+IN\b.*$", "", text, flags=re.I).strip()
+            text = re.sub(r"\s+HIGH\s+BID\b.*$", "", text, flags=re.I).strip()
+            # Strip buy-now-page suffixes: "MARKETPLACE BUY NOW $…" / "— Active …"
+            text = re.sub(r"\s+MARKETPLACE\b.*$", "", text, flags=re.I).strip()
             text = re.sub(r"\s*[—–-]\s*(Active|Sold|Pending).*$", "", text, flags=re.I).strip()
+
             if not text:
                 continue
+
             # If title doesn't start with a year, seek the year further in
-            # e.g. "993-Style 1991 Porsche 964 ..." or "9k-Mile 2018 Mercedes ..."
+            # e.g. "993-Style 1991 Porsche 964 ..." or "9k-Mile 2018 Porsche ..."
             if not re.match(r"^\d{4}\s", text):
                 m = re.search(r"\b(\d{4})\s", text)
                 if m:
@@ -1603,15 +1604,84 @@ def scrape_pcarmarket():
             seen.add(key)
 
             img_tag = a.find("img")
-            image_url = img_tag.get("src") if img_tag else None
+            image_url = None
+            if img_tag:
+                # Prefer CloudFront URLs; fall back through lazy-load attrs
+                for attr in ("src", "data-src", "data-lazy-src", "data-original"):
+                    val = (img_tag.get(attr) or "").strip()
+                    if val and "cloudfront.net" in val:
+                        image_url = val
+                        break
+                if not image_url:
+                    for attr in ("src", "data-src", "data-lazy-src", "data-original"):
+                        val = (img_tag.get(attr) or "").strip()
+                        if val and val.startswith("http") and not val.startswith("data:"):
+                            image_url = val
+                            break
 
             c = dict(year=year, make=make or "Porsche", model=model, trim=trim,
                      mileage=None, price=None, vin=None, url=url, image_url=image_url)
             if _is_valid_listing(c):
                 cars.append(c)
+
+    try:
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            browser = _pw_launch(p)
+            pg = _stealth_page(browser)
+
+            # /auctions/ has multiple pages (Vue router ?page=N).
+            # Paginate until an empty page or we hit MAX_PAGES.
+            MAX_PAGES = 6
+            for page_num in range(1, MAX_PAGES + 1):
+                suffix = "" if page_num == 1 else f"?page={page_num}"
+                url = f"{BASE}/auctions/{suffix}"
+                try:
+                    pg.goto(url, wait_until="domcontentloaded", timeout=45000)
+                    try:
+                        pg.wait_for_selector("a[href*='/auction/']", timeout=10000)
+                    except Exception:
+                        pass
+                    pg.wait_for_timeout(2000)
+                    html = pg.content()
+                    # Count real (non-noscript) links to detect empty/last page
+                    from bs4 import BeautifulSoup as _BS
+                    _s = _BS(html, "lxml")
+                    for _ns in _s.find_all("noscript"):
+                        _ns.decompose()
+                    link_count = len(_s.select("a[href*='/auction/']"))
+                    if link_count < 3:
+                        log.info("pcarmarket: /auctions/ page %d empty — stopping", page_num)
+                        break
+                    before = len(cars)
+                    _parse_html(html)
+                    log.info("pcarmarket: /auctions/ page %d (%d links) → +%d cars",
+                             page_num, link_count, len(cars) - before)
+                except Exception as pe:
+                    log.warning("pcarmarket: error on /auctions/ page %d: %s", page_num, pe)
+                    break
+
+            # /marketplace — single page, buy-now listings
+            try:
+                pg.goto(f"{BASE}/marketplace",
+                        wait_until="domcontentloaded", timeout=45000)
+                try:
+                    pg.wait_for_selector("a[href*='/auction/']", timeout=10000)
+                except Exception:
+                    pass
+                pg.wait_for_timeout(2000)
+                before = len(cars)
+                _parse_html(pg.content())
+                log.info("pcarmarket: /marketplace → +%d cars", len(cars) - before)
+            except Exception as pe:
+                log.warning("pcarmarket: error on /marketplace: %s", pe)
+
+            browser.close()
     except Exception as e:
         log.warning("pcarmarket scraper error: %s", e)
 
+    if not cars:
+        log.warning("pcarmarket: 0 results — all pages returned nothing")
     return _dedupe(cars)
 
 
@@ -2711,6 +2781,7 @@ DEALERS = [
     {"name": "cars.com",                    "scrape": _scrape_carscom_new},
     {"name": "eBay Motors",                 "scrape": _scrape_ebay_new},
     {"name": "Rennlist",                    "scrape": _scrape_rennlist_new},
+    {"name": "Built for Backroads",         "scrape": _scrape_bfb_new},
 
     # ── DISABLED — independent dealers (low volume, slow, pollute dashboard) ──
     # {"name": "Holt Motorsports",            "scrape": scrape_holtmotorsports},

@@ -72,7 +72,7 @@ _SOURCE_MAP: List[Tuple[str, str, str, bool]] = [
     ("cars.com",              "cars.com",            "RETAIL",  False),  # back on Distill — Cloudflare blocks scraper
     ("autotrader.com",        "AutoTrader",          "RETAIL",  True),   # handled by scraper_autotrader.py
     ("rennlist.com",          "Rennlist",            "RETAIL",  True),   # handled by scraper_rennlist.py
-    ("builtforbackroads.com", "Built for Backroads", "RETAIL",  False),
+    ("builtforbackroads.com", "Built for Backroads", "RETAIL",  True),   # handled by scraper_bfb.py
     ("mart.pca.org",          "PCA Mart",            "RETAIL",  True),
     ("pca.org",               "PCA Mart",            "RETAIL",  True),
     # DISABLED — eBay: owned by scraper.py (eBay Browse API)

@@ -315,6 +315,14 @@ def notify_new_listings(conn, new_listing_ids):
         if ok:
             sent += 1
             log.info("  → iMessage sent to %s", recipient)
+            # Send image as second message for sources with direct image URLs
+            img_url = s.get("image_url") or ""
+            if img_url and img_url.startswith("http"):
+                img_ok = _send_imessage_image(recipient, img_url)
+                if img_ok:
+                    log.info("  → image sent")
+                else:
+                    log.debug("  → image skipped (download failed)")
         else:
             log.error("  → iMessage delivery failed")
 
@@ -407,6 +415,14 @@ def main():
             seen[key]["alerted"] = True
             alerts_sent += 1
             log.info("  → iMessage sent to %s", recipient)
+            # Send image as second message for sources with direct image URLs
+            img_url = s.get("image_url") or ""
+            if img_url and img_url.startswith("http"):
+                img_ok = _send_imessage_image(recipient, img_url)
+                if img_ok:
+                    log.info("  → image sent")
+                else:
+                    log.debug("  → image skipped (download failed)")
         else:
             log.error("  → iMessage delivery failed")
 

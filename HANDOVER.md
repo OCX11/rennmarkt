@@ -1,5 +1,5 @@
 # Vehicle Market Analyzer — Project Handover Summary
-*Last updated: April 16, 2026 (CDN image URLs, generation fill, price-drop alerts)*
+*Last updated: April 16, 2026 (evening — alerts hardened, notifications stabilised)*
 
 ---
 
@@ -289,6 +289,19 @@ GitHub repo: https://github.com/OCX11/PTOX11
 - `archive_capture` confirmed useful: HTML + screenshot every 10 min → archive/
 - iMessage alerts confirmed for all 9 sources; images sending for all HTTP image_url listings
 - 231 active listings across 9 sources, 5,770 sold comps
+
+
+### April 16, 2026 — Evening: Alerts hardened, notifications stabilised
+- **cars.com bootstrap caused notification spam** — 700+ listings inserted in one day, each with multiple price_history records from same scrape session, caused false price-drop alerts (305-608 per cycle)
+- **notify_price_drops() REMOVED** — feature deleted entirely from notify_imessage.py and main.py. Price-drop data still accumulates silently in price_history table. Future: show as dashboard badge, not push notification. See Apple Note: "Price Drops — Future Feature Design"
+- **Deal/watch iMessage alerts DISABLED** — notify_imessage.main() commented out in main.py. Will re-enable once bootstrap noise settles and we're ready to tune thresholds. New-listing alerts remain ACTIVE.
+- **Dashboard sort fixed** — was sorting by created_at (stale for eBay listings from March). Now sorts by date_last_seen (updated every cycle). eBay listings now appear fresh.
+- **Alert dedup cleaned** — removed 609 bad drop: keys from seen_alerts_imessage.json
+
+### Current alert state (April 16 evening)
+- ✅ New listing alerts: ACTIVE (every new VIN entering DB fires one iMessage)
+- ❌ Deal/watch alerts: DISABLED (notify_imessage.main() commented out)
+- ❌ Price drop alerts: REMOVED (deleted, not just disabled)
 
 ### April 16, 2026 — cars.com scraper fix (3 → 839 listings)
 - Root cause: broad URL with models[]= empty returned all Porsche models (85% Macan/Cayenne/Panamera)

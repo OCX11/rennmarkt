@@ -349,7 +349,7 @@ _DEALER_NAMES = frozenset({
 })
 _AUCTION_NAMES = frozenset({
     "bring a trailer", "bat", "bringatrailer", "pcarmarket",
-    "cars & bids", "carsandbids", "classic.com",
+    "cars & bids", "carsandbids", "cars and bids", "classic.com",
 })
 _RETAIL_NAMES = frozenset({
     "pca mart", "rennlist", "autotrader", "cars.com", "ebay",

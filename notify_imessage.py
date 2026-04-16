@@ -183,6 +183,26 @@ end tell
 
 # ── Alert formatting ───────────────────────────────────────────────────────────
 
+def _clean_url(url: str) -> str:
+    """Strip tracking params from eBay URLs — keep just the item URL."""
+    if not url:
+        return url
+    if "ebay.com/itm/" in url:
+        import re
+        m = re.search(r"(https://www\.ebay\.com/itm/\d+)", url)
+        if m:
+            return m.group(1)
+    return url
+
+
+def _short_trim(trim: str, maxlen: int = 50) -> str:
+    """Cap trim at maxlen chars, breaking on word boundary."""
+    if not trim or len(trim) <= maxlen:
+        return trim
+    return trim[:maxlen].rsplit(" ", 1)[0].strip()
+
+
+
 def _format_alert(s: dict) -> str:
     """Format a deal alert as a clean iMessage-friendly string.
     iMessage doesn't support Markdown — plain text with emoji."""
@@ -204,19 +224,20 @@ def _format_alert(s: dict) -> str:
 
     flag_emoji = "🔥" if flag == "DEAL" else "👀"
     tier_label = "GT/Collector" if tier == "TIER1" else "Standard"
-    src_label  = f" [{src_cat}]" if src_cat else ""
 
     price_str = f"${price:,}" if price else "No Price"
-    miles_str = f"{mileage:,} mi" if mileage else "mileage unknown"
+    miles_str = f"{mileage:,} mi" if mileage else "—"
     pct_str   = f"{pct:+.0%} vs FMV (${fmv:,})"
+    trim_disp = _short_trim(trim)
+    url_clean = _clean_url(url)
 
     conf_note = ""
     if conf == "LOW":
-        conf_note = f"\n⚠️ Limited comp data ({comp_cnt} comp{'s' if comp_cnt != 1 else ''}) — verify manually"
+        conf_note = f"\n⚠️ Low conf ({comp_cnt} comp{'s' if comp_cnt != 1 else ''}) — verify"
     elif conf == "MEDIUM":
-        conf_note = f"\n({comp_cnt} comps)"
+        conf_note = f"  ({comp_cnt} comps)"
 
-    flag_line = (f"{flag_emoji} {flag}: {year} Porsche {model} {trim}").rstrip()
+    flag_line = (f"{flag_emoji} {flag}: {year} Porsche {model} {trim_disp}").rstrip()
     if (flag == "DEAL" and conf == "LOW"
             and price is not None
             and (price < 15000 or abs(pct) > 0.70)):
@@ -226,8 +247,8 @@ def _format_alert(s: dict) -> str:
         flag_line,
         f"💰 {price_str}  {pct_str}",
         f"🛣️  {miles_str}",
-        f"📍 {dealer}{src_label}  [{tier_label}]",
-        f"🔗 {url}",
+        f"📍 {dealer}  [{tier_label}]",
+        f"🔗 {url_clean}",
     ]
     if conf_note:
         lines.append(conf_note)
@@ -250,16 +271,17 @@ def _format_new_listing(s):
     src_cat   = s.get("source_category", "")
 
     tier_label = "GT/Collector" if tier == "TIER1" else "Standard"
-    src_label  = f" [{src_cat}]" if src_cat else ""
     price_str  = f"${price:,}" if price else "No Price"
-    miles_str  = f"{mileage:,} mi" if mileage else "mileage unknown"
+    miles_str  = f"{mileage:,} mi" if mileage else "—"
+    trim_disp  = _short_trim(trim)
+    url_clean  = _clean_url(url)
 
     lines = [
-        (f"🆕 NEW: {year} Porsche {model} {trim}").rstrip(),
+        (f"🆕 NEW: {year} Porsche {model} {trim_disp}").rstrip(),
         f"💰 {price_str}",
         f"🛣️  {miles_str}",
-        f"📍 {dealer}{src_label}  [{tier_label}]",
-        f"🔗 {url}",
+        f"📍 {dealer}  [{tier_label}]",
+        f"🔗 {url_clean}",
     ]
     return "\n".join(lines)
 

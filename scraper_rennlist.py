@@ -88,7 +88,7 @@ _PRICE_RE = re.compile(r"\$(\d[\d,]+)|\b(\d{1,3}(?:,\d{3})+)\b")
 _MODEL_TOKENS = [
     "911", "GT3", "GT2", "GT4", "Turbo S", "Turbo", "Carrera", "Targa",
     "Cayman", "Boxster", "Speedster", "Spyder", "Sport Classic",
-    "930", "964", "993", "996", "997", "991", "992", "718",
+    "930", "964", "981", "982", "986", "987", "993", "996", "997", "991", "992", "718",
 ]
 
 _PORSCHE_KW_RE = re.compile(

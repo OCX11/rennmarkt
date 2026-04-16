@@ -1,11 +1,11 @@
 # Vehicle Market Analyzer — Project Handover Summary
-*Last updated: April 9, 2026 (post-audit)*
+*Last updated: April 15, 2026 (full session — 9 sources local, Distill cancelled, FMV audit)*
 
 ---
 
 ## 1. Project Overview & Goals
 
-A Porsche-focused market intelligence platform running autonomously on a Mac Mini M4. Scrapes 7 active sources, tracks price history, scores every listing against FMV using 5,700+ BaT sold comps, and sends iMessage alerts the moment a new listing hits the DB. Long-term goal: become the most informed buyer in the air-cooled, water-cooled, and GT Porsche market.
+A Porsche-focused market intelligence platform running autonomously on a Mac Mini M4. Scrapes 9 active sources (ALL LOCAL — Distill cancelled April 15), tracks price history, scores every listing against FMV using 5,770+ BaT/C&B sold comps, and sends iMessage alerts the moment a new listing hits the DB. Long-term goal: become the most informed buyer in the air-cooled, water-cooled, and GT Porsche market.
 
 ### Business Context
 Owner operates a small, focused performance car dealership. All purchases are investments — short-term flips or long-term holds. Core price range: $70K–$150K. GT/collector cars have no ceiling.
@@ -250,6 +250,19 @@ URL: https://ocx11.github.io/porsche-tracker/
 - Listing age display fixed (created_at vs date_first_seen)
 - Independent dealers disabled from DEALERS list
 - iMessage alert wiring restored in main.py after git restore wipe
+
+### April 15, 2026 — Full Build Session (9 sources, Distill cancelled)
+- **Cars & Bids active listings** — `scraper_cnb.py` built, Playwright scrolls 24K px, 12 listings, 100% images, AUCTION category
+- **Built for Backroads → Playwright** — `scraper_bfb.py` built, kills last Distill dependency, 12 listings, 100% images
+- **Distill subscription cancelled** — ALL 9 sources now on local scrapers, zero cloud dependency
+- **FMV audit** — NONE confidence 14→0, HIGH 134→145, trim fallback logic fixed (GT3 Touring→GT3, Carrera 4S→Carrera), ⚠️ LOW CONF warning added to deal alerts under $15k or >70% discount
+- **PCA Mart thumbnails** — synced 27 new images to docs/img_cache/, pushed to GitHub Pages
+- **PWA installed** — manifest.json, sw.js, icons already built; user installed as iPhone app via Safari
+- **eBay mileage enrichment** — ran enrich_ebay_mileage.py, 0 mileages added (eBay private sellers don't fill specs — expected)
+- **archive_capture** — confirmed useful: HTML + screenshot of every listing saved to archive/ every 10 min
+- **iMessage alerts** — confirmed all 9 sources firing, images sending correctly for all HTTP image_url listings
+- **GitHub private repos** — FREE on personal accounts; keeping repo public because Pages requires public on free plan
+- **231 active listings** across 9 sources, 5,770 sold comps
 
 ### April 9, 2026 — Post-Audit
 - **Audit performed** — Claude Code cold-read of full system

@@ -145,6 +145,8 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
 .price-auction{font-size:1.2em;font-weight:700;color:#a78bfa}
 .card-meta{font-size:0.75em;color:#475569;margin-top:4px}
 .days-stale{color:#f87171}
+.auction-ends{font-size:0.75em;color:#94a3b8;margin-top:3px}
+.countdown{font-weight:600;color:#fb923c}
 
 /* ── FMV line ── */
 .fmv-line{
@@ -245,10 +247,10 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   </div>
   <div class="topbar-right">
     <div class="health-pills"><span class="health-pill pill-ok" title="Main Scraper: just now">Main Scraper <span class="pill-age">just now</span></span>
-<span class="health-pill pill-ok" title="Distill Poller: 16h 5m ago">Distill Poller <span class="pill-age">16h 5m ago</span></span>
-<span class="health-pill pill-ok" title="Distill: 443h 38m ago">Distill <span class="pill-age">443h 38m ago</span></span>
-<span class="health-pill pill-ok" title="Archive: 7m ago">Archive <span class="pill-age">7m ago</span></span></div>
-    <span>2026-04-16 02:13:27</span>
+<span class="health-pill pill-ok" title="Distill Poller: 16h 22m ago">Distill Poller <span class="pill-age">16h 22m ago</span></span>
+<span class="health-pill pill-ok" title="Distill: 443h 55m ago">Distill <span class="pill-age">443h 55m ago</span></span>
+<span class="health-pill pill-ok" title="Archive: 4m ago">Archive <span class="pill-age">4m ago</span></span></div>
+    <span>2026-04-16 02:30:32</span>
   </div>
 </header>
 
@@ -352,11 +354,11 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="main-header">
     <div class="stats-row">
       <div class="stat-item">
-        <span class="stat-val">222</span>
+        <span class="stat-val">226</span>
         <span class="stat-lbl">Active</span>
       </div>
       <div class="stat-item">
-        <span class="stat-val green">2</span>
+        <span class="stat-val green">3</span>
         <span class="stat-lbl">New Today</span>
       </div>
       <div class="stat-item">
@@ -368,7 +370,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
         <span class="stat-lbl">Sold Comps</span>
       </div>
       <div class="stat-item">
-        <span class="stat-val green">92</span>
+        <span class="stat-val green">95</span>
         <span class="stat-lbl">Deals</span>
       </div>
     </div>
@@ -392,12 +394,31 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
         </div>
       </div>
       <div class="cards-grid" id="cards-grid">
-        <div class="card" data-dealer="cars.com" data-year="2019" data-model="911" data-gen="991.2" data-tier="TIER2" data-price="164400" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/ba580c58-8550-465a-b807-0e4f223e1676/','_blank')">
+        <div class="card" data-dealer="AutoTrader" data-year="2023" data-model="718 Cayman" data-gen="718/982" data-tier="TIER2" data-price="75900" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/777685257','_blank')">
+  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/b50c48e52ead4aeebd8279204b03d097.jpg" alt="2023 718 Cayman" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">just now</span>
+    </div>
+    <div class="card-title">2023 Porsche 718 Cayman</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$75,900</span>
+      <span class="delta delta-great" title="-37.3% vs FMV · Est. FMV $121,000">↓37%</span>
+    </div>
+    <div class="fmv-line fmv-great">🟡 FMV ~$121,000 · <strong>37% below FMV</strong> 🔥</div>
+    
+    <div class="card-meta">19,776 mi</div>
+  </div>
+</div>
+<div class="card" data-dealer="cars.com" data-year="2019" data-model="911" data-gen="991.2" data-tier="TIER2" data-price="164400" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/ba580c58-8550-465a-b807-0e4f223e1676/','_blank')">
   <div class="card-img-wrap"><img src="https://platform.cstatic-images.com/large/in/v2/a292e333-e76c-46da-a45e-dbcaf28df80a/4863e66b-db2a-45b2-a746-660d40b3e590/8845gT2xevnsU86s0FU0ssuczBo.jpg" alt="2019 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">58m ago</span>
+      <span class="card-age">1h ago</span>
     </div>
     <div class="card-title">2019 Porsche 911 Turbo</div>
     
@@ -407,6 +428,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+64.4% vs FMV · Est. FMV $100,000">↑64%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$100,000 · <strong>64% above FMV</strong></div>
+    
     <div class="card-meta">23,289 mi</div>
   </div>
 </div>
@@ -415,7 +437,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#f3f4f6;color:#374151">Cars and Bid</span>
-      <span class="card-age">3h ago</span>
+      <span class="card-age">4h ago</span>
     </div>
     <div class="card-title">2023 Porsche 911 Carrera T Coupe</div>
     
@@ -425,6 +447,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-35.1% vs FMV · Est. FMV $131,000">↓35%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$131,000 · <strong>35% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">2,800 mi</div>
   </div>
 </div>
@@ -443,25 +466,8 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-79.8% vs FMV · Est. FMV $30,250">↓80%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$30,250 · <strong>80% below FMV</strong> 🔥</div>
-    <div class="card-meta"></div>
-  </div>
-</div>
-<div class="card" data-dealer="AutoTrader" data-year="2014" data-model="911" data-gen="991.1" data-tier="TIER2" data-price="62000" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/777690720','_blank')">
-  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/4194ebf0-7a15-4619-97a4-4911b56e8e41.jpeg" alt="2014 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
-      <span class="card-age">7h ago</span>
-    </div>
-    <div class="card-title">2014 Porsche 911 Carrera 4</div>
     
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">$62,000</span>
-      <span class="delta delta-great" title="-45.9% vs FMV · Est. FMV $114,500">↓46%</span>
-    </div>
-    <div class="fmv-line fmv-great">🟢 FMV ~$114,500 · <strong>46% below FMV</strong> 🔥</div>
-    <div class="card-meta">81,000 mi · 📍 Private Seller Exchang</div>
+    <div class="card-meta"></div>
   </div>
 </div>
 <div class="card" data-dealer="Rennlist" data-year="2016" data-model="Boxster" data-gen="981" data-tier="TIER1" data-price="127500" data-source-type="retail" onclick="window.open('https://rennlist.com/forums/market/1509680','_blank')">
@@ -469,7 +475,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#4c0519;color:#f472b6">Rennlist</span>
-      <span class="card-age">8h ago</span>
+      <span class="card-age">9h ago</span>
     </div>
     <div class="card-title">2016 Porsche Boxster Spyder, 5K, Jet Black Metallic / Black Full Leather, PCCBs,</div>
     <span class="tier-badge">GT / Collector</span>
@@ -479,6 +485,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+266.9% vs FMV · Est. FMV $34,750">↑267%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$34,750 · <strong>267% above FMV</strong></div>
+    
     <div class="card-meta">5,000 mi</div>
   </div>
 </div>
@@ -487,7 +494,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#f3f4f6;color:#374151">Cars and Bid</span>
-      <span class="card-age">8h ago</span>
+      <span class="card-age">9h ago</span>
     </div>
     <div class="card-title">2014 Porsche 911 Carrera 4S Coupe</div>
     
@@ -497,6 +504,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-44.4% vs FMV · Est. FMV $90,000">↓44%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$90,000 · <strong>44% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -515,6 +523,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$35,750</span> · <strong>27% below FMV</strong> 🔥 <span class="fmv-comps">(9 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T17:43:00Z">…</span></div>
     <div class="card-meta">16,000 mi</div>
   </div>
 </div>
@@ -523,7 +532,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#f3f4f6;color:#374151">Cars and Bid</span>
-      <span class="card-age">14h ago</span>
+      <span class="card-age">15h ago</span>
     </div>
     <div class="card-title">2013 Porsche Boxster</div>
     
@@ -533,6 +542,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-61.1% vs FMV · Est. FMV $44,335">↓61%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$44,335 · <strong>61% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -541,7 +551,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#f3f4f6;color:#374151">Cars and Bid</span>
-      <span class="card-age">14h ago</span>
+      <span class="card-age">15h ago</span>
     </div>
     <div class="card-title">2000 Porsche Boxster</div>
     
@@ -551,6 +561,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-32.5% vs FMV · Est. FMV $14,600">↓32%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$14,600 · <strong>32% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -559,7 +570,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#f3f4f6;color:#374151">Cars and Bid</span>
-      <span class="card-age">14h ago</span>
+      <span class="card-age">15h ago</span>
     </div>
     <div class="card-title">2009 Porsche 911 Targa 4</div>
     
@@ -569,6 +580,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+14.3% vs FMV · Est. FMV $52,500">↑14%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$52,500 · 14% above FMV</div>
+    
     <div class="card-meta">48,500 mi</div>
   </div>
 </div>
@@ -577,7 +589,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#f3f4f6;color:#374151">Cars and Bid</span>
-      <span class="card-age">14h ago</span>
+      <span class="card-age">15h ago</span>
     </div>
     <div class="card-title">2000 Porsche 911 Carrera 4 Cabriolet</div>
     
@@ -587,6 +599,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-55.2% vs FMV · Est. FMV $27,000">↓55%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$27,000 · <strong>55% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -595,7 +608,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#f3f4f6;color:#374151">Cars and Bid</span>
-      <span class="card-age">14h ago</span>
+      <span class="card-age">15h ago</span>
     </div>
     <div class="card-title">2012 Porsche 911 Carrera Coupe</div>
     
@@ -605,6 +618,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+9.9% vs FMV · Est. FMV $45,500">↑10%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$45,500 · 10% above FMV</div>
+    
     <div class="card-meta">38,000 mi</div>
   </div>
 </div>
@@ -613,7 +627,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#f3f4f6;color:#374151">Cars and Bid</span>
-      <span class="card-age">14h ago</span>
+      <span class="card-age">15h ago</span>
     </div>
     <div class="card-title">2015 Porsche 911 GT3</div>
     <span class="tier-badge">GT / Collector</span>
@@ -623,6 +637,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-59.6% vs FMV · Est. FMV $161,000">↓60%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$161,000 · <strong>60% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">9,400 mi</div>
   </div>
 </div>
@@ -631,7 +646,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#f3f4f6;color:#374151">Cars and Bid</span>
-      <span class="card-age">14h ago</span>
+      <span class="card-age">15h ago</span>
     </div>
     <div class="card-title">1999 Porsche 911 Carrera Coupe</div>
     
@@ -641,6 +656,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-37.6% vs FMV · Est. FMV $27,250">↓38%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$27,250 · <strong>38% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -649,7 +665,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#f3f4f6;color:#374151">Cars and Bid</span>
-      <span class="card-age">14h ago</span>
+      <span class="card-age">15h ago</span>
     </div>
     <div class="card-title">2013 Porsche 911 Carrera Coupe</div>
     
@@ -659,6 +675,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-38.5% vs FMV · Est. FMV $45,500">↓38%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$45,500 · <strong>38% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">56,700 mi</div>
   </div>
 </div>
@@ -667,7 +684,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#f3f4f6;color:#374151">Cars and Bid</span>
-      <span class="card-age">14h ago</span>
+      <span class="card-age">15h ago</span>
     </div>
     <div class="card-title">2023 Porsche 718 GT4</div>
     <span class="tier-badge">GT / Collector</span>
@@ -677,6 +694,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-30.3% vs FMV · Est. FMV $122,000">↓30%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$122,000 · <strong>30% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">9,900 mi</div>
   </div>
 </div>
@@ -695,6 +713,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$238,000</span> · <strong>58% below FMV</strong> 🔥 <span class="fmv-comps">(44 comps)</span></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -713,6 +732,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$70,987</span> · <strong>64% below FMV</strong> 🔥 <span class="fmv-comps">(9 comps)</span></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -731,6 +751,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+4.8% vs FMV · Est. FMV $33,400">↑5%</span>
     </div>
     <div class="fmv-line fmv-mid">🟡 FMV ~$33,400 · 5% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -749,6 +770,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-33.9% vs FMV · Est. FMV $62,000">↓34%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$62,000 · <strong>34% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -767,6 +789,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-4.3% vs FMV · Est. FMV $115,001">↓4%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$115,001 · 4% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -785,6 +808,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+6.1% vs FMV · Est. FMV $66,000">↑6%</span>
     </div>
     <div class="fmv-line fmv-mid">🟡 FMV ~$66,000 · 6% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -793,7 +817,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#14532d;color:#4ade80">pcarmarket</span>
-      <span class="card-age">15h ago</span>
+      <span class="card-age">16h ago</span>
     </div>
     <div class="card-title">1989 Porsche 911 Carrera G50 Turbocharged 3.3L “Code Red” by Air Cooled Classics</div>
     <span class="tier-badge">GT / Collector</span>
@@ -803,7 +827,27 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-high">🟢 Est. FMV <span class="fmv-val">$76,000</span> · <strong>45% above FMV</strong> <span class="fmv-comps">(180 comps)</span></div>
+    
     <div class="card-meta"></div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2024" data-model="911" data-gen="992" data-tier="TIER1" data-price="289900" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/777578222','_blank')">
+  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/2855627c0c2942ed90e79815e8972e9b.jpg" alt="2024 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">1d ago</span>
+    </div>
+    <div class="card-title">2024 Porsche 911 Turbo S</div>
+    <span class="tier-badge">GT / Collector</span>
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$289,900</span>
+      <span class="delta delta-high" title="+21.8% vs FMV · Est. FMV $238,000">↑22%</span>
+    </div>
+    <div class="fmv-line fmv-high">🟢 FMV ~$238,000 · <strong>22% above FMV</strong></div>
+    
+    <div class="card-meta">5,511 mi · 📍 ILUSSO SCOTTSDALE</div>
   </div>
 </div>
 <div class="card" data-dealer="PCA Mart" data-year="1986" data-model="911" data-gen="G-Series" data-tier="TIER1" data-price="99950" data-source-type="retail" onclick="window.open('https://mart.pca.org/ads/81583','_blank')">
@@ -821,6 +865,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+31.5% vs FMV · Est. FMV $76,000">↑32%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$76,000 · <strong>32% above FMV</strong></div>
+    
     <div class="card-meta">38,225 mi</div>
   </div>
 </div>
@@ -839,6 +884,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-good">🟢 Est. FMV <span class="fmv-val">$28,210</span> · 3% below FMV <span class="fmv-comps">(4 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T20:16:00Z">…</span></div>
     <div class="card-meta">25,000 mi</div>
   </div>
 </div>
@@ -857,6 +903,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-good">🟢 Est. FMV <span class="fmv-val">$281,000</span> · 7% below FMV <span class="fmv-comps">(60 comps)</span></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -875,6 +922,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+106.2% vs FMV · Est. FMV $24,250">↑106%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$24,250 · <strong>106% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -893,6 +941,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+13.6% vs FMV · Est. FMV $66,000">↑14%</span>
     </div>
     <div class="fmv-line fmv-mid">🟡 FMV ~$66,000 · 14% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -911,6 +960,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+58.9% vs FMV · Est. FMV $66,000">↑59%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$66,000 · <strong>59% above FMV</strong></div>
+    
     <div class="card-meta">23,000 mi</div>
   </div>
 </div>
@@ -929,7 +979,27 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$202,000</span> · <strong>38% below FMV</strong> 🔥 <span class="fmv-comps">(28 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-19T17:01:00Z">…</span></div>
     <div class="card-meta">1,900 mi</div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2021" data-model="718 Cayman" data-gen="718/982" data-tier="TIER2" data-price="58900" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/759057233','_blank')">
+  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/540cf1a06e1e4f0cb5e8ba4c22ab9d4f.jpg" alt="2021 718 Cayman" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">3d ago</span>
+    </div>
+    <div class="card-title">2021 Porsche 718 Cayman</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$58,900</span>
+      <span class="delta delta-great" title="-51.3% vs FMV · Est. FMV $121,000">↓51%</span>
+    </div>
+    <div class="fmv-line fmv-great">🟡 FMV ~$121,000 · <strong>51% below FMV</strong> 🔥</div>
+    
+    <div class="card-meta">26,969 mi</div>
   </div>
 </div>
 <div class="card" data-dealer="Rennlist" data-year="2009" data-model="Boxster" data-gen="987" data-tier="TIER2" data-price="36000" data-source-type="retail" onclick="window.open('https://rennlist.com/forums/market/1509202','_blank')">
@@ -947,6 +1017,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+77.8% vs FMV · Est. FMV $20,250">↑78%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$20,250 · <strong>78% above FMV</strong></div>
+    
     <div class="card-meta">41,000 mi</div>
   </div>
 </div>
@@ -965,6 +1036,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-mid">🟢 Est. FMV <span class="fmv-val">$26,750</span> · 15% above FMV <span class="fmv-comps">(8 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-18T17:14:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -983,6 +1055,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+23.0% vs FMV · Est. FMV $43,750">↑23%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$43,750 · <strong>23% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1001,6 +1074,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$95,000</span> · <strong>84% below FMV</strong> 🔥 <span class="fmv-comps">(38 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T19:49:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1019,25 +1093,27 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$57,500</span> · <strong>44% below FMV</strong> 🔥 <span class="fmv-comps">(217 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T17:48:00Z">…</span></div>
     <div class="card-meta">47,000 mi</div>
   </div>
 </div>
-<div class="card" data-dealer="AutoTrader" data-year="2021" data-model="911" data-gen="992" data-tier="TIER2" data-price="126491" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/770563108','_blank')">
-  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/c8d7ac4be1ba40f79a281cbdb5aefbdd.jpg" alt="2021 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+<div class="card" data-dealer="AutoTrader" data-year="2002" data-model="911" data-gen="996" data-tier="TIER2" data-price="24899" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/746132390','_blank')">
+  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/7c94fa02e90f4d0fb437f1f02cb0f851.jpg" alt="2002 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
-      <span class="card-age">5d ago</span>
+      <span class="card-age">6d ago</span>
     </div>
-    <div class="card-title">2021 Porsche 911 Carrera S</div>
+    <div class="card-title">2002 Porsche 911 Cabriolet</div>
     
     <div class="card-price-row">
       <span class="price-label">Asking</span>
-      <span class="price-ask">$126,491</span>
-      <span class="delta delta-flat" title="-1.2% vs FMV · Est. FMV $128,000">≈ FMV</span>
+      <span class="price-ask">$24,899</span>
+      <span class="delta delta-good" title="-8.6% vs FMV · Est. FMV $27,250">↓9%</span>
     </div>
-    <div class="fmv-line fmv-neutral">🟢 FMV ~$128,000 · at market</div>
-    <div class="card-meta">34,345 mi · 📍 BMW of Schererville</div>
+    <div class="fmv-line fmv-good">🟢 FMV ~$27,250 · 9% below FMV</div>
+    
+    <div class="card-meta">56,139 mi · 📍 Motor Market</div>
   </div>
 </div>
 <div class="card" data-dealer="Bring a Trailer" data-year="2016" data-model="Boxster" data-gen="981" data-tier="TIER2" data-price="62500" data-source-type="auction" onclick="window.open('https://bringatrailer.com/listing/2016-porsche-boxster-gts-7/','_blank')">
@@ -1055,25 +1131,8 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-mid">🟢 Est. FMV <span class="fmv-val">$58,000</span> · 8% above FMV <span class="fmv-comps">(5 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-16T19:06:00Z">…</span></div>
     <div class="card-meta">13,000 mi</div>
-  </div>
-</div>
-<div class="card" data-dealer="AutoTrader" data-year="2021" data-model="911" data-gen="992" data-tier="TIER2" data-price="125991" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/763979895','_blank')">
-  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/3658201c63524ea0be8555efd18f2a4f.jpg" alt="2021 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
-      <span class="card-age">6d ago</span>
-    </div>
-    <div class="card-title">2021 Porsche 911 Carrera</div>
-    
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">$125,991</span>
-      <span class="delta delta-good" title="-3.1% vs FMV · Est. FMV $130,000">↓3%</span>
-    </div>
-    <div class="fmv-line fmv-good">🟢 FMV ~$130,000 · 3% below FMV</div>
-    <div class="card-meta">10,779 mi · 📍 Porsche of Downtown Ch</div>
   </div>
 </div>
 <div class="card" data-dealer="eBay Motors" data-year="2022" data-model="718 Boxster" data-gen="718/982" data-tier="TIER2" data-price="79800" data-source-type="retail" onclick="window.open('https://www.ebay.com/itm/377112829856?_skw=porsche&amp;hash=item57cdad1fa0:g:E0YAAeSwQIpp13YM','_blank')">
@@ -1091,6 +1150,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-28.7% vs FMV · Est. FMV $112,000">↓29%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$112,000 · <strong>29% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1109,25 +1169,122 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-45.5% vs FMV · Est. FMV $121,000">↓45%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$121,000 · <strong>45% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
-<div class="card" data-dealer="AutoTrader" data-year="2024" data-model="718 Cayman" data-gen="718/982" data-tier="TIER2" data-price="78500" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/773748834','_blank')">
-  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/507832da-17f9-4f14-927c-338ee0d9afec.jpeg" alt="2024 718 Cayman" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+<div class="card" data-dealer="AutoTrader" data-year="2005" data-model="911" data-gen="997.1" data-tier="TIER2" data-price="78900" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/760013645','_blank')">
+  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/df9dbeae-fe90-4d76-8523-e4a396463e6d.jpg" alt="2005 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
       <span class="card-age">7d ago</span>
     </div>
-    <div class="card-title">2024 Porsche 718 Cayman</div>
+    <div class="card-title">2005 Porsche 911 Turbo</div>
     
     <div class="card-price-row">
       <span class="price-label">Asking</span>
-      <span class="price-ask">$78,500</span>
-      <span class="delta delta-great" title="-35.1% vs FMV · Est. FMV $121,000">↓35%</span>
+      <span class="price-ask">$78,900</span>
+      <span class="delta delta-great" title="-17.8% vs FMV · Est. FMV $96,000">↓18%</span>
     </div>
-    <div class="fmv-line fmv-great">🟡 FMV ~$121,000 · <strong>35% below FMV</strong> 🔥</div>
-    <div class="card-meta">3,150 mi · 📍 Private Seller Exchang</div>
+    <div class="fmv-line fmv-great">🟢 FMV ~$96,000 · <strong>18% below FMV</strong> 🔥</div>
+    
+    <div class="card-meta">46,990 mi · 📍 Private Seller Exchang</div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2021" data-model="911" data-gen="992" data-tier="TIER2" data-price="137250" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/767011680','_blank')">
+  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/cea4e67b-2b1e-448d-a1cf-2e85cf98a0bf.jpg" alt="2021 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">7d ago</span>
+    </div>
+    <div class="card-title">2021 Porsche 911 Carrera S</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$137,250</span>
+      <span class="delta delta-mid" title="+7.2% vs FMV · Est. FMV $128,000">↑7%</span>
+    </div>
+    <div class="fmv-line fmv-mid">🟢 FMV ~$128,000 · 7% above FMV</div>
+    
+    <div class="card-meta">16,500 mi · 📍 Private Seller Exchang</div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2003" data-model="911" data-gen="996" data-tier="TIER2" data-price="58000" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/768849976','_blank')">
+  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/e88b7647-a302-497b-a27f-05d3c515d0b9.jpeg" alt="2003 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">7d ago</span>
+    </div>
+    <div class="card-title">2003 Porsche 911 Turbo</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$58,000</span>
+      <span class="delta delta-great" title="-10.8% vs FMV · Est. FMV $65,000">↓11%</span>
+    </div>
+    <div class="fmv-line fmv-great">🟢 FMV ~$65,000 · <strong>11% below FMV</strong> 🔥</div>
+    
+    <div class="card-meta">67,542 mi · 📍 Private Seller Exchang</div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2015" data-model="911" data-gen="991.1" data-tier="TIER2" data-price="124000" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/769336620','_blank')">
+  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/86d1c3ba-ef37-46de-8a02-6ec2dc8df606.jpg" alt="2015 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">7d ago</span>
+    </div>
+    <div class="card-title">2015 Porsche 911 Turbo</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$124,000</span>
+      <span class="delta delta-high" title="+24.0% vs FMV · Est. FMV $100,000">↑24%</span>
+    </div>
+    <div class="fmv-line fmv-high">🟢 FMV ~$100,000 · <strong>24% above FMV</strong></div>
+    
+    <div class="card-meta">40,400 mi · 📍 Private Seller Exchang</div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2002" data-model="911" data-gen="996" data-tier="TIER2" data-price="31995" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/769887669','_blank')">
+  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/6707a4dc-6d01-478e-ad9c-6e7993dedd69.jpg" alt="2002 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">7d ago</span>
+    </div>
+    <div class="card-title">2002 Porsche 911 Carrera 4S</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$31,995</span>
+      <span class="delta delta-great" title="-20.5% vs FMV · Est. FMV $40,250">↓21%</span>
+    </div>
+    <div class="fmv-line fmv-great">🟢 FMV ~$40,250 · <strong>21% below FMV</strong> 🔥</div>
+    
+    <div class="card-meta">79,000 mi · 📍 Private Seller Exchang</div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2014" data-model="911" data-gen="991.1" data-tier="TIER1" data-price="120000" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/770940988','_blank')">
+  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/e7f4fb57-d431-4c82-8658-7bb172904786.jpg" alt="2014 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">7d ago</span>
+    </div>
+    <div class="card-title">2014 Porsche 911 Turbo S</div>
+    <span class="tier-badge">GT / Collector</span>
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$120,000</span>
+      <span class="delta delta-great" title="-15.5% vs FMV · Est. FMV $142,000">↓15%</span>
+    </div>
+    <div class="fmv-line fmv-great">🟢 FMV ~$142,000 · <strong>15% below FMV</strong> 🔥</div>
+    
+    <div class="card-meta">58,000 mi · 📍 Private Seller Exchang</div>
   </div>
 </div>
 <div class="card" data-dealer="pcarmarket" data-year="1985" data-model="911" data-gen="G-Series" data-tier="TIER1" data-price="0" data-source-type="auction" onclick="window.open('https://www.pcarmarket.com/auction/marketplace-1985-ruf-btr-iii-targa','_blank')">
@@ -1145,6 +1302,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
+    
     <div class="card-meta">46,100 mi</div>
   </div>
 </div>
@@ -1163,6 +1321,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+9.1% vs FMV · Est. FMV $46,750">↑9%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$46,750 · 9% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1181,6 +1340,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+24.3% vs FMV · Est. FMV $92,500">↑24%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$92,500 · <strong>24% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1199,6 +1359,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
+    
     <div class="card-meta">22,746 mi</div>
   </div>
 </div>
@@ -1217,6 +1378,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
+    
     <div class="card-meta">76,290 mi</div>
   </div>
 </div>
@@ -1235,6 +1397,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+9.1% vs FMV · Est. FMV $60,500">↑9%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$60,500 · 9% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1253,6 +1416,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+31.1% vs FMV · Est. FMV $45,750">↑31%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$45,750 · <strong>31% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1271,6 +1435,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$126,500</span> · <strong>27% below FMV</strong> 🔥 <span class="fmv-comps">(28 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T19:12:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1289,6 +1454,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-29.4% vs FMV · Est. FMV $96,256">↓29%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$96,256 · <strong>29% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1307,6 +1473,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟡 Est. FMV <span class="fmv-val">$965,000</span> · <strong>43% below FMV</strong> 🔥 <span class="fmv-comps">(3 comps)</span></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1325,6 +1492,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-flat" title="-1.6% vs FMV · Est. FMV $46,750">≈ FMV</span>
     </div>
     <div class="fmv-line fmv-neutral">🟢 FMV ~$46,750 · at market</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1343,6 +1511,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$72,000</span> · <strong>31% below FMV</strong> 🔥 <span class="fmv-comps">(22 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T17:48:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1361,6 +1530,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-10.6% vs FMV · Est. FMV $92,500">↓11%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$92,500 · <strong>11% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1379,43 +1549,8 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-17.4% vs FMV · Est. FMV $30,250">↓17%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$30,250 · <strong>17% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
-  </div>
-</div>
-<div class="card" data-dealer="AutoTrader" data-year="2000" data-model="911" data-gen="996" data-tier="TIER2" data-price="58000" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/772532437','_blank')">
-  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/0bb28241-7a10-46cd-8e37-823915757d43.jpg" alt="2000 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
-      <span class="card-age">11d ago</span>
-    </div>
-    <div class="card-title">2000 Porsche 911 Carrera 4</div>
-    
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">$58,000</span>
-      <span class="delta delta-high" title="+114.8% vs FMV · Est. FMV $27,000">↑115%</span>
-    </div>
-    <div class="fmv-line fmv-high">🟢 FMV ~$27,000 · <strong>115% above FMV</strong></div>
-    <div class="card-meta">30,470 mi · 📍 Private Seller Exchang</div>
-  </div>
-</div>
-<div class="card" data-dealer="AutoTrader" data-year="2014" data-model="Cayman" data-gen="981" data-tier="TIER2" data-price="38000" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/773719006','_blank')">
-  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/2da9b4bf-9462-4ab0-9e6c-a2db45e06e45.jpeg" alt="2014 Cayman" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
-      <span class="card-age">11d ago</span>
-    </div>
-    <div class="card-title">2014 Porsche Cayman Coupe 2D</div>
-    
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">$38,000</span>
-      <span class="delta delta-great" title="-22.1% vs FMV · Est. FMV $48,750">↓22%</span>
-    </div>
-    <div class="fmv-line fmv-great">🟡 FMV ~$48,750 · <strong>22% below FMV</strong> 🔥</div>
-    <div class="card-meta">42,000 mi · 📍 Private Seller Exchang</div>
   </div>
 </div>
 <div class="card" data-dealer="Bring a Trailer" data-year="2014" data-model="Cayman" data-gen="981" data-tier="TIER2" data-price="5125" data-source-type="auction" onclick="window.open('https://bringatrailer.com/listing/2014-porsche-cayman-61/','_blank')">
@@ -1433,6 +1568,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟡 Est. FMV <span class="fmv-val">$62,000</span> · <strong>92% below FMV</strong> 🔥 <span class="fmv-comps">(112 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T18:28:00Z">…</span></div>
     <div class="card-meta">11,000 mi</div>
   </div>
 </div>
@@ -1451,6 +1587,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+27.1% vs FMV · Est. FMV $60,500">↑27%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$60,500 · <strong>27% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1469,6 +1606,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+3.4% vs FMV · Est. FMV $122,000">↑3%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$122,000 · 3% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1487,6 +1625,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-6.0% vs FMV · Est. FMV $202,000">↓6%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$202,000 · 6% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1505,6 +1644,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-52.1% vs FMV · Est. FMV $121,000">↓52%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$121,000 · <strong>52% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1523,6 +1663,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-21.8% vs FMV · Est. FMV $57,500">↓22%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$57,500 · <strong>22% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1541,6 +1682,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+32.2% vs FMV · Est. FMV $30,250">↑32%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$30,250 · <strong>32% above FMV</strong></div>
+    
     <div class="card-meta">46,000 mi</div>
   </div>
 </div>
@@ -1559,7 +1701,8 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-33.7% vs FMV · Est. FMV $242,992">↓34%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$242,992 · <strong>34% below FMV</strong> 🔥</div>
-    <div class="card-meta">160,992 mi</div>
+    
+    <div class="card-meta"></div>
   </div>
 </div>
 <div class="card" data-dealer="Bring a Trailer" data-year="1998" data-model="911" data-gen="993" data-tier="TIER1" data-price="62993" data-source-type="auction" onclick="window.open('https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-95/','_blank')">
@@ -1577,6 +1720,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$193,993</span> · <strong>68% below FMV</strong> 🔥 <span class="fmv-comps">(36 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T17:39:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1595,6 +1739,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$126,500</span> · <strong>55% below FMV</strong> 🔥 <span class="fmv-comps">(28 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T19:09:00Z">…</span></div>
     <div class="card-meta">6,000 mi</div>
   </div>
 </div>
@@ -1613,6 +1758,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-11.0% vs FMV · Est. FMV $14,600">↓11%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$14,600 · <strong>11% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">80,000 mi</div>
   </div>
 </div>
@@ -1631,6 +1777,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-12.8% vs FMV · Est. FMV $44,335">↓13%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$44,335 · <strong>13% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">37,800 mi</div>
   </div>
 </div>
@@ -1649,6 +1796,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+37.1% vs FMV · Est. FMV $43,750">↑37%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$43,750 · <strong>37% above FMV</strong></div>
+    
     <div class="card-meta">46,000 mi</div>
   </div>
 </div>
@@ -1667,6 +1815,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-flat" title="-1.5% vs FMV · Est. FMV $16,250">≈ FMV</span>
     </div>
     <div class="fmv-line fmv-neutral">🟢 FMV ~$16,250 · at market</div>
+    
     <div class="card-meta">51,700 mi</div>
   </div>
 </div>
@@ -1685,6 +1834,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+19.6% vs FMV · Est. FMV $24,250">↑20%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$24,250 · <strong>20% above FMV</strong></div>
+    
     <div class="card-meta">34,000 mi</div>
   </div>
 </div>
@@ -1703,6 +1853,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1721,6 +1872,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-11.2% vs FMV · Est. FMV $107,000">↓11%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$107,000 · <strong>11% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1739,6 +1891,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-3.7% vs FMV · Est. FMV $95,507">↓4%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$95,507 · 4% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1757,6 +1910,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+24.6% vs FMV · Est. FMV $43,750">↑25%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$43,750 · <strong>25% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1775,10 +1929,11 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+8.1% vs FMV · Est. FMV $87,901">↑8%</span>
     </div>
     <div class="fmv-line fmv-mid">🟡 FMV ~$87,901 · 8% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
-<div class="card" data-dealer="Rennlist" data-year="2021" data-model="911" data-gen="992" data-tier="TIER2" data-price="1054" data-source-type="retail" onclick="window.open('https://rennlist.com/forums/market/1509134','_blank')">
+<div class="card" data-dealer="Rennlist" data-year="2021" data-model="911" data-gen="992" data-tier="TIER2" data-price="0" data-source-type="retail" onclick="window.open('https://rennlist.com/forums/market/1509134','_blank')">
   <div class="card-img-wrap"><img src="https://cimg3.ibsrv.net/gimg/rennlist.com-vbulletin/160x120/img_3316_ceaf492575e3c1e68e436e85746dd371f5e7e14a.jpg" alt="2021 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
     <div class="card-top-row">
@@ -1789,11 +1944,12 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     
     <div class="card-price-row">
       <span class="price-label">Asking</span>
-      <span class="price-ask">$1,054</span>
-      <span class="delta delta-great" title="-99.6% vs FMV · Est. FMV $242,992">↓100%</span>
+      <span class="price-ask">—</span>
+      
     </div>
-    <div class="fmv-line fmv-great">🟡 FMV ~$242,992 · <strong>100% below FMV</strong> 🔥</div>
-    <div class="card-meta">1,054 mi</div>
+    <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
+    
+    <div class="card-meta"></div>
   </div>
 </div>
 <div class="card" data-dealer="PCA Mart" data-year="2022" data-model="911" data-gen="992" data-tier="TIER2" data-price="136000" data-source-type="retail" onclick="window.open('https://mart.pca.org/ads/81530','_blank')">
@@ -1811,6 +1967,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+6.2% vs FMV · Est. FMV $128,000">↑6%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$128,000 · 6% above FMV</div>
+    
     <div class="card-meta">27,000 mi</div>
   </div>
 </div>
@@ -1829,6 +1986,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
+    
     <div class="card-meta">66,000 mi</div>
   </div>
 </div>
@@ -1847,6 +2005,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-43.2% vs FMV · Est. FMV $66,000">↓43%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$66,000 · <strong>43% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1865,7 +2024,8 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-34.3% vs FMV · Est. FMV $134,000">↓34%</span>
     </div>
     <div class="fmv-line fmv-great">🔴 FMV ~$134,000 · <strong>34% below FMV</strong> 🔥</div>
-    <div class="card-meta">87,991 mi</div>
+    
+    <div class="card-meta"></div>
   </div>
 </div>
 <div class="card" data-dealer="PCA Mart" data-year="2003" data-model="Boxster" data-gen="986" data-tier="TIER2" data-price="19500" data-source-type="retail" onclick="window.open('https://mart.pca.org/ads/81323','_blank')">
@@ -1883,6 +2043,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+20.0% vs FMV · Est. FMV $16,250">↑20%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$16,250 · <strong>20% above FMV</strong></div>
+    
     <div class="card-meta">58,000 mi</div>
   </div>
 </div>
@@ -1901,6 +2062,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-34.9% vs FMV · Est. FMV $76,000">↓35%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$76,000 · <strong>35% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1919,6 +2081,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-34.9% vs FMV · Est. FMV $76,000">↓35%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$76,000 · <strong>35% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1937,6 +2100,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$27,250</span> · <strong>85% below FMV</strong> 🔥 <span class="fmv-comps">(300 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T17:33:00Z">…</span></div>
     <div class="card-meta">47,000 mi</div>
   </div>
 </div>
@@ -1955,6 +2119,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1973,6 +2138,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$166,000</span> · <strong>42% below FMV</strong> 🔥 <span class="fmv-comps">(25 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T18:11:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1991,6 +2157,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+20.7% vs FMV · Est. FMV $57,500">↑21%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$57,500 · <strong>21% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2009,6 +2176,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
+    
     <div class="card-meta">12,400 mi</div>
   </div>
 </div>
@@ -2027,6 +2195,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$97,500</span> · <strong>43% below FMV</strong> 🔥 <span class="fmv-comps">(89 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T19:11:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2045,6 +2214,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$255,000</span> · <strong>59% below FMV</strong> 🔥 <span class="fmv-comps">(36 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T17:36:00Z">…</span></div>
     <div class="card-meta">2,000 mi</div>
   </div>
 </div>
@@ -2063,6 +2233,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-5.3% vs FMV · Est. FMV $211,000">↓5%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$211,000 · 5% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2081,6 +2252,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+8.3% vs FMV · Est. FMV $60,500">↑8%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$60,500 · 8% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2099,6 +2271,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟡 Est. FMV <span class="fmv-val">$70,500</span> · <strong>35% below FMV</strong> 🔥 <span class="fmv-comps">(30 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-19T17:17:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2117,6 +2290,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-14.8% vs FMV · Est. FMV $96,000">↓15%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$96,000 · <strong>15% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">35,400 mi</div>
   </div>
 </div>
@@ -2135,6 +2309,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-46.7% vs FMV · Est. FMV $121,000">↓47%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$121,000 · <strong>47% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2153,6 +2328,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+25.5% vs FMV · Est. FMV $95,507">↑26%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$95,507 · <strong>26% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2171,6 +2347,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+18.3% vs FMV · Est. FMV $57,500">↑18%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$57,500 · <strong>18% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2189,6 +2366,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+27.0% vs FMV · Est. FMV $122,000">↑27%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$122,000 · <strong>27% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2207,6 +2385,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-16.7% vs FMV · Est. FMV $83,993">↓17%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$83,993 · <strong>17% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2225,6 +2404,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-14.7% vs FMV · Est. FMV $87,901">↓15%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$87,901 · <strong>15% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2243,6 +2423,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+23.9% vs FMV · Est. FMV $35,500">↑24%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$35,500 · <strong>24% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2261,6 +2442,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+32.2% vs FMV · Est. FMV $30,250">↑32%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$30,250 · <strong>32% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2279,6 +2461,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-21.2% vs FMV · Est. FMV $43,750">↓21%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$43,750 · <strong>21% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2297,6 +2480,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-4.1% vs FMV · Est. FMV $14,600">↓4%</span>
     </div>
     <div class="fmv-line fmv-good">🟡 FMV ~$14,600 · 4% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2315,6 +2499,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+34.7% vs FMV · Est. FMV $48,250">↑35%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$48,250 · <strong>35% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -2333,6 +2518,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+8.4% vs FMV · Est. FMV $238,000">↑8%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$238,000 · 8% above FMV</div>
+    
     <div class="card-meta">6,908 mi</div>
   </div>
 </div>
@@ -2351,6 +2537,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+39.1% vs FMV · Est. FMV $57,500">↑39%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$57,500 · <strong>39% above FMV</strong></div>
+    
     <div class="card-meta">48,600 mi</div>
   </div>
 </div>
@@ -2369,6 +2556,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+6.6% vs FMV · Est. FMV $122,000">↑7%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$122,000 · 7% above FMV</div>
+    
     <div class="card-meta">7,600 mi</div>
   </div>
 </div>
@@ -2387,6 +2575,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+42.0% vs FMV · Est. FMV $48,250">↑42%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$48,250 · <strong>42% above FMV</strong></div>
+    
     <div class="card-meta">39,000 mi</div>
   </div>
 </div>
@@ -2405,6 +2594,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+15.7% vs FMV · Est. FMV $25,500">↑16%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$25,500 · <strong>16% above FMV</strong></div>
+    
     <div class="card-meta">90,500 mi</div>
   </div>
 </div>
@@ -2423,6 +2613,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+64.8% vs FMV · Est. FMV $45,500">↑65%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$45,500 · <strong>65% above FMV</strong></div>
+    
     <div class="card-meta">90,000 mi</div>
   </div>
 </div>
@@ -2441,6 +2632,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+33.9% vs FMV · Est. FMV $112,000">↑34%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$112,000 · <strong>34% above FMV</strong></div>
+    
     <div class="card-meta">16,900 mi</div>
   </div>
 </div>
@@ -2459,6 +2651,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+19.1% vs FMV · Est. FMV $164,993">↑19%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$164,993 · <strong>19% above FMV</strong></div>
+    
     <div class="card-meta">74,022 mi</div>
   </div>
 </div>
@@ -2477,6 +2670,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-7.7% vs FMV · Est. FMV $65,000">↓8%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$65,000 · 8% below FMV</div>
+    
     <div class="card-meta">45,929 mi</div>
   </div>
 </div>
@@ -2495,6 +2689,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+11.4% vs FMV · Est. FMV $166,000">↑11%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$166,000 · 11% above FMV</div>
+    
     <div class="card-meta">2,631 mi</div>
   </div>
 </div>
@@ -2513,6 +2708,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-29.4% vs FMV · Est. FMV $96,256">↓29%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$96,256 · <strong>29% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">19,559 mi</div>
   </div>
 </div>
@@ -2531,6 +2727,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-flat" title="-1.2% vs FMV · Est. FMV $126,500">≈ FMV</span>
     </div>
     <div class="fmv-line fmv-neutral">🟢 FMV ~$126,500 · at market</div>
+    
     <div class="card-meta">10,001 mi</div>
   </div>
 </div>
@@ -2549,6 +2746,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+5.9% vs FMV · Est. FMV $46,750">↑6%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$46,750 · 6% above FMV</div>
+    
     <div class="card-meta">32,993 mi</div>
   </div>
 </div>
@@ -2567,6 +2765,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+14.0% vs FMV · Est. FMV $48,250">↑14%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$48,250 · 14% above FMV</div>
+    
     <div class="card-meta">58,484 mi</div>
   </div>
 </div>
@@ -2585,6 +2784,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+15.5% vs FMV · Est. FMV $251,000">↑16%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$251,000 · <strong>16% above FMV</strong></div>
+    
     <div class="card-meta">11,500 mi</div>
   </div>
 </div>
@@ -2603,6 +2803,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+70.5% vs FMV · Est. FMV $395,997">↑70%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$395,997 · <strong>70% above FMV</strong></div>
+    
     <div class="card-meta">3,485 mi</div>
   </div>
 </div>
@@ -2621,6 +2822,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-37.0% vs FMV · Est. FMV $14,600">↓37%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$14,600 · <strong>37% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">75,000 mi</div>
   </div>
 </div>
@@ -2639,6 +2841,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-flat" title="-1.4% vs FMV · Est. FMV $70,000">≈ FMV</span>
     </div>
     <div class="fmv-line fmv-neutral">🟢 FMV ~$70,000 · at market</div>
+    
     <div class="card-meta">21,000 mi</div>
   </div>
 </div>
@@ -2657,6 +2860,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+10.9% vs FMV · Est. FMV $128,000">↑11%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$128,000 · 11% above FMV</div>
+    
     <div class="card-meta">11,050 mi</div>
   </div>
 </div>
@@ -2675,6 +2879,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+92.3% vs FMV · Est. FMV $27,250">↑92%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$27,250 · <strong>92% above FMV</strong></div>
+    
     <div class="card-meta">31,442 mi</div>
   </div>
 </div>
@@ -2693,6 +2898,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+18.9% vs FMV · Est. FMV $43,750">↑19%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$43,750 · <strong>19% above FMV</strong></div>
+    
     <div class="card-meta">19,000 mi</div>
   </div>
 </div>
@@ -2711,6 +2917,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-11.3% vs FMV · Est. FMV $83,993">↓11%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$83,993 · <strong>11% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">82,000 mi</div>
   </div>
 </div>
@@ -2729,6 +2936,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+3.3% vs FMV · Est. FMV $72,515">↑3%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$72,515 · 3% above FMV</div>
+    
     <div class="card-meta">34,800 mi</div>
   </div>
 </div>
@@ -2747,6 +2955,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+23.1% vs FMV · Est. FMV $16,250">↑23%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$16,250 · <strong>23% above FMV</strong></div>
+    
     <div class="card-meta">59,800 mi</div>
   </div>
 </div>
@@ -2765,6 +2974,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+73.9% vs FMV · Est. FMV $40,250">↑74%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$40,250 · <strong>74% above FMV</strong></div>
+    
     <div class="card-meta">67,200 mi</div>
   </div>
 </div>
@@ -2783,6 +2993,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+30.8% vs FMV · Est. FMV $60,797">↑31%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$60,797 · <strong>31% above FMV</strong></div>
+    
     <div class="card-meta">65,000 mi</div>
   </div>
 </div>
@@ -2801,6 +3012,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+96.1% vs FMV · Est. FMV $25,500">↑96%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$25,500 · <strong>96% above FMV</strong></div>
+    
     <div class="card-meta">100,000 mi</div>
   </div>
 </div>
@@ -2819,6 +3031,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+16.6% vs FMV · Est. FMV $211,000">↑17%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$211,000 · <strong>17% above FMV</strong></div>
+    
     <div class="card-meta">3,682 mi</div>
   </div>
 </div>
@@ -2837,6 +3050,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+13.2% vs FMV · Est. FMV $96,256">↑13%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$96,256 · 13% above FMV</div>
+    
     <div class="card-meta">13,750 mi</div>
   </div>
 </div>
@@ -2855,6 +3069,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+14.3% vs FMV · Est. FMV $63,000">↑14%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$63,000 · 14% above FMV</div>
+    
     <div class="card-meta">49,000 mi</div>
   </div>
 </div>
@@ -2873,6 +3088,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-95.3% vs FMV · Est. FMV $95,507">↓95%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$95,507 · <strong>95% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">12,750 mi</div>
   </div>
 </div>
@@ -2891,6 +3107,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-5.2% vs FMV · Est. FMV $24,250">↓5%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$24,250 · 5% below FMV</div>
+    
     <div class="card-meta">22,788 mi</div>
   </div>
 </div>
@@ -2909,6 +3126,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+91.0% vs FMV · Est. FMV $13,300">↑91%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$13,300 · <strong>91% above FMV</strong></div>
+    
     <div class="card-meta">82,306 mi</div>
   </div>
 </div>
@@ -2927,6 +3145,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+51.7% vs FMV · Est. FMV $72,515">↑52%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$72,515 · <strong>52% above FMV</strong></div>
+    
     <div class="card-meta">17,500 mi</div>
   </div>
 </div>
@@ -2945,6 +3164,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+39.1% vs FMV · Est. FMV $57,500">↑39%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$57,500 · <strong>39% above FMV</strong></div>
+    
     <div class="card-meta">35,846 mi</div>
   </div>
 </div>
@@ -2963,6 +3183,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-flat" title="+0.8% vs FMV · Est. FMV $126,500">≈ FMV</span>
     </div>
     <div class="fmv-line fmv-neutral">🟢 FMV ~$126,500 · at market</div>
+    
     <div class="card-meta">6,800 mi</div>
   </div>
 </div>
@@ -2981,6 +3202,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-26.9% vs FMV · Est. FMV $26,000">↓27%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$26,000 · <strong>27% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">38,000 mi</div>
   </div>
 </div>
@@ -2999,6 +3221,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+36.6% vs FMV · Est. FMV $40,250">↑37%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$40,250 · <strong>37% above FMV</strong></div>
+    
     <div class="card-meta">86,000 mi</div>
   </div>
 </div>
@@ -3017,6 +3240,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+8.6% vs FMV · Est. FMV $128,000">↑9%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$128,000 · 9% above FMV</div>
+    
     <div class="card-meta">16,500 mi</div>
   </div>
 </div>
@@ -3035,6 +3259,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+11.1% vs FMV · Est. FMV $27,000">↑11%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$27,000 · 11% above FMV</div>
+    
     <div class="card-meta">77,600 mi</div>
   </div>
 </div>
@@ -3053,6 +3278,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-17.9% vs FMV · Est. FMV $97,500">↓18%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$97,500 · <strong>18% below FMV</strong> 🔥</div>
+    
     <div class="card-meta">67,000 mi</div>
   </div>
 </div>
@@ -3071,6 +3297,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-8.3% vs FMV · Est. FMV $27,250">↓8%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$27,250 · 8% below FMV</div>
+    
     <div class="card-meta">86,500 mi</div>
   </div>
 </div>
@@ -3089,6 +3316,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+48.5% vs FMV · Est. FMV $24,250">↑48%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$24,250 · <strong>48% above FMV</strong></div>
+    
     <div class="card-meta">41,000 mi</div>
   </div>
 </div>
@@ -3107,6 +3335,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+17.6% vs FMV · Est. FMV $25,500">↑18%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$25,500 · <strong>18% above FMV</strong></div>
+    
     <div class="card-meta">70,500 mi</div>
   </div>
 </div>
@@ -3125,6 +3354,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+21.1% vs FMV · Est. FMV $161,000">↑21%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$161,000 · <strong>21% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3143,6 +3373,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+225.8% vs FMV · Est. FMV $22,250">↑226%</span>
     </div>
     <div class="fmv-line fmv-high">🔴 FMV ~$22,250 · <strong>226% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3161,6 +3392,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+2.4% vs FMV · Est. FMV $238,000">↑2%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$238,000 · 2% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3179,6 +3411,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-flat" title="-1.2% vs FMV · Est. FMV $405,000">≈ FMV</span>
     </div>
     <div class="fmv-line fmv-neutral">🟢 FMV ~$405,000 · at market</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3197,6 +3430,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-2.9% vs FMV · Est. FMV $174,000">↓3%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$174,000 · 3% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3215,6 +3449,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-flat" title="-2.0% vs FMV · Est. FMV $126,500">≈ FMV</span>
     </div>
     <div class="fmv-line fmv-neutral">🟢 FMV ~$126,500 · at market</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3233,6 +3468,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-flat" title="+0.9% vs FMV · Est. FMV $130,000">≈ FMV</span>
     </div>
     <div class="fmv-line fmv-neutral">🟢 FMV ~$130,000 · at market</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3251,6 +3487,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-5.3% vs FMV · Est. FMV $211,000">↓5%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$211,000 · 5% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3269,6 +3506,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-6.3% vs FMV · Est. FMV $160,000">↓6%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$160,000 · 6% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3287,6 +3525,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-4.3% vs FMV · Est. FMV $120,077">↓4%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$120,077 · 4% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3305,6 +3544,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-3.9% vs FMV · Est. FMV $130,000">↓4%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$130,000 · 4% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3323,6 +3563,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+6.4% vs FMV · Est. FMV $375,000">↑6%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$375,000 · 6% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3341,6 +3582,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+22.1% vs FMV · Est. FMV $90,000">↑22%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$90,000 · <strong>22% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3359,6 +3601,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+16.5% vs FMV · Est. FMV $193,993">↑16%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$193,993 · <strong>16% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3377,6 +3620,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+31.6% vs FMV · Est. FMV $45,500">↑32%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$45,500 · <strong>32% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3395,6 +3639,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+24.3% vs FMV · Est. FMV $80,400">↑24%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$80,400 · <strong>24% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3413,6 +3658,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+29.6% vs FMV · Est. FMV $27,000">↑30%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$27,000 · <strong>30% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3431,6 +3677,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-25.2% vs FMV · Est. FMV $34,750">↓25%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$34,750 · <strong>25% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3449,6 +3696,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+49.6% vs FMV · Est. FMV $33,400">↑50%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$33,400 · <strong>50% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3467,6 +3715,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+55.2% vs FMV · Est. FMV $161,000">↑55%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$161,000 · <strong>55% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3485,6 +3734,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+2.5% vs FMV · Est. FMV $97,500">↑2%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$97,500 · 2% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3503,6 +3753,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-25.7% vs FMV · Est. FMV $202,000">↓26%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$202,000 · <strong>26% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3521,6 +3772,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+51.1% vs FMV · Est. FMV $57,500">↑51%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$57,500 · <strong>51% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3539,6 +3791,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-5.8% vs FMV · Est. FMV $33,400">↓6%</span>
     </div>
     <div class="fmv-line fmv-good">🟡 FMV ~$33,400 · 6% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3557,6 +3810,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+40.5% vs FMV · Est. FMV $63,000">↑40%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$63,000 · <strong>40% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3575,6 +3829,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+14.5% vs FMV · Est. FMV $96,000">↑14%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$96,000 · 14% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3593,6 +3848,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+42.9% vs FMV · Est. FMV $58,000">↑43%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$58,000 · <strong>43% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3611,24 +3867,26 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+10.6% vs FMV · Est. FMV $126,500">↑11%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$126,500 · 11% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
-<div class="card" data-dealer="eBay Motors" data-year="2013" data-model="911" data-gen="991.1" data-tier="TIER2" data-price="139900" data-source-type="retail" onclick="window.open('https://www.ebay.com/itm/236755821158?_skw=porsche&amp;hash=item371fbf2266:g:rQ8AAeSwQIpp3jGn','_blank')">
-  <div class="card-img-wrap"><img src="https://i.ebayimg.com/images/g/rQ8AAeSwQIpp3jGn/s-l1600.jpg" alt="2013 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+<div class="card" data-dealer="eBay Motors" data-year="2013" data-model="911" data-gen="991.1" data-tier="TIER2" data-price="79900" data-source-type="retail" onclick="window.open('https://www.ebay.com/itm/178052813735?_skw=porsche&amp;hash=item2974c653a7:g:fVAAAeSw1VppzJj6','_blank')">
+  <div class="card-img-wrap"><img src="https://i.ebayimg.com/images/g/fVAAAeSw1VppzJj6/s-l1600.jpg" alt="2013 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#3f1f00;color:#fb923c">eBay</span>
       <span class="card-age">21d ago</span>
     </div>
-    <div class="card-title">2013 Porsche 911 Carrera S</div>
+    <div class="card-title">2013 Porsche 911 CARRERA S</div>
     
     <div class="card-price-row">
       <span class="price-label">Asking</span>
-      <span class="price-ask">$139,900</span>
-      <span class="delta delta-high" title="+143.3% vs FMV · Est. FMV $57,500">↑143%</span>
+      <span class="price-ask">$79,900</span>
+      <span class="delta delta-high" title="+39.0% vs FMV · Est. FMV $57,500">↑39%</span>
     </div>
-    <div class="fmv-line fmv-high">🟢 FMV ~$57,500 · <strong>143% above FMV</strong></div>
+    <div class="fmv-line fmv-high">🟢 FMV ~$57,500 · <strong>39% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3647,6 +3905,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+25.1% vs FMV · Est. FMV $87,901">↑25%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$87,901 · <strong>25% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3665,6 +3924,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+41.8% vs FMV · Est. FMV $30,250">↑42%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$30,250 · <strong>42% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3683,6 +3943,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+74.2% vs FMV · Est. FMV $89,000">↑74%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$89,000 · <strong>74% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3701,6 +3962,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-69.6% vs FMV · Est. FMV $107,000">↓70%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$107,000 · <strong>70% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3719,6 +3981,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+56.2% vs FMV · Est. FMV $96,000">↑56%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$96,000 · <strong>56% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3737,6 +4000,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+41.2% vs FMV · Est. FMV $20,250">↑41%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$20,250 · <strong>41% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3755,6 +4019,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-18.2% vs FMV · Est. FMV $107,000">↓18%</span>
     </div>
     <div class="fmv-line fmv-great">🟡 FMV ~$107,000 · <strong>18% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3773,6 +4038,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+52.2% vs FMV · Est. FMV $23,000">↑52%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$23,000 · <strong>52% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3791,6 +4057,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+139.7% vs FMV · Est. FMV $14,600">↑140%</span>
     </div>
     <div class="fmv-line fmv-high">🟡 FMV ~$14,600 · <strong>140% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3809,6 +4076,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-13.9% vs FMV · Est. FMV $209,000">↓14%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$209,000 · <strong>14% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3827,6 +4095,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-flat" title="-1.6% vs FMV · Est. FMV $45,500">≈ FMV</span>
     </div>
     <div class="fmv-line fmv-neutral">🟢 FMV ~$45,500 · at market</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3845,6 +4114,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-2.2% vs FMV · Est. FMV $142,000">↓2%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$142,000 · 2% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3863,6 +4133,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-mid" title="+10.7% vs FMV · Est. FMV $126,500">↑11%</span>
     </div>
     <div class="fmv-line fmv-mid">🟢 FMV ~$126,500 · 11% above FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3881,6 +4152,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+125.9% vs FMV · Est. FMV $57,500">↑126%</span>
     </div>
     <div class="fmv-line fmv-high">🟢 FMV ~$57,500 · <strong>126% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3899,6 +4171,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-flat" title="+0.8% vs FMV · Est. FMV $25,500">≈ FMV</span>
     </div>
     <div class="fmv-line fmv-neutral">🟢 FMV ~$25,500 · at market</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3917,6 +4190,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-17.6% vs FMV · Est. FMV $375,000">↓18%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$375,000 · <strong>18% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3935,6 +4209,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-high" title="+118.0% vs FMV · Est. FMV $22,250">↑118%</span>
     </div>
     <div class="fmv-line fmv-high">🔴 FMV ~$22,250 · <strong>118% above FMV</strong></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3953,6 +4228,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-5.0% vs FMV · Est. FMV $27,250">↓5%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$27,250 · 5% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3971,6 +4247,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-good" title="-3.4% vs FMV · Est. FMV $178,500">↓3%</span>
     </div>
     <div class="fmv-line fmv-good">🟢 FMV ~$178,500 · 3% below FMV</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -3989,6 +4266,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       <span class="delta delta-great" title="-26.3% vs FMV · Est. FMV $76,000">↓26%</span>
     </div>
     <div class="fmv-line fmv-great">🟢 FMV ~$76,000 · <strong>26% below FMV</strong> 🔥</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4007,6 +4285,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$16,350</span> · <strong>45% below FMV</strong> 🔥 <span class="fmv-comps">(109 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T17:52:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4025,6 +4304,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟡 Est. FMV <span class="fmv-val">$270,000</span> · <strong>55% below FMV</strong> 🔥 <span class="fmv-comps">(3 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-19T17:00:00Z">…</span></div>
     <div class="card-meta">2,900 mi</div>
   </div>
 </div>
@@ -4043,6 +4323,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-high">🟢 Est. FMV <span class="fmv-val">$91,000</span> · <strong>37% above FMV</strong> <span class="fmv-comps">(53 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T19:33:00Z">…</span></div>
     <div class="card-meta">10,000 mi</div>
   </div>
 </div>
@@ -4061,6 +4342,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$63,000</span> · <strong>99% below FMV</strong> 🔥 <span class="fmv-comps">(106 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T19:09:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4079,6 +4361,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$13,500</span> · <strong>74% below FMV</strong> 🔥 <span class="fmv-comps">(125 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T19:36:00Z">…</span></div>
     <div class="card-meta">43,000 mi</div>
   </div>
 </div>
@@ -4097,6 +4380,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$128,000</span> · <strong>29% below FMV</strong> 🔥 <span class="fmv-comps">(22 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-16T20:10:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4115,6 +4399,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$65,000</span> · <strong>54% below FMV</strong> 🔥 <span class="fmv-comps">(134 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-19T17:47:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4133,6 +4418,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$27,250</span> · <strong>63% below FMV</strong> 🔥 <span class="fmv-comps">(300 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T19:49:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4151,6 +4437,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$31,000</span> · <strong>94% below FMV</strong> 🔥 <span class="fmv-comps">(69 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T18:13:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4169,6 +4456,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-neutral">🟢 Est. FMV <span class="fmv-val">$63,000</span> · at market <span class="fmv-comps">(106 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T19:03:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4187,6 +4475,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$100,000</span> · <strong>15% below FMV</strong> 🔥 <span class="fmv-comps">(14 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-18T17:04:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4205,6 +4494,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-good">🟢 Est. FMV <span class="fmv-val">$238,000</span> · 4% below FMV <span class="fmv-comps">(44 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T17:59:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4223,6 +4513,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$160,000</span> · <strong>69% below FMV</strong> 🔥 <span class="fmv-comps">(15 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T19:52:00Z">…</span></div>
     <div class="card-meta">9,000 mi</div>
   </div>
 </div>
@@ -4241,6 +4532,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$57,500</span> · <strong>62% below FMV</strong> 🔥 <span class="fmv-comps">(217 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-16T18:34:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4259,6 +4551,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$221,000</span> · <strong>16% below FMV</strong> 🔥 <span class="fmv-comps">(45 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T17:45:00Z">…</span></div>
     <div class="card-meta">11,000 mi</div>
   </div>
 </div>
@@ -4277,6 +4570,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$83,993</span> · <strong>93% below FMV</strong> 🔥 <span class="fmv-comps">(138 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T19:16:00Z">…</span></div>
     <div class="card-meta">45,000 mi</div>
   </div>
 </div>
@@ -4295,6 +4589,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$463,000</span> · <strong>35% below FMV</strong> 🔥 <span class="fmv-comps">(23 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T17:10:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4313,6 +4608,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-neutral">🟢 Est. FMV <span class="fmv-val">$76,000</span> · at market <span class="fmv-comps">(180 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T20:01:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4331,6 +4627,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$29,250</span> · <strong>79% below FMV</strong> 🔥 <span class="fmv-comps">(15 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-19T18:31:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4349,6 +4646,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$72,515</span> · <strong>85% below FMV</strong> 🔥 <span class="fmv-comps">(35 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T18:56:00Z">…</span></div>
     <div class="card-meta">28,000 mi</div>
   </div>
 </div>
@@ -4367,6 +4665,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟡 Est. FMV <span class="fmv-val">$107,000</span> · <strong>85% below FMV</strong> 🔥 <span class="fmv-comps">(292 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T17:10:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4385,6 +4684,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$27,250</span> · <strong>55% below FMV</strong> 🔥 <span class="fmv-comps">(300 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-18T17:44:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4415,6 +4715,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$35,750</span> · <strong>27% below FMV</strong> 🔥 <span class="fmv-comps">(9 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T17:43:00Z">…</span></div>
     <div class="card-meta">16,000 mi</div>
   </div>
 </div>
@@ -4433,6 +4734,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$238,000</span> · <strong>58% below FMV</strong> 🔥 <span class="fmv-comps">(44 comps)</span></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4451,6 +4753,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$70,987</span> · <strong>64% below FMV</strong> 🔥 <span class="fmv-comps">(9 comps)</span></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4459,7 +4762,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#14532d;color:#4ade80">pcarmarket</span>
-      <span class="card-age">15h ago</span>
+      <span class="card-age">16h ago</span>
     </div>
     <div class="card-title">1989 Porsche 911 Carrera G50 Turbocharged 3.3L “Code Red” by Air Cooled Classics</div>
     <span class="tier-badge">GT / Collector</span>
@@ -4469,6 +4772,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-high">🟢 Est. FMV <span class="fmv-val">$76,000</span> · <strong>45% above FMV</strong> <span class="fmv-comps">(180 comps)</span></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4487,6 +4791,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-good">🟢 Est. FMV <span class="fmv-val">$28,210</span> · 3% below FMV <span class="fmv-comps">(4 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T20:16:00Z">…</span></div>
     <div class="card-meta">25,000 mi</div>
   </div>
 </div>
@@ -4505,6 +4810,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-good">🟢 Est. FMV <span class="fmv-val">$281,000</span> · 7% below FMV <span class="fmv-comps">(60 comps)</span></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4523,6 +4829,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$202,000</span> · <strong>38% below FMV</strong> 🔥 <span class="fmv-comps">(28 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-19T17:01:00Z">…</span></div>
     <div class="card-meta">1,900 mi</div>
   </div>
 </div>
@@ -4541,6 +4848,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-mid">🟢 Est. FMV <span class="fmv-val">$26,750</span> · 15% above FMV <span class="fmv-comps">(8 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-18T17:14:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4559,6 +4867,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$95,000</span> · <strong>84% below FMV</strong> 🔥 <span class="fmv-comps">(38 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T19:49:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4577,6 +4886,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$57,500</span> · <strong>44% below FMV</strong> 🔥 <span class="fmv-comps">(217 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T17:48:00Z">…</span></div>
     <div class="card-meta">47,000 mi</div>
   </div>
 </div>
@@ -4595,6 +4905,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-mid">🟢 Est. FMV <span class="fmv-val">$58,000</span> · 8% above FMV <span class="fmv-comps">(5 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-16T19:06:00Z">…</span></div>
     <div class="card-meta">13,000 mi</div>
   </div>
 </div>
@@ -4613,6 +4924,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
+    
     <div class="card-meta">46,100 mi</div>
   </div>
 </div>
@@ -4631,6 +4943,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
+    
     <div class="card-meta">22,746 mi</div>
   </div>
 </div>
@@ -4649,6 +4962,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
+    
     <div class="card-meta">76,290 mi</div>
   </div>
 </div>
@@ -4667,6 +4981,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$126,500</span> · <strong>27% below FMV</strong> 🔥 <span class="fmv-comps">(28 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T19:12:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4685,6 +5000,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟡 Est. FMV <span class="fmv-val">$965,000</span> · <strong>43% below FMV</strong> 🔥 <span class="fmv-comps">(3 comps)</span></div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4703,6 +5019,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$72,000</span> · <strong>31% below FMV</strong> 🔥 <span class="fmv-comps">(22 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T17:48:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4721,6 +5038,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟡 Est. FMV <span class="fmv-val">$62,000</span> · <strong>92% below FMV</strong> 🔥 <span class="fmv-comps">(112 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T18:28:00Z">…</span></div>
     <div class="card-meta">11,000 mi</div>
   </div>
 </div>
@@ -4739,6 +5057,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$193,993</span> · <strong>68% below FMV</strong> 🔥 <span class="fmv-comps">(36 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T17:39:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4757,6 +5076,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$126,500</span> · <strong>55% below FMV</strong> 🔥 <span class="fmv-comps">(28 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T19:09:00Z">…</span></div>
     <div class="card-meta">6,000 mi</div>
   </div>
 </div>
@@ -4775,6 +5095,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$27,250</span> · <strong>85% below FMV</strong> 🔥 <span class="fmv-comps">(300 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T17:33:00Z">…</span></div>
     <div class="card-meta">47,000 mi</div>
   </div>
 </div>
@@ -4793,6 +5114,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
+    
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4811,6 +5133,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$166,000</span> · <strong>42% below FMV</strong> 🔥 <span class="fmv-comps">(25 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T18:11:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4829,6 +5152,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$97,500</span> · <strong>43% below FMV</strong> 🔥 <span class="fmv-comps">(89 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T19:11:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4847,6 +5171,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$255,000</span> · <strong>59% below FMV</strong> 🔥 <span class="fmv-comps">(36 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T17:36:00Z">…</span></div>
     <div class="card-meta">2,000 mi</div>
   </div>
 </div>
@@ -4865,6 +5190,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟡 Est. FMV <span class="fmv-val">$70,500</span> · <strong>35% below FMV</strong> 🔥 <span class="fmv-comps">(30 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-19T17:17:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4883,6 +5209,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$16,350</span> · <strong>45% below FMV</strong> 🔥 <span class="fmv-comps">(109 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T17:52:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4901,6 +5228,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟡 Est. FMV <span class="fmv-val">$270,000</span> · <strong>55% below FMV</strong> 🔥 <span class="fmv-comps">(3 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-19T17:00:00Z">…</span></div>
     <div class="card-meta">2,900 mi</div>
   </div>
 </div>
@@ -4919,6 +5247,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-high">🟢 Est. FMV <span class="fmv-val">$91,000</span> · <strong>37% above FMV</strong> <span class="fmv-comps">(53 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T19:33:00Z">…</span></div>
     <div class="card-meta">10,000 mi</div>
   </div>
 </div>
@@ -4937,6 +5266,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$63,000</span> · <strong>99% below FMV</strong> 🔥 <span class="fmv-comps">(106 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T19:09:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4955,6 +5285,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$13,500</span> · <strong>74% below FMV</strong> 🔥 <span class="fmv-comps">(125 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T19:36:00Z">…</span></div>
     <div class="card-meta">43,000 mi</div>
   </div>
 </div>
@@ -4973,6 +5304,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$128,000</span> · <strong>29% below FMV</strong> 🔥 <span class="fmv-comps">(22 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-16T20:10:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -4991,6 +5323,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$65,000</span> · <strong>54% below FMV</strong> 🔥 <span class="fmv-comps">(134 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-19T17:47:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5009,6 +5342,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$27,250</span> · <strong>63% below FMV</strong> 🔥 <span class="fmv-comps">(300 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T19:49:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5027,6 +5361,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$31,000</span> · <strong>94% below FMV</strong> 🔥 <span class="fmv-comps">(69 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T18:13:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5045,6 +5380,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-neutral">🟢 Est. FMV <span class="fmv-val">$63,000</span> · at market <span class="fmv-comps">(106 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T19:03:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5063,6 +5399,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$100,000</span> · <strong>15% below FMV</strong> 🔥 <span class="fmv-comps">(14 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-18T17:04:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5081,6 +5418,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-good">🟢 Est. FMV <span class="fmv-val">$238,000</span> · 4% below FMV <span class="fmv-comps">(44 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T17:59:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5099,6 +5437,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$160,000</span> · <strong>69% below FMV</strong> 🔥 <span class="fmv-comps">(15 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T19:52:00Z">…</span></div>
     <div class="card-meta">9,000 mi</div>
   </div>
 </div>
@@ -5117,6 +5456,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$57,500</span> · <strong>62% below FMV</strong> 🔥 <span class="fmv-comps">(217 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-16T18:34:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5135,6 +5475,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$221,000</span> · <strong>16% below FMV</strong> 🔥 <span class="fmv-comps">(45 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T17:45:00Z">…</span></div>
     <div class="card-meta">11,000 mi</div>
   </div>
 </div>
@@ -5153,6 +5494,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$83,993</span> · <strong>93% below FMV</strong> 🔥 <span class="fmv-comps">(138 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T19:16:00Z">…</span></div>
     <div class="card-meta">45,000 mi</div>
   </div>
 </div>
@@ -5171,6 +5513,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$463,000</span> · <strong>35% below FMV</strong> 🔥 <span class="fmv-comps">(23 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T17:10:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5189,6 +5532,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-neutral">🟢 Est. FMV <span class="fmv-val">$76,000</span> · at market <span class="fmv-comps">(180 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-17T20:01:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5207,6 +5551,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$29,250</span> · <strong>79% below FMV</strong> 🔥 <span class="fmv-comps">(15 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-19T18:31:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5225,6 +5570,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$72,515</span> · <strong>85% below FMV</strong> 🔥 <span class="fmv-comps">(35 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T18:56:00Z">…</span></div>
     <div class="card-meta">28,000 mi</div>
   </div>
 </div>
@@ -5243,6 +5589,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟡 Est. FMV <span class="fmv-val">$107,000</span> · <strong>85% below FMV</strong> 🔥 <span class="fmv-comps">(292 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T17:10:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5261,6 +5608,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$27,250</span> · <strong>55% below FMV</strong> 🔥 <span class="fmv-comps">(300 comps)</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-18T17:44:00Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -55752,9 +56100,34 @@ function sortComps(col) {
   rows.forEach(r => tbody.appendChild(r));
 }
 
+// ── Auction countdown timers ──────────────────────────────────────────────────
+function updateCountdowns() {
+  document.querySelectorAll('.countdown[data-ends]').forEach(function(el) {
+    var ends = new Date(el.dataset.ends);
+    var now = new Date();
+    var diff = ends - now;
+    if (diff <= 0) {
+      el.textContent = 'Ended';
+      el.style.color = '#ef4444';
+      return;
+    }
+    var d = Math.floor(diff / 86400000);
+    var h = Math.floor((diff % 86400000) / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    if (d > 0) {
+      el.textContent = d + 'd ' + h + 'h ' + m + 'm';
+    } else {
+      el.textContent = h + 'h ' + m + 'm ' + s + 's';
+    }
+  });
+}
+
 // ── Init ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   updateCount();
+  updateCountdowns();
+  setInterval(updateCountdowns, 1000);
 });
 
 // ── PWA Service Worker ────────────────────────────────────────────────────────

@@ -706,6 +706,7 @@ button{{cursor:pointer;border:none;background:none;font:inherit;color:inherit}}
       <button class="nav-tab" onclick="switchView('auctions')">Auctions</button>
       <button class="nav-tab" onclick="switchView('comps')">Sold Comps</button>
       <button class="nav-tab" onclick="switchView('market')">Market Reports</button>
+      <a class="nav-tab" href="search.html" style="text-decoration:none">🔍 Search</a>
     </nav>
   </div>
   <div class="topbar-right">

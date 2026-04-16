@@ -13,9 +13,12 @@ Usage:
 """
 import argparse
 import logging
+import sqlite3
 import sys
 from datetime import date, datetime
 from pathlib import Path
+
+BASE_DIR = Path(__file__).parent
 
 # ---- logging setup ---------------------------------------------------------
 LOG_DIR = Path(__file__).parent / "logs"
@@ -248,6 +251,21 @@ def main():
     path = dash.generate()
     log.info("Dashboard: file://%s", path)
     print(f"Dashboard: file://{path}")
+
+    # Regenerate search data
+    try:
+        import json as _json
+        with database.get_conn() as _sc:
+            _sc.row_factory = sqlite3.Row
+            _rows = _sc.execute('''SELECT year, make, model, trim, price, mileage, dealer,
+                status, vin, listing_url, image_url, date_first_seen, created_at,
+                source_category, tier, color, transmission FROM listings ORDER BY created_at DESC''').fetchall()
+        _search_path = BASE_DIR / "docs" / "search_data.json"
+        with open(_search_path, "w") as _sf:
+            _json.dump([dict(r) for r in _rows], _sf, default=str)
+        log.info("Search data: %d listings → docs/search_data.json", len(_rows))
+    except Exception as e:
+        log.warning("Search data generation failed: %s", e)
 
     try:
         np = ndash.generate()

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PTOX11">
+<meta name="theme-color" content="#0f1117">
+<link rel="manifest" href="manifest.json">
+<title>PTOX11 — Search</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f1117;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh}
+header{background:#1a1f2e;border-bottom:1px solid #2d3748;padding:14px 20px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100}
+header a{color:#94a3b8;text-decoration:none;font-size:13px}
+header a:hover{color:#e2e8f0}
+h1{font-size:18px;font-weight:700;color:#fff;flex:1}
+.search-panel{background:#1a1f2e;border-bottom:1px solid #2d3748;padding:16px 20px}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:10px}
+input,select{background:#0f1117;border:1px solid #2d3748;border-radius:6px;color:#e2e8f0;padding:8px 10px;font-size:13px;width:100%}
+input:focus,select:focus{outline:none;border-color:#6366f1}
+input::placeholder{color:#4a5568}
+.btn-row{display:flex;gap:8px;align-items:center}
+button{padding:8px 18px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-search{background:#6366f1;color:#fff}
+.btn-search:hover{background:#4f46e5}
+.btn-clear{background:#2d3748;color:#94a3b8}
+.btn-clear:hover{background:#374151;color:#e2e8f0}
+.result-count{color:#64748b;font-size:13px;margin-left:auto}
+.results{padding:16px 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:#1a1f2e;border:1px solid #2d3748;border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.card:hover{border-color:#6366f1}
+.card-img{width:100%;height:160px;object-fit:cover;background:#0f1117}
+.card-img-placeholder{width:100%;height:160px;background:#111827;display:flex;align-items:center;justify-content:center;color:#374151;font-size:28px}
+.card-body{padding:12px}
+.card-title{font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.card-meta{font-size:12px;color:#64748b;margin-bottom:8px}
+.card-row{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.price{font-size:15px;font-weight:700;color:#a78bfa}
+.badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;text-transform:uppercase}
+.badge-active{background:#064e3b;color:#34d399}
+.badge-sold{background:#3b1f1f;color:#f87171}
+.source-badge{font-size:10px;padding:2px 7px;border-radius:10px;background:#1e293b;color:#94a3b8;border:1px solid #2d3748}
+.vin{font-size:10px;color:#4a5568;margin-top:4px;font-family:monospace;word-break:break-all}
+.no-results{text-align:center;padding:60px 20px;color:#4a5568}
+.no-results .icon{font-size:48px;margin-bottom:12px}
+.loading{text-align:center;padding:60px;color:#64748b}
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html">← Dashboard</a>
+  <h1>🔍 Listing Search</h1>
+  <span id="db-count" style="font-size:12px;color:#4a5568"></span>
+</header>
+
+<div class="search-panel">
+  <div class="filters">
+    <input id="q-vin" placeholder="VIN (full or partial)" />
+    <input id="q-year-min" placeholder="Year from" type="number" min="1965" max="2026" />
+    <input id="q-year-max" placeholder="Year to" type="number" min="1965" max="2026" />
+    <input id="q-model" placeholder="Model (911, Cayman, Boxster...)" />
+    <input id="q-trim" placeholder="Trim (GT3, Carrera S...)" />
+    <input id="q-price-max" placeholder="Max price $" type="number" />
+    <input id="q-miles-max" placeholder="Max mileage" type="number" />
+    <select id="q-source">
+      <option value="">All sources</option>
+      <option>Bring a Trailer</option>
+      <option>Cars and Bids</option>
+      <option>eBay Motors</option>
+      <option>PCA Mart</option>
+      <option>pcarmarket</option>
+      <option>AutoTrader</option>
+      <option>cars.com</option>
+      <option>Rennlist</option>
+      <option>Built for Backroads</option>
+    </select>
+    <select id="q-status">
+      <option value="">All status</option>
+      <option value="active">Active</option>
+      <option value="sold">Sold</option>
+    </select>
+  </div>
+  <div class="btn-row">
+    <button class="btn-search" onclick="doSearch()">Search</button>
+    <button class="btn-clear" onclick="clearAll()">Clear</button>
+    <span class="result-count" id="result-count"></span>
+  </div>
+</div>
+
+<div id="results" class="results">
+  <div class="loading">Enter search terms above and hit Search</div>
+</div>
+
+<script>
+const DATA_URL = 'search_data.json';
+let allListings = [];
+
+async function loadData() {
+  try {
+    const r = await fetch(DATA_URL);
+    allListings = await r.json();
+    document.getElementById('db-count').textContent = allListings.length.toLocaleString() + ' listings in database';
+  } catch(e) {
+    document.getElementById('results').innerHTML = '<div class="no-results"><div class="icon">⚠️</div>Could not load listing data</div>';
+  }
+}
+
+function val(id) { return document.getElementById(id).value.trim().toLowerCase(); }
+
+function doSearch() {
+  const vin = val('q-vin');
+  const yearMin = parseInt(document.getElementById('q-year-min').value) || 0;
+  const yearMax = parseInt(document.getElementById('q-year-max').value) || 9999;
+  const model = val('q-model');
+  const trim = val('q-trim');
+  const priceMax = parseInt(document.getElementById('q-price-max').value) || 99999999;
+  const milesMax = parseInt(document.getElementById('q-miles-max').value) || 99999999;
+  const source = val('q-source');
+  const status = val('q-status');
+
+  if (!vin && !model && !trim && !source && !status && yearMin === 0 && yearMax === 9999 && priceMax === 99999999 && milesMax === 99999999) {
+    document.getElementById('results').innerHTML = '<div class="no-results"><div class="icon">🔍</div>Enter at least one search term</div>';
+    return;
+  }
+
+  let results = allListings.filter(l => {
+    if (vin && !(l.vin || '').toLowerCase().includes(vin)) return false;
+    if (l.year < yearMin || l.year > yearMax) return false;
+    if (model && !(l.model || '').toLowerCase().includes(model)) return false;
+    if (trim && !(l.trim || '').toLowerCase().includes(trim)) return false;
+    if (l.price && l.price > priceMax) return false;
+    if (l.mileage && l.mileage > milesMax) return false;
+    if (source && (l.dealer || '').toLowerCase() !== source) return false;
+    if (status && l.status !== status) return false;
+    return true;
+  });
+
+  results.sort((a,b) => (b.created_at || '').localeCompare(a.created_at || ''));
+
+  document.getElementById('result-count').textContent = results.length.toLocaleString() + ' results';
+
+  if (!results.length) {
+    document.getElementById('results').innerHTML = '<div class="no-results"><div class="icon">🔍</div>No listings found matching your search</div>';
+    return;
+  }
+
+  document.getElementById('results').innerHTML = results.slice(0, 200).map(l => {
+    const img = l.image_url && l.image_url.startsWith('http')
+      ? `<img class="card-img" src="${l.image_url}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      : '';
+    const placeholder = `<div class="card-img-placeholder" style="${img ? 'display:none' : ''}">🏎</div>`;
+    const price = l.price ? '$' + l.price.toLocaleString() : 'No price';
+    const miles = l.mileage ? l.mileage.toLocaleString() + ' mi' : '—';
+    const statusBadge = l.status === 'active'
+      ? '<span class="badge badge-active">Active</span>'
+      : '<span class="badge badge-sold">Sold</span>';
+    const seen = l.date_first_seen ? l.date_first_seen.split('T')[0] : '';
+    return `<div class="card" onclick="window.open('${l.listing_url}','_blank')">
+      ${img}${placeholder}
+      <div class="card-body">
+        <div class="card-title">${l.year} Porsche ${l.model}${l.trim ? ' ' + l.trim : ''}</div>
+        <div class="card-meta">${miles} &nbsp;·&nbsp; ${seen}</div>
+        <div class="card-row">
+          <span class="price">${price}</span>
+          ${statusBadge}
+        </div>
+        <div class="card-row" style="margin-top:6px">
+          <span class="source-badge">${l.dealer}</span>
+        </div>
+        ${l.vin ? `<div class="vin">${l.vin}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function clearAll() {
+  ['q-vin','q-year-min','q-year-max','q-model','q-trim','q-price-max','q-miles-max'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('q-source').value = '';
+  document.getElementById('q-status').value = '';
+  document.getElementById('result-count').textContent = '';
+  document.getElementById('results').innerHTML = '<div class="loading">Enter search terms above and hit Search</div>';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+loadData();
+</script>
+</body>
+</html>

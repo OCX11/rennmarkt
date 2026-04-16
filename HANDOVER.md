@@ -255,6 +255,14 @@ URL: https://ocx11.github.io/porsche-tracker/
 - **Comp mileage fix** — was stripping `49k-Mile` prefix BEFORE extracting mileage. Now extracts mileage first, then strips. 24 air-cooled comps backfilled via `enrich_bat_vins.py` visiting listing pages. 96% of 911/Cayman/Boxster comps have mileage.
 - **PM thread note** — this PM chat is very long. Start a fresh thread when tool call limits become frequent. Bootstrap new thread with HANDOVER.md content.
 
+### April 16, 2026 — cars.com scraper fix (3 → 839 listings)
+- Root cause: broad URL with models[]= empty returned all Porsche models (85% Macan/Cayenne/Panamera), correctly filtered to near-zero
+- Bootstrap state stuck at true — kept scraper on 1-page incremental mode forever
+- Per-model slug approach: query 911/boxster/cayman/718_boxster/718_cayman separately
+- Direct curl_cffi (no proxy) works better for cars.com — proxy made CF blocking worse for 911 slug
+- _is_blocked false-positive fixed — was flagging large valid pages
+- Result: cars.com 2 → 839 active listings, system total 1,750 across 9 sources
+
 ### April 16, 2026 — Auction Countdown Timer
 - **auction_ends_at column** added to listings table (TEXT, ISO UTC)
 - **BaT** — reads `data-timestamp_end` Unix epoch from each `div.listing-card` card attr, converts to ISO UTC string

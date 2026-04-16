@@ -24,14 +24,22 @@ log = logging.getLogger(__name__)
 
 DEALER_NAME = "cars.com"
 
-_SEARCH_BASE = (
+# Per-model search URLs — all Porsche models we track
+# Using model slugs avoids Macan/Cayenne/Panamera/Taycan noise (85% of broad results)
+_MODEL_SLUGS = [
+    "porsche-911",
+    "porsche-boxster",
+    "porsche-cayman",
+    "porsche-718_boxster",
+    "porsche-718_cayman",
+]
+_SEARCH_TEMPLATE = (
     "https://www.cars.com/shopping/results/"
-    "?dealer_id=&keyword=&list_price_max=&list_price_min="
-    "&makes[]=porsche&maximum_distance=all&mileage_max="
-    "&models[]=&sort=listed_at_desc&stock_type=used"
-    "&year_max=&year_min=&zip="
+    "?makes[]=porsche&models[]={slug}"
+    "&stock_type=used&maximum_distance=all"
+    "&sort=listed_at_desc&page_size=20&page={page}"
 )
-_PAGE_SIZE = 20        # Cars.com default; &page_size=20 already in URL
+_PAGE_SIZE = 20
 _BASE_URL  = "https://www.cars.com"
 
 _STATE_FILE = Path.home() / "porsche-tracker" / "data" / "carscom_state.json"
@@ -653,81 +661,65 @@ def _save_state(state):
 # ---------------------------------------------------------------------------
 def scrape_carscom():
     """
-    Scrape Cars.com for used Porsche listings.
+    Scrape Cars.com for used Porsche 911/Boxster/Cayman/718 listings.
+    Queries each model slug separately to avoid Macan/Cayenne/Panamera noise.
+    Paginates each model until empty page or 15-page safety cap.
     Always routes through DataImpulse proxy — never exposes bare Mac Mini IP.
-    If proxy is unavailable, returns [] immediately (skips this cycle cleanly).
     """
     if not _PROXY_URL or not _PROXY_CFG.get("enabled"):
         log.warning("cars.com: proxy not configured — skipping scrape")
         return []
 
-    state = _load_state()
-    bootstrapped = state.get("bootstrapped", False)
-
-    if bootstrapped:
-        max_pages = 1
-        log.info("cars.com: incremental run (1 page)")
-    else:
-        max_pages = 10
-        log.info("cars.com: bootstrap run (up to %d pages)", max_pages)
-
     all_listings = []
     seen_keys = set()
     filtered_out = 0
 
-    for page_num in range(1, max_pages + 1):
-        # Abort if proxy died mid-session — don't expose bare IP
-        if _PROXY_DEAD:
-            log.warning("cars.com: proxy died mid-scrape — stopping (no naked-IP fallback)")
-            break
+    for slug in _MODEL_SLUGS:
+        model_name = slug.replace("porsche-", "").replace("_", " ")
+        log.info("cars.com: scraping model slug=%s", slug)
 
-        url = "{}&page_size={}&page={}".format(_SEARCH_BASE, _PAGE_SIZE, page_num)
+        for page_num in range(1, 16):  # safety cap 15 pages per model (~300 listings max)
+            if _PROXY_DEAD:
+                log.warning("cars.com: proxy died — stopping")
+                return all_listings
 
-        html = _fetch_page(url)
-        if not html:
-            log.info("cars.com: fetch failed on page %d — stopping", page_num)
-            break
+            url = _SEARCH_TEMPLATE.format(slug=slug, page=page_num)
+            html = _fetch_page(url)
+            if not html:
+                log.info("cars.com: fetch failed on %s page %d — next model", model_name, page_num)
+                break
 
-        raw = _parse_page(html)
-        if not raw:
-            log.info("cars.com: 0 listings on page %d — end of results", page_num)
-            break
+            raw = _parse_page(html)
+            if not raw:
+                log.info("cars.com: 0 cards on %s page %d — end of results", model_name, page_num)
+                break
 
-        new_this_page = 0
-        for car in raw:
-            # Dedup key: prefer VIN, then URL, then year|model|price
-            key = car.get("vin") or car.get("url") or ""
-            if not key:
-                key = "{}|{}|{}".format(
-                    car.get("year"), car.get("model"), car.get("price")
-                )
-            if key in seen_keys:
-                continue
-            seen_keys.add(key)
+            new_this_page = 0
+            for car in raw:
+                key = car.get("vin") or car.get("url") or "{}|{}|{}".format(
+                    car.get("year"), car.get("model"), car.get("price"))
+                if key in seen_keys:
+                    continue
+                seen_keys.add(key)
 
-            # Must have a per-listing URL (not just the search page)
-            url_val = car.get("url") or ""
-            if "/vehicledetail/" not in url_val:
-                continue
+                url_val = car.get("url") or ""
+                if "/vehicledetail/" not in url_val:
+                    continue
 
-            if not _is_valid_listing(car):
-                filtered_out += 1
-                continue
+                if not _is_valid_listing(car):
+                    filtered_out += 1
+                    continue
 
-            all_listings.append(car)
-            new_this_page += 1
+                all_listings.append(car)
+                new_this_page += 1
 
-        log.info("cars.com page %d: %d new listings (running total: %d)",
-                 page_num, new_this_page, len(all_listings))
+            log.info("cars.com %s p%d: %d new (total: %d)",
+                     model_name, page_num, new_this_page, len(all_listings))
 
-        if new_this_page == 0:
-            break
+            if new_this_page == 0:
+                break
 
-        time.sleep(2.0)   # polite delay between pages
-
-    if not bootstrapped and all_listings:
-        _save_state({"bootstrapped": True})
-        log.info("cars.com: bootstrap complete — state written to %s", _STATE_FILE)
+            time.sleep(1.5)
 
     log.info("cars.com scrape complete: %d listings (%d filtered out)",
              len(all_listings), filtered_out)
@@ -747,7 +739,7 @@ if __name__ == "__main__":
     import sys
     if "--diagnose" in sys.argv:
         from curl_cffi import requests as cr
-        test_url = "{}&page_size={}&page=1".format(_SEARCH_BASE, _PAGE_SIZE)
+        test_url = _SEARCH_TEMPLATE.format(slug="porsche-911", page=1)
         proxies = {"http": _PROXY_URL, "https": _PROXY_URL} if _PROXY_URL else {}
         print("Fetching with curl_cffi ({}) via proxy...".format(_CFFI_IMPERSONATE))
         try:
@@ -773,7 +765,7 @@ if __name__ == "__main__":
 
     if "--debug" in sys.argv:
         from curl_cffi import requests as cr
-        url = "{}&page_size={}&page=1".format(_SEARCH_BASE, _PAGE_SIZE)
+        url = _SEARCH_TEMPLATE.format(slug="porsche-911", page=1)
         r = cr.get(url, impersonate=_CFFI_IMPERSONATE, timeout=30, allow_redirects=True)
 
         # Show raw card HTML for first unique listing

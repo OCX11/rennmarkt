@@ -319,11 +319,8 @@ def main():
     except Exception as e:
         log.warning("iMessage new-listing alerts failed: %s", e)
 
-    # iMessage deal alerts — deal/watch scoring
-    try:
-        notify_imessage.main()
-    except Exception as e:
-        log.warning("iMessage deal alerts failed: %s", e)
+    # iMessage deal alerts — TEMPORARILY DISABLED (re-enable when ready)
+    # notify_imessage.main()
 
     # Health monitor
     try:

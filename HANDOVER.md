@@ -1,5 +1,5 @@
 # Vehicle Market Analyzer — Project Handover Summary
-*Last updated: April 15, 2026 (full session — 9 sources local, Distill cancelled, FMV audit)*
+*Last updated: April 16, 2026 (comp scraper overhaul, search UI, PTOX11 rename)*
 
 ---
 
@@ -251,7 +251,19 @@ URL: https://ocx11.github.io/porsche-tracker/
 - Independent dealers disabled from DEALERS list
 - iMessage alert wiring restored in main.py after git restore wipe
 
-### April 15, 2026 — Full Build Session (9 sources, Distill cancelled)
+### April 16, 2026 — Comp Scraper Overhaul + Search UI
+- **BaT comp scraper rebuilt** — replaced slow Playwright HTML scraper with JSON API using nonce auth (50x faster)
+- **Sales vs RNM correctly separated** — "Sold for $X" = actual sale (sold_price set), "Bid to $X" = reserve not met (sold_price NULL). Was previously treating all as sales, inflating FMV.
+- **Year filter 1986→1950** — air-cooled 911s (930/964/993/pre-964) now correctly captured in comps
+- **Trailing slash URL normalization** — fixed duplicate detection bug that caused known comps to be missed
+- **Page-level stop logic** — stops when entire page is known, not on first known URL (BaT returns mixed-age results)
+- **Daily auto-run wired in** — comp_scraper now runs once per day via timestamp file (data/last_comp_scrape.txt). Will never go stale again.
+- **Gap filled** — 5,789→6,004 comps, March 25→April 15 fully recovered
+- **Searchable listing history** — docs/search.html built, 2,747 listings, filters: VIN/model/trim/source/price/miles/status. Regenerates every scrape cycle. Linked from dashboard nav.
+- **GitHub repo renamed** — porsche-tracker → PTOX11 via API. manifest.json, sw.js, new_dashboard.py, git remote all updated.
+- **Sold comps dashboard** — was showing data only through March 25; now current through April 15
+
+### April 15, 2026 — Full Build Session
 - **Cars & Bids active listings** — `scraper_cnb.py` built, Playwright scrolls 24K px, 12 listings, 100% images, AUCTION category
 - **Built for Backroads → Playwright** — `scraper_bfb.py` built, kills last Distill dependency, 12 listings, 100% images
 - **Distill subscription cancelled** — ALL 9 sources now on local scrapers, zero cloud dependency

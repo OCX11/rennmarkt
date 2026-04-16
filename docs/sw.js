@@ -1,11 +1,11 @@
 // Porsche Tracker — Service Worker
 // Caches the dashboard for fast loading and basic offline access
 
-const CACHE_NAME = 'porsche-tracker-v1';
+const CACHE_NAME = 'ptox11-v1';
 const ASSETS = [
-  '/porsche-tracker/',
-  '/porsche-tracker/index.html',
-  '/porsche-tracker/live_feed.html',
+  '/PTOX11/',
+  '/PTOX11/index.html',
+  '/PTOX11/live_feed.html',
 ];
 
 // Install — cache core assets
@@ -32,7 +32,7 @@ self.addEventListener('fetch', event => {
     fetch(event.request)
       .then(response => {
         // Cache successful responses for HTML pages
-        if (response.ok && event.request.url.includes('/porsche-tracker/')) {
+        if (response.ok && event.request.url.includes('/PTOX11/')) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         }

@@ -1036,7 +1036,7 @@ document.addEventListener('DOMContentLoaded', () => {{
 // ── PWA Service Worker ────────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {{
   window.addEventListener('load', function() {{
-    navigator.serviceWorker.register('/porsche-tracker/sw.js')
+    navigator.serviceWorker.register('/PTOX11/sw.js')
       .then(function(reg) {{ console.log('SW registered:', reg.scope); }})
       .catch(function(err) {{ console.log('SW registration failed:', err); }});
   }});

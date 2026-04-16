@@ -1,5 +1,5 @@
 # Vehicle Market Analyzer — Project Handover Summary
-*Last updated: April 16, 2026 (comp scraper overhaul, mileage fix, pcarmarket prices, search UI, PTOX11 rename)*
+*Last updated: April 16, 2026 (auction countdown timer added)*
 
 ---
 
@@ -254,6 +254,17 @@ URL: https://ocx11.github.io/porsche-tracker/
 - **pcarmarket prices** — extracted via `span.pcar-auction-info__price` selector. Was hardcoded None. 4/5 active listings now have prices. `$0` = auction started, no bids yet (valid).
 - **Comp mileage fix** — was stripping `49k-Mile` prefix BEFORE extracting mileage. Now extracts mileage first, then strips. 24 air-cooled comps backfilled via `enrich_bat_vins.py` visiting listing pages. 96% of 911/Cayman/Boxster comps have mileage.
 - **PM thread note** — this PM chat is very long. Start a fresh thread when tool call limits become frequent. Bootstrap new thread with HANDOVER.md content.
+
+### April 16, 2026 — Auction Countdown Timer
+- **auction_ends_at column** added to listings table (TEXT, ISO UTC)
+- **BaT** — reads `data-timestamp_end` Unix epoch from each `div.listing-card` card attr, converts to ISO UTC string
+- **C&B** — parses `span.ticking` HH:MM:SS countdown text at scrape time, adds to `datetime.now(UTC)` to get absolute end time
+- **db.py upsert_listing** — accepts and stores `auction_ends_at` in both UPDATE (COALESCE) and INSERT
+- **main.py** — threads `auction_ends_at` through from all scrapers to DB
+- **new_dashboard.py** — `data-ends` attribute on `span.countdown` elements; JS `updateCountdowns()` fires every 1s, formats as Xd Xh Xm or Xh Xm Xs, shows red "Ended" when expired
+- **fmv.py** — `auction_ends_at` added to `score_active_listings()` SELECT
+- 39/48 active auctions now carry end time (BaT 39; pcarmarket N/A — no end time on their cards)
+- commit fe5d7ee57
 
 ### April 16, 2026 — Comp Scraper Overhaul + Search UI
 - **BaT comp scraper rebuilt** — replaced slow Playwright HTML scraper with JSON API using nonce auth (50x faster)

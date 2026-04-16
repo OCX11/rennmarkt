@@ -80,55 +80,151 @@ def _bat_parse_result_card(card, base="https://bringatrailer.com"):
 
 
 def scrape_bat_sold(max_pages=50):
-    """Scrape BaT completed auction results using Playwright."""
-    if not _playwright_available():
-        log.warning("BaT sold comps require Playwright")
-        return []
+    """Scrape BaT recent completed auctions using JSON API with nonce auth.
+    
+    Fetches newest pages first (page 1 = most recent auctions).
+    Stops early when hitting URLs already in sold_comps.
+    Designed for daily incremental use — typically only needs 1-3 pages.
+    """
+    import requests as _req
 
-    BASE = "https://bringatrailer.com"
+    API_URL = "https://bringatrailer.com/wp-json/bringatrailer/1.0/data/listings-filter"
+    BAT_HEADERS = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+        "Referer":    "https://bringatrailer.com/porsche/",
+        "Accept":     "application/json",
+    }
     comps = []
 
+    # Load known URLs for early-stop — normalize by stripping trailing slash
     try:
-        from playwright.sync_api import sync_playwright
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            pg = browser.new_page()
+        _conn = db.get_conn()
+        known_urls = set(
+            r[0].rstrip('/') for r in _conn.execute(
+                "SELECT listing_url FROM sold_comps WHERE listing_url IS NOT NULL"
+            ).fetchall()
+        )
+        _conn.close()
+    except Exception:
+        known_urls = set()
 
-            for page_num in range(1, max_pages + 1):
-                url = (f"{BASE}/auctions/results/?s=porsche&page={page_num}"
-                       if page_num > 1
-                       else f"{BASE}/auctions/results/?s=porsche")
-                pg.goto(url, wait_until="networkidle", timeout=35000)
-                try:
-                    pg.wait_for_selector("div.listing-card", timeout=10000)
-                except Exception:
-                    pass
+    # Fetch nonce from BaT Porsche page
+    nonce = None
+    try:
+        session = _req.Session()
+        r = session.get("https://bringatrailer.com/porsche/", headers=BAT_HEADERS, timeout=20)
+        m = re.search(r'"restNonce"\s*:\s*"([^"]+)"', r.text)
+        if m:
+            nonce = m.group(1)
+            log.info("BaT comp scraper: got nonce %s", nonce[:8])
+    except Exception as e:
+        log.warning("BaT comp scraper: nonce fetch failed: %s", e)
 
-                html = pg.content()
-                soup = BeautifulSoup(html, "lxml")
-                cards = soup.select("div.listing-card, li.listing-item")
+    try:
+        for page_num in range(1, max_pages + 1):
+            params = [
+                ("base_filter[keyword_s]", "Porsche"),
+                ("base_filter[items_type]", "make"),
+                ("page", page_num),
+                ("per-page", 36),
+                ("get_items", 1),
+                ("get_stats", 0),
+            ]
+            headers = dict(BAT_HEADERS)
+            if nonce:
+                headers["X-WP-Nonce"] = nonce
 
-                if not cards:
-                    log.info("BaT sold: no cards on page %d — stopping", page_num)
+            try:
+                resp = session.get(API_URL, params=params, headers=headers, timeout=20)
+                if resp.status_code != 200:
+                    log.warning("BaT comp API page %d: status %d", page_num, resp.status_code)
                     break
+                data = resp.json()
+            except Exception as e:
+                log.warning("BaT comp API page %d error: %s", page_num, e)
+                break
 
-                found = 0
-                for card in cards:
-                    comp = _bat_parse_result_card(card, BASE)
-                    if comp and _is_valid_listing(comp):
-                        comps.append(comp)
-                        found += 1
+            items = data.get("items") or []
+            if not items:
+                log.info("BaT comp API: no items on page %d — done", page_num)
+                break
 
-                log.info("BaT sold page %d: %d qualifying comps", page_num, found)
-                time.sleep(1.0)
+            # Filter to sold items only (have sold_text)
+            sold_items = [i for i in items if i.get("sold_text")]
+            if not sold_items:
+                time.sleep(0.5)
+                continue
 
-                # Stop if we've gone past YEAR_MIN (results are roughly chronological)
-                years = [c["year"] for c in comps if c.get("year")]
-                if years and min(years) < YEAR_MIN:
-                    log.info("BaT sold: reached pre-%d listings, stopping", YEAR_MIN)
-                    break
+            found = 0
+            known_on_page = 0
+            for item in sold_items:
+                url = item.get("url") or ""
+                url_norm = url.rstrip('/')
+                if url_norm and url_norm in known_urls:
+                    known_on_page += 1
+                    continue  # skip but don't stop — page may have newer items too
 
-            browser.close()
+                title = _clean(item.get("title") or "")
+                # Strip leading mileage prefix e.g. "49k-Mile 2012 Porsche..."
+                title = re.sub(r'^[\d,]+k?-Mile\s+', '', title, flags=re.I)
+                year, make, model, trim = _parse_ymmt(title)
+                if not year or year < 1950:  # comp scraper allows all Porsche eras
+                    continue
+
+                sold_text = item.get("sold_text") or ""
+                # sold_text: "Sold for USD $63,333 <span> on 4/15/2026 </span>"
+                sold_price = None
+                pm = re.search(r'\$([\d,]+)', sold_text)
+                if pm:
+                    sold_price = _int(pm.group(1).replace(',', ''))
+                # Fallback to current_bid
+                if not sold_price:
+                    sold_price = _int(str(item.get("current_bid") or ""))
+
+                # Extract date from sold_text
+                sold_date = None
+                dm = re.search(r'on\s+(\d{1,2}/\d{1,2}/\d{4})', sold_text)
+                if dm:
+                    try:
+                        from datetime import datetime as _dt
+                        sold_date = _dt.strptime(dm.group(1), '%m/%d/%Y').strftime('%Y-%m-%d')
+                    except Exception:
+                        pass
+
+                mileage = None
+                mm = re.search(r"([\d,]+)(k)?-Mile", title, re.I)
+                if mm:
+                    v = int(mm.group(1).replace(",", ""))
+                    mileage = v * 1000 if mm.group(2) else v
+
+                image_url = item.get("thumbnail_url") or None
+
+                comp = dict(year=year, make=make or "Porsche", model=model,
+                            trim=trim, mileage=mileage, sold_price=sold_price,
+                            sold_date=sold_date or None, listing_url=url,
+                            source="BaT", transmission=None, engine=None,
+                            color=None, vin=None, image_url=image_url)
+
+                # Simple validity for sold comps: need year and a Porsche model
+                if not year or not model:
+                    continue
+                # Skip non-car items (parts, go-karts, tool kits)
+                skip_keywords = ['go-kart', 'parts', 'tool kit', 'engine', 'wheels', 'collection']
+                if any(kw in title.lower() for kw in skip_keywords):
+                    continue
+
+                comps.append(comp)
+                found += 1
+
+            log.info("BaT comp API page %d: %d new comps (%d already known)", page_num, found, known_on_page)
+
+            # Stop when page is entirely known comps — we've caught up
+            if known_on_page == len(sold_items) and len(sold_items) > 0:
+                log.info("BaT comp API: page %d fully known — stopping", page_num)
+                break
+
+            time.sleep(0.5)
+
     except Exception as e:
         log.warning("BaT sold scraper error: %s", e)
 

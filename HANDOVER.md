@@ -1,5 +1,5 @@
 # Vehicle Market Analyzer — Project Handover Summary
-*Last updated: April 16, 2026 (auction countdown + Rennlist 403 fix)*
+*Last updated: April 16, 2026 (auction countdown, Rennlist 403, iMessage cleanup)*
 
 ---
 

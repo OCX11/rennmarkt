@@ -776,7 +776,8 @@ def score_active_listings(
     """
     listings = conn.execute(
         """SELECT id, dealer, year, model, trim, price, tier, mileage, listing_url,
-                  date_first_seen, source_category, image_url, image_url_cdn
+                  date_first_seen, source_category, image_url, image_url_cdn,
+                  created_at, auction_ends_at
            FROM listings WHERE status='active' AND price IS NOT NULL AND price > 0
            ORDER BY tier, year DESC"""
     ).fetchall()
@@ -785,7 +786,7 @@ def score_active_listings(
     fmv_cache = {}
 
     for row in listings:
-        lid, dealer, year, model, trim, price, tier, mileage, url, first_seen, src_cat, image_url, image_url_cdn = row
+        lid, dealer, year, model, trim, price, tier, mileage, url, first_seen, src_cat, image_url, image_url_cdn, created_at, auction_ends_at = row
 
         cache_key = (model, year, normalize_trim(trim))
         if cache_key not in fmv_cache:
@@ -816,6 +817,8 @@ def score_active_listings(
             "image_url":    image_url or "",
             "image_url_cdn": image_url_cdn or "",
             "date_first_seen": first_seen,
+            "created_at":   created_at,
+            "auction_ends_at": auction_ends_at,
             "source_category": src_cat,
             "fmv":          fmv,
             "deal_score":   deal,

@@ -187,7 +187,15 @@ Built by `new_dashboard.py` → `docs/index.html`, pushed every 2 min.
 
 ## 11. Session Log
 
-### April 17, 2026
+### April 17, 2026 — Evening
+- auction_dashboard.py built → docs/auctions.html (60 auctions, 4 sections)
+- Sections: Ending Soon (<3hr), Later Today (3-24hr), Coming Up (1-7d), No End Time (buy-now/null)
+- Live JS countdown every second, urgent pulse <1hr, ENDED state
+- Wired into main.py — regenerates every 12min scrape cycle
+- Auctions nav tab on index.html now links directly to auctions.html
+- Commit: b3fca1d92
+
+### April 17, 2026 — Morning
 - `fmv.py score_active_listings()`: added `created_at` + `auction_ends_at` to SELECT + result dict — was missing, causing sort to fail
 - Dashboard sort fixed: `created_at DESC` (full timestamp) — was `date_last_seen` (date-only, all listings tied)
 - Age badge fixed: `created_at` (full timestamp) not `date_first_seen` (date-only → midnight fallback)

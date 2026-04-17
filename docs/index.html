@@ -239,7 +239,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="logo">🏎 Porsche <span>Tracker</span></div>
     <nav class="nav-tabs">
       <button class="nav-tab active" onclick="switchView('listings')">New Listings</button>
-      <button class="nav-tab" onclick="switchView('auctions')">Auctions</button>
+      <a class="nav-tab" href="auctions.html" style="text-decoration:none">🔨 Auctions</a>
       <button class="nav-tab" onclick="switchView('comps')">Sold Comps</button>
       <button class="nav-tab" onclick="switchView('market')">Market Reports</button>
       <a class="nav-tab" href="search.html" style="text-decoration:none">🔍 Search</a>
@@ -247,8 +247,8 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   </div>
   <div class="topbar-right">
     <div class="health-pills"><span class="health-pill pill-ok" title="Main Scraper: just now">Main Scraper <span class="pill-age">just now</span></span>
-<span class="health-pill pill-ok" title="Archive: just now">Archive <span class="pill-age">just now</span></span></div>
-    <span>2026-04-17 13:32:53</span>
+<span class="health-pill pill-ok" title="Archive: 5m ago">Archive <span class="pill-age">5m ago</span></span></div>
+    <span>2026-04-17 13:48:44</span>
   </div>
 </header>
 
@@ -368,7 +368,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
         <span class="stat-lbl">Sold Comps</span>
       </div>
       <div class="stat-item">
-        <span class="stat-val green">171</span>
+        <span class="stat-val green">169</span>
         <span class="stat-lbl">Deals</span>
       </div>
     </div>
@@ -392,26 +392,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
         </div>
       </div>
       <div class="cards-grid" id="cards-grid">
-        <div class="card" data-dealer="AutoTrader" data-year="2020" data-model="911" data-gen="992" data-tier="TIER2" data-price="117900" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/777685260','_blank')">
-  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/5dd540fa3bbd4c7db5afc4371f5b07fd.jpg" alt="2020 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
-      <span class="card-age">just now</span>
-    </div>
-    <div class="card-title">2020 Porsche 911 Carrera</div>
-    
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">$117,900</span>
-      <span class="delta delta-good" title="-9.3% vs FMV · Est. FMV $130,000">↓9%</span>
-    </div>
-    <div class="fmv-line fmv-good">🟢 FMV ~$130,000 · 9% below FMV</div>
-    
-    <div class="card-meta">20,262 mi</div>
-  </div>
-</div>
-<div class="card" data-dealer="cars.com" data-year="1998" data-model="911" data-gen="993" data-tier="TIER1" data-price="289900" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/b55acfea-8df4-4704-adc5-1c2f0b461e63/','_blank')">
+        <div class="card" data-dealer="cars.com" data-year="1998" data-model="911" data-gen="993" data-tier="TIER1" data-price="289900" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/b55acfea-8df4-4704-adc5-1c2f0b461e63/','_blank')">
   <div class="card-img-wrap"><img src="https://platform.cstatic-images.com/large/in/v2/fc6152ec-fcd2-5a45-9637-434a541339df/0a2f72cb-3d17-4873-9923-0e0c23f2c862/ZzExN35FeHkhM_AKRENcjpZxfGE.jpg" alt="1998 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
     <div class="card-top-row">
@@ -948,7 +929,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">2h ago</span>
+      <span class="card-age">3h ago</span>
     </div>
     <div class="card-title">2014 Porsche 911</div>
     
@@ -967,7 +948,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">2h ago</span>
+      <span class="card-age">3h ago</span>
     </div>
     <div class="card-title">2024 Porsche 718 Cayman GT4 RS</div>
     <span class="tier-badge">GT / Collector</span>
@@ -1081,7 +1062,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">3h ago</span>
+      <span class="card-age">4h ago</span>
     </div>
     <div class="card-title">2018 Porsche 911 Carrera T</div>
     
@@ -1100,7 +1081,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">3h ago</span>
+      <span class="card-age">4h ago</span>
     </div>
     <div class="card-title">2020 Porsche 911 911 Carrera S</div>
     
@@ -1119,7 +1100,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">3h ago</span>
+      <span class="card-age">4h ago</span>
     </div>
     <div class="card-title">2016 Porsche Boxster S</div>
     
@@ -1157,7 +1138,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">4h ago</span>
+      <span class="card-age">5h ago</span>
     </div>
     <div class="card-title">2016 Porsche Cayman GTS</div>
     
@@ -1176,7 +1157,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">8h ago</span>
+      <span class="card-age">9h ago</span>
     </div>
     <div class="card-title">2023 Porsche 911 GT3 RS</div>
     <span class="tier-badge">GT / Collector</span>
@@ -1214,7 +1195,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">10h ago</span>
+      <span class="card-age">11h ago</span>
     </div>
     <div class="card-title">2003 Porsche 911 Carrera</div>
     
@@ -1233,7 +1214,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">10h ago</span>
+      <span class="card-age">11h ago</span>
     </div>
     <div class="card-title">2018 Porsche 718 Cayman GTS</div>
     
@@ -1290,7 +1271,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">11h ago</span>
+      <span class="card-age">12h ago</span>
     </div>
     <div class="card-title">2024 Porsche 718 Cayman S</div>
     
@@ -1338,7 +1319,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$40,250</span> · <strong>25% below FMV</strong> 🔥 <span class="fmv-comps">(99 comps)</span></div>
-    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-23T18:59:07Z">…</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-23T18:59:57Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -1366,7 +1347,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">13h ago</span>
+      <span class="card-age">14h ago</span>
     </div>
     <div class="card-title">2024 Porsche 718 Boxster</div>
     
@@ -1418,7 +1399,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="card-meta"></div>
   </div>
 </div>
-<div class="card" data-dealer="Cars and Bids" data-year="2003" data-model="Boxster" data-gen="986" data-tier="TIER2" data-price="10100" data-source-type="retail" onclick="window.open('https://carsandbids.com/auctions/3RZmgRPx/2003-porsche-boxster-s','_blank')">
+<div class="card" data-dealer="Cars and Bids" data-year="2003" data-model="Boxster" data-gen="986" data-tier="TIER2" data-price="10500" data-source-type="retail" onclick="window.open('https://carsandbids.com/auctions/3RZmgRPx/2003-porsche-boxster-s','_blank')">
   <div class="card-img-wrap"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/c7387fa5557775cb743f87fc02d6cb831afb20b2/photos/rEqpm60k-jxFSaTtkRh/edit/Qi2GT.jpg?t=177613834504" alt="2003 Boxster" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
     <div class="card-top-row">
@@ -1429,10 +1410,10 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     
     <div class="card-price-row">
       <span class="price-label">Asking</span>
-      <span class="price-ask">$10,100</span>
-      <span class="delta delta-great" title="-37.8% vs FMV · Est. FMV $16,250">↓38%</span>
+      <span class="price-ask">$10,500</span>
+      <span class="delta delta-great" title="-35.4% vs FMV · Est. FMV $16,250">↓35%</span>
     </div>
-    <div class="fmv-line fmv-great">🟢 FMV ~$16,250 · <strong>38% below FMV</strong> 🔥</div>
+    <div class="fmv-line fmv-great">🟢 FMV ~$16,250 · <strong>35% below FMV</strong> 🔥</div>
     
     <div class="card-meta"></div>
   </div>
@@ -1461,7 +1442,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">20h ago</span>
+      <span class="card-age">21h ago</span>
     </div>
     <div class="card-title">2021 Porsche 911 911 Carrera</div>
     
@@ -1480,7 +1461,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">21h ago</span>
+      <span class="card-age">22h ago</span>
     </div>
     <div class="card-title">2001 Porsche Boxster Boxster S</div>
     
@@ -1594,7 +1575,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">23h ago</span>
+      <span class="card-age">1d ago</span>
     </div>
     <div class="card-title">2008 Porsche 911 911 Carrera</div>
     
@@ -1613,7 +1594,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">23h ago</span>
+      <span class="card-age">1d ago</span>
     </div>
     <div class="card-title">2018 Porsche 911 Turbo S</div>
     <span class="tier-badge">GT / Collector</span>
@@ -1632,7 +1613,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">23h ago</span>
+      <span class="card-age">1d ago</span>
     </div>
     <div class="card-title">2022 Porsche 718 Cayman GT4</div>
     <span class="tier-badge">GT / Collector</span>
@@ -1739,6 +1720,25 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="fmv-line fmv-mid">🟡 FMV ~$121,000 · 13% above FMV</div>
     
     <div class="card-meta">8,866 mi</div>
+  </div>
+</div>
+<div class="card" data-dealer="cars.com" data-year="2006" data-model="911" data-gen="997.1" data-tier="TIER2" data-price="52894" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/8522cb5e-1ae6-426c-84f4-72725d5e160a/','_blank')">
+  <div class="card-img-wrap"><img src="https://platform.cstatic-images.com/large/in/v2/f8cce4be-43f9-42e1-8156-6e7c9aa3187b/7becfe2f-35ca-422c-b09a-7b8363be2dc1/ObVETLkMIZknlTnymp2RKJKuH54.jpg" alt="2006 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
+      <span class="card-age">1d ago</span>
+    </div>
+    <div class="card-title">2006 Porsche 911 911 Carrera Cabriolet</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$52,894</span>
+      <span class="delta delta-high" title="+16.3% vs FMV · Est. FMV $45,500">↑16%</span>
+    </div>
+    <div class="fmv-line fmv-high">🟢 FMV ~$45,500 · <strong>16% above FMV</strong></div>
+    
+    <div class="card-meta">55,711 mi</div>
   </div>
 </div>
 <div class="card" data-dealer="cars.com" data-year="2014" data-model="911" data-gen="991.1" data-tier="TIER2" data-price="94984" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/77e8f084-5c94-4092-a465-5f775647509a/','_blank')">
@@ -3128,7 +3128,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="card-meta">77,925 mi</div>
   </div>
 </div>
-<div class="card" data-dealer="cars.com" data-year="2023" data-model="718 Cayman" data-gen="718/982" data-tier="TIER1" data-price="199991" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/70c6d54a-baa9-4b29-b362-8f81362ca41d/','_blank')">
+<div class="card" data-dealer="cars.com" data-year="2023" data-model="718 Cayman" data-gen="718/982" data-tier="TIER1" data-price="189991" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/70c6d54a-baa9-4b29-b362-8f81362ca41d/','_blank')">
   <div class="card-img-wrap"><img src="https://platform.cstatic-images.com/large/in/v2/9579b8f7-4736-51b9-941e-e96188a3e604/d46ed09b-f6e5-43cc-9b59-19886c8c6e4c/qGTi2ALMqKn7k3SkTanKzZ1k53U.jpg" alt="2023 718 Cayman" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
     <div class="card-top-row">
@@ -3139,10 +3139,10 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <span class="tier-badge">GT / Collector</span>
     <div class="card-price-row">
       <span class="price-label">Asking</span>
-      <span class="price-ask">$199,991</span>
-      <span class="delta delta-flat" title="-1.0% vs FMV · Est. FMV $202,000">≈ FMV</span>
+      <span class="price-ask">$189,991</span>
+      <span class="delta delta-good" title="-5.9% vs FMV · Est. FMV $202,000">↓6%</span>
     </div>
-    <div class="fmv-line fmv-neutral">🟢 FMV ~$202,000 · at market</div>
+    <div class="fmv-line fmv-good">🟢 FMV ~$202,000 · 6% below FMV</div>
     
     <div class="card-meta">7,584 mi</div>
   </div>
@@ -3221,25 +3221,6 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="fmv-line fmv-high">🟢 FMV ~$57,500 · <strong>27% above FMV</strong></div>
     
     <div class="card-meta">9,730 mi</div>
-  </div>
-</div>
-<div class="card" data-dealer="cars.com" data-year="2021" data-model="718 Cayman" data-gen="718/982" data-tier="TIER2" data-price="69900" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/18782f91-8479-4038-8e81-74c1a28328ed/','_blank')">
-  <div class="card-img-wrap"><img src="https://platform.cstatic-images.com/large/in/v2/eeb722f8-3f00-571f-89c1-80c53ff534c4/8421c684-caaa-4382-af41-5cf9b2927796/4U2OaoMf1Tuta-308pG83XQ-dQ8.jpg" alt="2021 718 Cayman" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#052e16;color:#86efac">Cars.com</span>
-      <span class="card-age">1d ago</span>
-    </div>
-    <div class="card-title">2021 Porsche 718 Cayman T</div>
-    
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">$69,900</span>
-      <span class="delta delta-flat" title="-0.9% vs FMV · Est. FMV $70,500">≈ FMV</span>
-    </div>
-    <div class="fmv-line fmv-neutral">🟡 FMV ~$70,500 · at market</div>
-    
-    <div class="card-meta">29,253 mi</div>
   </div>
 </div>
 <div class="card" data-dealer="cars.com" data-year="2024" data-model="718 Cayman" data-gen="718/982" data-tier="TIER2" data-price="94895" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/576dac36-b211-44b9-855d-a9a79a728ad0/','_blank')">
@@ -4838,25 +4819,6 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="card-meta">21,996 mi</div>
   </div>
 </div>
-<div class="card" data-dealer="AutoTrader" data-year="2023" data-model="718 Cayman" data-gen="718/982" data-tier="TIER2" data-price="75900" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/777685257','_blank')">
-  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/b50c48e52ead4aeebd8279204b03d097.jpg" alt="2023 718 Cayman" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
-      <span class="card-age">1d ago</span>
-    </div>
-    <div class="card-title">2023 Porsche 718 Cayman</div>
-    
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">$75,900</span>
-      <span class="delta delta-great" title="-37.3% vs FMV · Est. FMV $121,000">↓37%</span>
-    </div>
-    <div class="fmv-line fmv-great">🟡 FMV ~$121,000 · <strong>37% below FMV</strong> 🔥</div>
-    
-    <div class="card-meta">19,776 mi</div>
-  </div>
-</div>
 <div class="card" data-dealer="cars.com" data-year="2019" data-model="911" data-gen="991.2" data-tier="TIER2" data-price="163960" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/ba580c58-8550-465a-b807-0e4f223e1676/','_blank')">
   <div class="card-img-wrap"><img src="https://platform.cstatic-images.com/large/in/v2/a292e333-e76c-46da-a45e-dbcaf28df80a/4863e66b-db2a-45b2-a746-660d40b3e590/8845gT2xevnsU86s0FU0ssuczBo.jpg" alt="2019 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
@@ -4912,6 +4874,25 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="fmv-line fmv-great">🟡 FMV ~$30,250 · <strong>78% below FMV</strong> 🔥</div>
     
     <div class="card-meta"></div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2014" data-model="911" data-gen="991.1" data-tier="TIER2" data-price="62000" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/777690720','_blank')">
+  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/4194ebf0-7a15-4619-97a4-4911b56e8e41.jpeg" alt="2014 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">1d ago</span>
+    </div>
+    <div class="card-title">2014 Porsche 911 Carrera 4</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$62,000</span>
+      <span class="delta delta-great" title="-45.9% vs FMV · Est. FMV $114,500">↓46%</span>
+    </div>
+    <div class="fmv-line fmv-great">🟢 FMV ~$114,500 · <strong>46% below FMV</strong> 🔥</div>
+    
+    <div class="card-meta">81,000 mi · 📍 Private Seller Exchang</div>
   </div>
 </div>
 <div class="card" data-dealer="cars.com" data-year="2007" data-model="911" data-gen="997.1" data-tier="TIER2" data-price="86000" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/e172830e-d702-43e7-8772-be9430483b0b/','_blank')">
@@ -5233,7 +5214,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$238,000</span> · <strong>16% below FMV</strong> 🔥 <span class="fmv-comps">(44 comps)</span></div>
-    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T19:09:59Z">…</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T19:09:51Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5252,7 +5233,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$70,987</span> · <strong>62% below FMV</strong> 🔥 <span class="fmv-comps">(9 comps)</span></div>
-    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T18:39:59Z">…</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T18:39:51Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -5351,25 +5332,6 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="card-meta"></div>
   </div>
 </div>
-<div class="card" data-dealer="AutoTrader" data-year="2024" data-model="911" data-gen="992" data-tier="TIER1" data-price="289900" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/777578222','_blank')">
-  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/2855627c0c2942ed90e79815e8972e9b.jpg" alt="2024 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
-      <span class="card-age">2d ago</span>
-    </div>
-    <div class="card-title">2024 Porsche 911 Turbo S</div>
-    <span class="tier-badge">GT / Collector</span>
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">$289,900</span>
-      <span class="delta delta-high" title="+21.8% vs FMV · Est. FMV $238,000">↑22%</span>
-    </div>
-    <div class="fmv-line fmv-high">🟢 FMV ~$238,000 · <strong>22% above FMV</strong></div>
-    
-    <div class="card-meta">5,511 mi · 📍 ILUSSO SCOTTSDALE</div>
-  </div>
-</div>
 <div class="card" data-dealer="PCA Mart" data-year="1986" data-model="911" data-gen="G-Series" data-tier="TIER1" data-price="99950" data-source-type="retail" onclick="window.open('https://mart.pca.org/ads/81583','_blank')">
   <div class="card-img-wrap"><img src="img_cache/4963716a70b46a0fbcc3edb34a82c1c9.jpg" alt="1986 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
@@ -5406,6 +5368,25 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="fmv-line fmv-good">🟢 Est. FMV <span class="fmv-val">$28,210</span> · 3% below FMV <span class="fmv-comps">(4 comps)</span></div>
     <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-21T20:16:00Z">…</span></div>
     <div class="card-meta">25,000 mi</div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2016" data-model="911" data-gen="991.1" data-tier="TIER2" data-price="138877" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/777444431','_blank')">
+  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/6fb3e6dcbd71422d9db442b6c27132ee.jpg" alt="2016 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">2d ago</span>
+    </div>
+    <div class="card-title">2016 Porsche 911 Turbo</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$138,877</span>
+      <span class="delta delta-high" title="+38.9% vs FMV · Est. FMV $100,000">↑39%</span>
+    </div>
+    <div class="fmv-line fmv-high">🟢 FMV ~$100,000 · <strong>39% above FMV</strong></div>
+    
+    <div class="card-meta">12,815 mi · 📍 BENTLEY DOWNERS GROVE,</div>
   </div>
 </div>
 <div class="card" data-dealer="eBay Motors" data-year="2011" data-model="Boxster" data-gen="987" data-tier="TIER2" data-price="50000" data-source-type="retail" onclick="window.open('https://www.ebay.com/itm/157830962952?_skw=porsche&amp;hash=item24bf755f08:g:eH4AAeSwYFpp0T6s','_blank')">
@@ -5579,25 +5560,6 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="card-meta">43,000 mi</div>
   </div>
 </div>
-<div class="card" data-dealer="AutoTrader" data-year="2017" data-model="911" data-gen="991.2" data-tier="TIER2" data-price="147991" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/775176023','_blank')">
-  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/29286fb2170944eb88b1900a0a43c9c8.jpg" alt="2017 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
-      <span class="card-age">7d ago</span>
-    </div>
-    <div class="card-title">2017 Porsche 911 Targa 4S</div>
-    
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">$147,991</span>
-      <span class="delta delta-high" title="+32.1% vs FMV · Est. FMV $112,000">↑32%</span>
-    </div>
-    <div class="fmv-line fmv-high">🟢 FMV ~$112,000 · <strong>32% above FMV</strong></div>
-    
-    <div class="card-meta">6,932 mi · 📍 Mercedes-Benz of Scott</div>
-  </div>
-</div>
 <div class="card" data-dealer="eBay Motors" data-year="2022" data-model="718 Boxster" data-gen="718/982" data-tier="TIER2" data-price="79800" data-source-type="retail" onclick="window.open('https://www.ebay.com/itm/377112829856?_skw=porsche&amp;hash=item57cdad1fa0:g:E0YAAeSwQIpp13YM','_blank')">
   <div class="card-img-wrap"><img src="https://i.ebayimg.com/images/g/E0YAAeSwQIpp13YM/s-l1600.jpg" alt="2022 718 Boxster" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
@@ -5636,99 +5598,42 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="card-meta"></div>
   </div>
 </div>
-<div class="card" data-dealer="AutoTrader" data-year="2005" data-model="911" data-gen="997.1" data-tier="TIER2" data-price="78900" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/760013645','_blank')">
-  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/df9dbeae-fe90-4d76-8523-e4a396463e6d.jpg" alt="2005 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+<div class="card" data-dealer="AutoTrader" data-year="2024" data-model="911" data-gen="992" data-tier="TIER2" data-price="157897" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/771985145','_blank')">
+  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/b37edc6f1586457d8a6b13d9c89c758d.jpg" alt="2024 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
       <span class="card-age">8d ago</span>
     </div>
-    <div class="card-title">2005 Porsche 911 Turbo</div>
+    <div class="card-title">2024 Porsche 911 Carrera S</div>
     
     <div class="card-price-row">
       <span class="price-label">Asking</span>
-      <span class="price-ask">$78,900</span>
-      <span class="delta delta-great" title="-17.8% vs FMV · Est. FMV $96,000">↓18%</span>
+      <span class="price-ask">$157,897</span>
+      <span class="delta delta-high" title="+23.4% vs FMV · Est. FMV $128,000">↑23%</span>
     </div>
-    <div class="fmv-line fmv-great">🟢 FMV ~$96,000 · <strong>18% below FMV</strong> 🔥</div>
+    <div class="fmv-line fmv-high">🟢 FMV ~$128,000 · <strong>23% above FMV</strong></div>
     
-    <div class="card-meta">46,990 mi · 📍 Private Seller Exchang</div>
+    <div class="card-meta">1,372 mi · 📍 Porsche Lincolnwood</div>
   </div>
 </div>
-<div class="card" data-dealer="AutoTrader" data-year="2021" data-model="911" data-gen="992" data-tier="TIER2" data-price="137250" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/767011680','_blank')">
-  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/cea4e67b-2b1e-448d-a1cf-2e85cf98a0bf.jpg" alt="2021 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+<div class="card" data-dealer="AutoTrader" data-year="2022" data-model="911" data-gen="992" data-tier="TIER2" data-price="139999" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/760084830','_blank')">
+  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/d7b5d407b72244d3a497dc6bf1573c86.jpg" alt="2022 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
     <div class="card-top-row">
       <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
       <span class="card-age">8d ago</span>
     </div>
-    <div class="card-title">2021 Porsche 911 Carrera S</div>
+    <div class="card-title">2022 Porsche 911 Carrera S</div>
     
     <div class="card-price-row">
       <span class="price-label">Asking</span>
-      <span class="price-ask">$137,250</span>
-      <span class="delta delta-mid" title="+7.2% vs FMV · Est. FMV $128,000">↑7%</span>
+      <span class="price-ask">$139,999</span>
+      <span class="delta delta-mid" title="+9.4% vs FMV · Est. FMV $128,000">↑9%</span>
     </div>
-    <div class="fmv-line fmv-mid">🟢 FMV ~$128,000 · 7% above FMV</div>
+    <div class="fmv-line fmv-mid">🟢 FMV ~$128,000 · 9% above FMV</div>
     
-    <div class="card-meta">16,500 mi · 📍 Private Seller Exchang</div>
-  </div>
-</div>
-<div class="card" data-dealer="AutoTrader" data-year="2015" data-model="911" data-gen="991.1" data-tier="TIER2" data-price="124000" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/769336620','_blank')">
-  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/86d1c3ba-ef37-46de-8a02-6ec2dc8df606.jpg" alt="2015 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
-      <span class="card-age">8d ago</span>
-    </div>
-    <div class="card-title">2015 Porsche 911 Turbo</div>
-    
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">$124,000</span>
-      <span class="delta delta-high" title="+24.0% vs FMV · Est. FMV $100,000">↑24%</span>
-    </div>
-    <div class="fmv-line fmv-high">🟢 FMV ~$100,000 · <strong>24% above FMV</strong></div>
-    
-    <div class="card-meta">40,400 mi · 📍 Private Seller Exchang</div>
-  </div>
-</div>
-<div class="card" data-dealer="AutoTrader" data-year="2002" data-model="911" data-gen="996" data-tier="TIER2" data-price="31995" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/769887669','_blank')">
-  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/6707a4dc-6d01-478e-ad9c-6e7993dedd69.jpg" alt="2002 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
-      <span class="card-age">8d ago</span>
-    </div>
-    <div class="card-title">2002 Porsche 911 Carrera 4S</div>
-    
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">$31,995</span>
-      <span class="delta delta-great" title="-20.5% vs FMV · Est. FMV $40,250">↓21%</span>
-    </div>
-    <div class="fmv-line fmv-great">🟢 FMV ~$40,250 · <strong>21% below FMV</strong> 🔥</div>
-    
-    <div class="card-meta">79,000 mi · 📍 Private Seller Exchang</div>
-  </div>
-</div>
-<div class="card" data-dealer="AutoTrader" data-year="2014" data-model="911" data-gen="991.1" data-tier="TIER1" data-price="120000" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/770940988','_blank')">
-  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/e7f4fb57-d431-4c82-8658-7bb172904786.jpg" alt="2014 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
-      <span class="card-age">8d ago</span>
-    </div>
-    <div class="card-title">2014 Porsche 911 Turbo S</div>
-    <span class="tier-badge">GT / Collector</span>
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">$120,000</span>
-      <span class="delta delta-great" title="-15.5% vs FMV · Est. FMV $142,000">↓15%</span>
-    </div>
-    <div class="fmv-line fmv-great">🟢 FMV ~$142,000 · <strong>15% below FMV</strong> 🔥</div>
-    
-    <div class="card-meta">58,000 mi · 📍 Private Seller Exchang</div>
+    <div class="card-meta">16,190 mi · 📍 Porsche Lincolnwood</div>
   </div>
 </div>
 <div class="card" data-dealer="pcarmarket" data-year="1985" data-model="911" data-gen="G-Series" data-tier="TIER1" data-price="0" data-source-type="auction" onclick="window.open('https://www.pcarmarket.com/auction/marketplace-1985-ruf-btr-iii-targa','_blank')">
@@ -5750,6 +5655,44 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="card-meta">46,100 mi</div>
   </div>
 </div>
+<div class="card" data-dealer="AutoTrader" data-year="2024" data-model="911" data-gen="992" data-tier="TIER2" data-price="167797" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/770873174','_blank')">
+  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/1bdfee87d4494e8a875df7ba8e110fb0.jpg" alt="2024 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">8d ago</span>
+    </div>
+    <div class="card-title">2024 Porsche 911 Carrera 4 GTS</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$167,797</span>
+      <span class="delta delta-flat" title="+1.7% vs FMV · Est. FMV $165,000">≈ FMV</span>
+    </div>
+    <div class="fmv-line fmv-neutral">🟢 FMV ~$165,000 · at market</div>
+    
+    <div class="card-meta">10,558 mi · 📍 Porsche Lincolnwood</div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2024" data-model="911" data-gen="992" data-tier="TIER2" data-price="159999" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/774408086','_blank')">
+  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/b6496a60a1d14464afddcee9b8c8f807.jpg" alt="2024 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">8d ago</span>
+    </div>
+    <div class="card-title">2024 Porsche 911 Carrera 4S</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$159,999</span>
+      <span class="delta delta-high" title="+25.0% vs FMV · Est. FMV $128,000">↑25%</span>
+    </div>
+    <div class="fmv-line fmv-high">🟢 FMV ~$128,000 · <strong>25% above FMV</strong></div>
+    
+    <div class="card-meta">5,317 mi · 📍 Porsche Lincolnwood</div>
+  </div>
+</div>
 <div class="card" data-dealer="eBay Motors" data-year="2019" data-model="718 Boxster" data-gen="718/982" data-tier="TIER2" data-price="50999" data-source-type="retail" onclick="window.open('https://www.ebay.com/itm/157819685258?_skw=porsche&amp;hash=item24bec9498a:g:9CYAAeSwbQhpsPZz','_blank')">
   <div class="card-img-wrap"><img src="https://i.ebayimg.com/images/g/9CYAAeSwbQhpsPZz/s-l1600.jpg" alt="2019 718 Boxster" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
@@ -5767,6 +5710,25 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="fmv-line fmv-mid">🟢 FMV ~$46,750 · 9% above FMV</div>
     
     <div class="card-meta"></div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2024" data-model="911" data-gen="992" data-tier="TIER1" data-price="396968" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/769822576','_blank')">
+  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/a1d16f167d904b3ea45974e21545ed0e.jpg" alt="2024 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">8d ago</span>
+    </div>
+    <div class="card-title">2024 Porsche 911 GT3 RS</div>
+    <span class="tier-badge">GT / Collector</span>
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$396,968</span>
+      <span class="delta delta-flat" title="-2.0% vs FMV · Est. FMV $405,000">≈ FMV</span>
+    </div>
+    <div class="fmv-line fmv-neutral">🟢 FMV ~$405,000 · at market</div>
+    
+    <div class="card-meta">4,958 mi · 📍 Porsche Lincolnwood</div>
   </div>
 </div>
 <div class="card" data-dealer="eBay Motors" data-year="2024" data-model="718 Cayman" data-gen="718/982" data-tier="TIER1" data-price="229999" data-source-type="retail" onclick="window.open('https://www.ebay.com/itm/377112829269?_skw=porsche&amp;hash=item57cdad1d55:g:FXcAAeSwiWxp1NUM','_blank')">
@@ -6280,6 +6242,63 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="fmv-line fmv-great">🟡 FMV ~$30,250 · <strong>17% below FMV</strong> 🔥</div>
     
     <div class="card-meta"></div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2020" data-model="911" data-gen="992" data-tier="TIER2" data-price="128900" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/755647165','_blank')">
+  <div class="card-img-wrap"><img src="https://images.autotrader.com/hn/c/dd952c3ff029471895ee8de5d6140e0d.jpg" alt="2020 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">13d ago</span>
+    </div>
+    <div class="card-title">2020 Porsche 911 Carrera S</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$128,900</span>
+      <span class="delta delta-flat" title="+0.7% vs FMV · Est. FMV $128,000">≈ FMV</span>
+    </div>
+    <div class="fmv-line fmv-neutral">🟢 FMV ~$128,000 · at market</div>
+    
+    <div class="card-meta">19,360 mi · 📍 Porsche Barrington</div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2000" data-model="911" data-gen="996" data-tier="TIER2" data-price="58000" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/772532437','_blank')">
+  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/0bb28241-7a10-46cd-8e37-823915757d43.jpg" alt="2000 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">13d ago</span>
+    </div>
+    <div class="card-title">2000 Porsche 911 Carrera 4</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$58,000</span>
+      <span class="delta delta-high" title="+114.8% vs FMV · Est. FMV $27,000">↑115%</span>
+    </div>
+    <div class="fmv-line fmv-high">🟢 FMV ~$27,000 · <strong>115% above FMV</strong></div>
+    
+    <div class="card-meta">30,470 mi · 📍 Private Seller Exchang</div>
+  </div>
+</div>
+<div class="card" data-dealer="AutoTrader" data-year="2014" data-model="Cayman" data-gen="981" data-tier="TIER2" data-price="38000" data-source-type="retail" onclick="window.open('https://www.autotrader.com/cars-for-sale/vehicle/773719006','_blank')">
+  <div class="card-img-wrap"><img src="https://assets.cai-media-management.com/ps-vehicle-media/2da9b4bf-9462-4ab0-9e6c-a2db45e06e45.jpeg" alt="2014 Cayman" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
+  <div class="card-body">
+    <div class="card-top-row">
+      <span class="badge" style="background:#3f2d00;color:#fbbf24">AutoTrader</span>
+      <span class="card-age">13d ago</span>
+    </div>
+    <div class="card-title">2014 Porsche Cayman Coupe 2D</div>
+    
+    <div class="card-price-row">
+      <span class="price-label">Asking</span>
+      <span class="price-ask">$38,000</span>
+      <span class="delta delta-great" title="-22.1% vs FMV · Est. FMV $48,750">↓22%</span>
+    </div>
+    <div class="fmv-line fmv-great">🟡 FMV ~$48,750 · <strong>22% below FMV</strong> 🔥</div>
+    
+    <div class="card-meta">42,000 mi · 📍 Private Seller Exchang</div>
   </div>
 </div>
 <div class="card" data-dealer="cars.com" data-year="2017" data-model="718 Boxster" data-gen="718/982" data-tier="TIER2" data-price="49995" data-source-type="retail" onclick="window.open('https://www.cars.com/vehicledetail/96c5cc12-4209-442c-929c-6992389e58e1/','_blank')">
@@ -6909,25 +6928,6 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
     <div class="card-meta"></div>
   </div>
 </div>
-<div class="card" data-dealer="Rennlist" data-year="2021" data-model="911" data-gen="992" data-tier="TIER2" data-price="0" data-source-type="retail" onclick="window.open('https://rennlist.com/forums/market/1509134','_blank')">
-  <div class="card-img-wrap"><img src="https://cimg3.ibsrv.net/gimg/rennlist.com-vbulletin/160x120/img_3316_ceaf492575e3c1e68e436e85746dd371f5e7e14a.jpg" alt="2021 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
-  <div class="card-body">
-    <div class="card-top-row">
-      <span class="badge" style="background:#4c0519;color:#f472b6">Rennlist</span>
-      <span class="card-age">18d ago</span>
-    </div>
-    <div class="card-title">2021 Porsche 911 Lease Transfer</div>
-    
-    <div class="card-price-row">
-      <span class="price-label">Asking</span>
-      <span class="price-ask">—</span>
-      
-    </div>
-    <div class="fmv-line fmv-none">FMV: not enough comps yet</div>
-    
-    <div class="card-meta"></div>
-  </div>
-</div>
 <div class="card" data-dealer="PCA Mart" data-year="2022" data-model="911" data-gen="992" data-tier="TIER2" data-price="136000" data-source-type="retail" onclick="window.open('https://mart.pca.org/ads/81530','_blank')">
   <div class="card-img-wrap"><img src="img_cache/98eab505f74cf319fcdfed577c538d91.jpg" alt="2022 911" class="card-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E%3Crect width='400' height='165' fill='%231e2530'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%234b5563'%3ENo photo%3C/text%3E%3C/svg%3E';this.classList.add('img-fallback')"></div>
   <div class="card-body">
@@ -7095,7 +7095,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$27,250</span> · <strong>96% below FMV</strong> 🔥 <span class="fmv-comps">(300 comps)</span></div>
-    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T18:59:07Z">…</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T18:59:57Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -9729,7 +9729,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$40,250</span> · <strong>25% below FMV</strong> 🔥 <span class="fmv-comps">(99 comps)</span></div>
-    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-23T18:59:07Z">…</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-23T18:59:57Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -9767,7 +9767,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$238,000</span> · <strong>16% below FMV</strong> 🔥 <span class="fmv-comps">(44 comps)</span></div>
-    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T19:09:59Z">…</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T19:09:51Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -9786,7 +9786,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$70,987</span> · <strong>62% below FMV</strong> 🔥 <span class="fmv-comps">(9 comps)</span></div>
-    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T18:39:59Z">…</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-20T18:39:51Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>
@@ -10109,7 +10109,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
       
     </div>
     <div class="fmv-line fmv-great">🟢 Est. FMV <span class="fmv-val">$27,250</span> · <strong>96% below FMV</strong> 🔥 <span class="fmv-comps">(300 comps)</span></div>
-    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T18:59:07Z">…</span></div>
+    <div class="auction-ends">Ends: <span class="countdown" data-ends="2026-04-22T18:59:57Z">…</span></div>
     <div class="card-meta"></div>
   </div>
 </div>

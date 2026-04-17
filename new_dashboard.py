@@ -32,12 +32,9 @@ LOG_DIR   = BASE_DIR / "logs"
 _TS_RE = re.compile(r"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})")
 _SOURCES = [
     ("Main Scraper",   "scraper.log",          "Dealers + BaT + PCA",     "com.porschetracker.scrape",          45),
-    ("Distill Poller", "distill_poller.log",   "Reads Distill DB",        "com.porschetracker.distill-poller",   5),
-    ("Distill",        None,                   "Webhook receiver",        None,                                 90),
+
     ("Archive",        "archive_capture.log",  "HTML+screenshot capture", "com.porschetracker.archive-capture", 30),
 ]
-_DISTILL_LABELS = ["com.porschetracker.distill-receiver", "com.porschetracker.distill-watcher"]
-_DISTILL_LOGS   = ["distill_receiver.log", "distill_watcher.log"]
 
 def _launchd_pid(label):
     try:
@@ -73,18 +70,8 @@ def _source_health():
     now = datetime.now()
     results = []
     for name, log_file, desc, label, stale_mins in _SOURCES:
-        if log_file is None and name == "Distill":
-            candidates = [_last_log_ts(lf) for lf in _DISTILL_LOGS]
-            best_ts, best_line = None, ""
-            for ts_c, line_c in candidates:
-                if ts_c and (best_ts is None or ts_c > best_ts):
-                    best_ts, best_line = ts_c, line_c
-            ts, last_line = best_ts, best_line
-            pid = next((p for lbl in _DISTILL_LABELS for p in [_launchd_pid(lbl)] if p), None)
-        else:
-            ts, last_line = _last_log_ts(log_file)
-            pid = _launchd_pid(label)
-
+        ts, last_line = _last_log_ts(log_file)
+        pid = _launchd_pid(label)
         has_error = bool(last_line and any(w in last_line for w in ("ERROR", "CRITICAL", "FAILED")))
         if ts is None:
             status, age = "unknown", "no logs"
@@ -309,11 +296,6 @@ def _card(car: dict, fmv_score: dict) -> str:
         tier_html = '<span class="tier-badge">GT / Collector</span>'
 
     # Price drop chip
-    orig_price     = car.get("_orig_price")
-    price_drop_html = ""
-    if orig_price and price and price < orig_price - 500:
-        drop = orig_price - price
-        price_drop_html = f' · <span class="price-drop-chip">📉 -${drop:,}</span>'
 
     # Meta chips
     chips = []
@@ -348,7 +330,7 @@ def _card(car: dict, fmv_score: dict) -> str:
     </div>
     {fmv_block}
     {ends_html}
-    <div class="card-meta">{chips_html}{days_html}{price_drop_html}</div>
+    <div class="card-meta">{chips_html}{days_html}</div>
   </div>
 </div>"""
 
@@ -408,31 +390,6 @@ def generate() -> str:
                 }
             else:
                 fmv_by_id[row["id"]] = {"fmv": None, "confidence": "NONE", "comp_count": 0}
-
-        # Original prices from price_history (first entry per listing)
-        orig_price_rows = conn.execute("""
-            SELECT ph.listing_id, ph.price
-            FROM price_history ph
-            WHERE ph.recorded_at = (
-                SELECT MIN(recorded_at) FROM price_history WHERE listing_id = ph.listing_id
-            )
-        """).fetchall()
-        orig_prices = {row[0]: row[1] for row in orig_price_rows}
-
-        # All active listings with FMV scores attached
-        active = d["active"]
-
-        # Display filter — no Holt, no pre-1984
-        def _keep(c):
-            if (c.get("dealer") or "").lower() == "holt motorsports": return False
-            if (c.get("year") or 9999) < 1984: return False
-            return True
-        active = [c for c in active if _keep(c)]
-
-        # Attach FMV scores and original prices
-        for c in active:
-            c["_fmv"] = fmv_by_id.get(c["id"], {"fmv": None, "confidence": "NONE", "comp_count": 0})
-            c["_orig_price"] = orig_prices.get(c["id"])
 
         # Sort newest first (default view)
         active_sorted = sorted(active, key=lambda c: c.get("created_at") or c.get("date_first_seen") or "", reverse=True)
@@ -636,7 +593,6 @@ button{{cursor:pointer;border:none;background:none;font:inherit;color:inherit}}
 .price-auction{{font-size:1.2em;font-weight:700;color:#a78bfa}}
 .card-meta{{font-size:0.75em;color:#475569;margin-top:4px}}
 .days-stale{{color:#f87171}}
-.price-drop-chip{{color:#f87171;font-size:0.72em;font-weight:600}}
 .auction-ends{{font-size:0.75em;color:#94a3b8;margin-top:3px}}
 .countdown{{font-weight:600;color:#fb923c}}
 

@@ -51,7 +51,6 @@ NOTIFICATIONS_ENABLED = True
 
 sys.path.insert(0, str(SCRIPT_DIR))
 import db as database
-import fmv as fmv_engine
 
 
 # ── Config ─────────────────────────────────────────────────────────────────────
@@ -200,60 +199,6 @@ def _short_trim(trim: str, maxlen: int = 50) -> str:
     if not trim or len(trim) <= maxlen:
         return trim
     return trim[:maxlen].rsplit(" ", 1)[0].strip()
-
-
-
-def _format_alert(s: dict) -> str:
-    """Format a deal alert as a clean iMessage-friendly string.
-    iMessage doesn't support Markdown — plain text with emoji."""
-    ds       = s["deal_score"]
-    year     = s.get("year", "?")
-    model    = s.get("model", "")
-    trim     = s.get("trim") or ""
-    price    = s.get("price")
-    mileage  = s.get("mileage")
-    dealer   = s.get("dealer", "?")
-    url      = s.get("listing_url", "")
-    tier     = s.get("tier", "TIER2")
-    flag     = ds["deal_flag"]
-    pct      = ds["pct_vs_fmv"]
-    fmv      = ds["fmv"]
-    conf     = ds["confidence"]
-    comp_cnt = ds["comp_count"]
-    src_cat  = s.get("source_category", "")
-
-    flag_emoji = "🔥" if flag == "DEAL" else "👀"
-    tier_label = "GT/Collector" if tier == "TIER1" else "Standard"
-
-    price_str = f"${price:,}" if price else "No Price"
-    miles_str = f"{mileage:,} mi" if mileage else "—"
-    pct_str   = f"{pct:+.0%} vs FMV (${fmv:,})"
-    trim_disp = _short_trim(trim)
-    url_clean = _clean_url(url)
-
-    conf_note = ""
-    if conf == "LOW":
-        conf_note = f"\n⚠️ Low conf ({comp_cnt} comp{'s' if comp_cnt != 1 else ''}) — verify"
-    elif conf == "MEDIUM":
-        conf_note = f"  ({comp_cnt} comps)"
-
-    flag_line = (f"{flag_emoji} {flag}: {year} Porsche {model} {trim_disp}").rstrip()
-    if (flag == "DEAL" and conf == "LOW"
-            and price is not None
-            and (price < 15000 or abs(pct) > 0.70)):
-        flag_line += " \u26a0\ufe0f LOW CONF"
-
-    lines = [
-        flag_line,
-        f"💰 {price_str}  {pct_str}",
-        f"🛣️  {miles_str}",
-        f"📍 {dealer}  [{tier_label}]",
-        f"🔗 {url_clean}",
-    ]
-    if conf_note:
-        lines.append(conf_note)
-
-    return "\n".join(lines)
 
 
 
@@ -454,109 +399,3 @@ def notify_auction_ending(conn):
 
 
 # ── Main ───────────────────────────────────────────────────────────────────────
-
-def main():
-    if not NOTIFICATIONS_ENABLED:
-        log.info("Notifications disabled (NOTIFICATIONS_ENABLED=False) — skipping.")
-        return
-
-    cfg = _load_config()
-    recipient = cfg.get("recipient", "")
-    if not recipient:
-        log.error("No recipient configured. Create data/imessage_config.json with {\"recipient\": \"+1XXXXXXXXXX\"}")
-        return
-
-    database.init_db()
-    with database.get_conn() as conn:
-        scored = fmv_engine.score_active_listings(conn)
-
-    seen         = _load_seen()
-    alerts_sent  = 0
-    evaluated    = 0
-
-    for s in scored:
-        ds   = s.get("deal_score")
-        tier = s.get("tier", "TIER2")
-        if not ds:
-            continue
-
-        flag = ds["deal_flag"]
-        conf = ds["confidence"]
-        price = s.get("price")
-
-        # Skip if no comp data
-        if conf == "NONE":
-            continue
-
-        # Skip suspiciously low prices — almost certainly BaT current bids
-        # on active auctions, not real asking prices, or salvage listings
-        if price and price < 20000:
-            log.debug("Skip low-price listing ($%s) — likely auction bid or salvage", price)
-            continue
-
-        # Tier-aware alert thresholds (from WATCHLIST.md)
-        # TIER1: alert on DEAL or WATCH (any GT/Collector pricing signal is notable)
-        # TIER2: alert only on DEAL (10%+ below FMV — cuts noise on standard cars)
-        if tier == "TIER1":
-            should_alert = flag in ("DEAL", "WATCH")
-        else:
-            should_alert = flag == "DEAL"
-
-        if not should_alert:
-            continue
-
-        key        = _listing_key(s)
-        last_entry = seen.get(key, {})
-        last_price = last_entry.get("last_price")
-        last_flag  = last_entry.get("last_flag")
-
-        # Alert if: new listing, price dropped, or flag upgraded WATCH→DEAL
-        price_dropped = last_price is not None and price and price < last_price
-        flag_improved = last_flag == "WATCH" and flag == "DEAL"
-        is_new        = key not in seen
-
-        if not (is_new or price_dropped or flag_improved):
-            log.debug("Skip (already alerted, no change): %s %s %s",
-                      s.get("year"), s.get("model"), s.get("trim") or "")
-            continue
-
-        evaluated += 1
-        log.info("ALERT: %s %s %s  ask=$%s  %+.0f%% vs FMV  [%s]  conf=%s",
-                 s.get("year"), s.get("model"), s.get("trim") or "",
-                 f"{price:,}" if price else "?",
-                 ds["pct_vs_fmv"] * 100, flag, conf)
-
-        seen[key] = {
-            "evaluated_at": datetime.now().isoformat(),
-            "last_price":   price,
-            "last_flag":    flag,
-            "alerted":      False,
-        }
-
-        msg = _format_alert(s)
-        ok  = _send_imessage(recipient, msg)
-        if ok:
-            seen[key]["alerted"] = True
-            alerts_sent += 1
-            log.info("  → iMessage sent to %s", recipient)
-            # Prefer CDN URL for PCA Mart (image_url is local /static/img_cache/ path)
-            img_url = s.get("image_url") or ""
-            if img_url.startswith("/static/"):
-                img_url = s.get("image_url_cdn") or ""
-            if img_url and img_url.startswith("http"):
-                img_ok = _send_imessage_image(recipient, img_url)
-                if img_ok:
-                    log.info("  → image sent")
-                else:
-                    log.debug("  → image skipped (download failed)")
-        else:
-            log.error("  → iMessage delivery failed")
-
-        _save_seen(seen)  # save after each so a crash mid-run doesn't re-evaluate
-
-    log.info("Done — %d alert(s) sent, %d evaluated, %d total scored listings",
-             alerts_sent, evaluated, len(scored))
-
-
-if __name__ == "__main__":
-    main()

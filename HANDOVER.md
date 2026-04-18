@@ -1,14 +1,15 @@
 # PTOX11 — Porsche Market Intelligence Platform
-*Last updated: April 17, 2026*
+*Last updated: April 18, 2026*
 
 ---
 
 ## 1. Project Overview
 
-Autonomous Porsche market intelligence platform on a Mac Mini M4. Scrapes 9 sources every 12 minutes, scores every listing against FMV using 6,010 BaT sold comps, and fires iMessage alerts the moment a new listing enters the DB.
+Autonomous Porsche market intelligence platform on a Mac Mini M4. Scrapes 10 sources every 12 minutes, scores every listing against FMV using 6,010 BaT sold comps, and fires iMessage alerts the moment a new listing enters the DB.
 
 **Repo:** https://github.com/OCX11/PTOX11  
 **Dashboard:** https://ocx11.github.io/PTOX11/  
+**Auctions:** https://ocx11.github.io/PTOX11/auctions.html  
 **Machine:** Mac Mini M4, user: claw, 24/7
 
 ### Business Context
@@ -36,22 +37,33 @@ Small performance car dealership. All purchases are investments. Core range $70K
 
 ---
 
-## 3. Active Sources (April 17, 2026)
+## 3. Active Sources (April 18, 2026)
 
 | Source | Active | Method | Images |
 |---|---|---|---|
-| cars.com | ~260 | curl_cffi, 5 model slugs, VIN-stop incremental | ✅ 99% |
-| eBay Motors | 82 | Browse API OAuth2, cache+incremental | ✅ 100% |
-| PCA Mart | 54 | Playwright cookie-auth | ✅ CDN URLs stored |
-| Bring a Trailer | 38 | Playwright | ✅ 100% |
-| Cars and Bids | 13 | Playwright scroll | ✅ 100% |
-| Built for Backroads | 10 | curl_cffi | ✅ 100% |
-| AutoTrader | 10 | curl_cffi + headless PW fallback (no headed) | ⚠️ 80% |
-| pcarmarket | 8 | Playwright | ✅ 100% |
-| Rennlist | 6 | curl_cffi (Cloudflare bypass) | ✅ 100% |
-| DuPont Registry | ~350 | Direct API (api.dupontregistry.com) | ✅ 100% |
+| DuPont Registry | ~889 | Direct API (api.dupontregistry.com POST) | ✅ 100% |
+| eBay Motors | ~662 | Browse API OAuth2, cache+incremental+seller sweep | ✅ 100% |
+| cars.com | ~269 | curl_cffi, 5 model slugs, VIN-stop incremental | ✅ 99% |
+| Bring a Trailer | 42 | Playwright | ✅ 100% |
+| PCA Mart | 32 | Playwright cookie-auth | ✅ CDN URLs stored |
+| Cars and Bids | 11 | Playwright scroll | ✅ 100% |
+| Built for Backroads | 11 | curl_cffi | ✅ 100% |
+| pcarmarket | 10 | Playwright | ✅ 100% |
+| AutoTrader | 8 | curl_cffi + headless PW fallback | ⚠️ 80% |
+| Rennlist | 5 | curl_cffi (Cloudflare bypass) | ✅ 100% |
 
-**All local — zero Distill dependency (cancelled April 15).**
+**Total active: ~1,939 listings. All local — zero Distill dependency.**
+
+### DuPont Registry — key notes
+- API: POST api.dupontregistry.com/api/v1/en_US/car/list, filter carBrand=[14], currentPage pagination
+- URL format: /autos/listing/{year}/porsche/{model-alias}/{id} — CRITICAL, old format redirects to /dealers
+- upsert_listing matches DuPont by car ID tail (last /\d+) to survive URL changes
+- model inferred from carModel.name (e.g. "Carrera 4S" → model=911, trim=Carrera 4S)
+
+### eBay Motors — key notes
+- holtmotorsports seller sweep runs every cycle (owner's own listings)
+- Dedup by listing_url first (not year/model) — fixes relist timestamp problem
+- 20-min alert window guard prevents bulk re-ingestion storms
 
 ---
 
@@ -68,19 +80,20 @@ Small performance car dealership. All purchases are investments. Core range $70K
 ├── scraper.py              # BaT, PCA Mart, pcarmarket
 ├── scraper_autotrader.py   # AutoTrader curl_cffi + headless PW
 ├── scraper_carscom.py      # cars.com curl_cffi, 5 slugs, VIN-stop
-├── scraper_ebay.py         # eBay Browse API OAuth2
+├── scraper_ebay.py         # eBay Browse API OAuth2 + holtmotorsports sweep
 ├── scraper_rennlist.py     # Rennlist curl_cffi
 ├── scraper_cnb.py          # Cars & Bids Playwright
 ├── scraper_bfb.py          # Built for Backroads curl_cffi
+├── scraper_dupont.py       # DuPont Registry direct API
 ├── db.py                   # DB layer, upsert_listing, tier classification
 ├── fmv.py                  # FMV engine — score_active_listings()
 ├── main.py                 # Entry point — scrape + dashboards + alerts
-├── notify_imessage.py      # iMessage alerts
+├── notify_imessage.py      # iMessage alerts (standardized format all 10 sources)
 ├── new_dashboard.py        # Primary dashboard → docs/index.html
-├── live_feed.py            # Live feed view
-├── comp_scraper.py         # Daily BaT comp scrape
+├── auction_dashboard.py    # Auction watcher → docs/auctions.html
+├── live_feed.py            # DEPRECATED — will be deleted during redesign
+├── comp_scraper.py         # Daily BaT comp scrape + 24mo auto-expiry
 ├── decode_vin_generation.py # VIN → generation column
-├── enrich_listings.py      # Fill missing price/mileage
 └── data/
     ├── inventory.db              # SQLite — all tables
     ├── imessage_config.json      # {"recipient": "6108361111"}
@@ -97,9 +110,15 @@ Small performance car dealership. All purchases are investments. Core range $70K
 ### Tables
 - **listings** — active + sold. Key columns: `dealer`, `year`, `make`, `model`, `trim`, `mileage`, `price`, `vin`, `listing_url`, `image_url`, `image_url_cdn`, `source_category`, `tier`, `created_at`, `date_first_seen`, `date_last_seen`, `auction_ends_at`, `status`, `feed_type`
 - **price_history** — every price change per listing (silent tracking, no alerts)
-- **sold_comps** — 6,010 records, 84% with generation filled
+- **sold_comps** — 6,010 records, 84% with generation filled. Auto-expires >24mo on each comp scrape run.
 - **bat_reserve_not_met** — BaT auctions that didn't meet reserve (price floor signal)
 - **snapshots** — daily raw snapshots per dealer
+
+### upsert_listing dedup priority
+1. VIN match (most reliable)
+2. listing_url match (catches eBay/DuPont correctly)
+3. DuPont fallback: car ID tail match (survives URL format changes)
+4. year/make/model fallback (non-eBay, non-DuPont only)
 
 ### FMV Engine
 - Source: BaT sold comps (weight 1.0), recency decay ≤6 months full → 0.3 at 24 months
@@ -111,38 +130,36 @@ Small performance car dealership. All purchases are investments. Core range $70K
 
 ## 6. Alert System
 
-### Current State (April 17)
+### Current State (April 18)
 | Alert type | Status | Notes |
 |---|---|---|
-| New-listing iMessage | ✅ ACTIVE | Every new VIN entering DB → one iMessage + thumbnail |
-| Deal/watch iMessage | ❌ DISABLED | `notify_imessage.main()` commented out in main.py — re-enable when ready |
-| Price-drop iMessage | ❌ REMOVED | Deleted — caused spam during bootstrap. See Apple Note "Price Drops — Future Feature Design" |
+| New-listing iMessage | ✅ ACTIVE | Every new listing → one iMessage + thumbnail. 20-min window guard prevents storms. |
+| Auction-ending iMessage | ✅ ACTIVE | TIER1 <3hr, TIER2 <1hr |
+| Deal/watch iMessage | ❌ DISABLED | Uncomment notify_imessage.main() in main.py ~line 323 |
+| Price-drop alerts | ❌ REMOVED | Parked — revisit when system is stable |
 
-**Re-enable deal alerts:** uncomment `notify_imessage.main()` in main.py (~line 323). Wait a few days for cars.com bootstrap to normalise first.
-
-### iMessage Format (new listing)
+### iMessage Format (standardized April 18)
 ```
-🆕 NEW: 2022 Porsche 911 GT3
-💰 $189,900
-🛣️  4,200 mi
-📍 Bring a Trailer  [GT/Collector]
-🔗 https://bringatrailer.com/listing/...
+🆕 2022 Porsche 911 GT3
+💰 $274,998
+🛣️  8,200 mi
+📍 DuPont · RETAIL · GT/Collector 🔥
+🔗 https://www.dupontregistry.com/autos/listing/...
 [thumbnail as second message]
 ```
-
-### Auction Countdown
-`auction_ends_at` TEXT column on listings. BaT: `data-timestamp_end` Unix epoch. C&B: `span.ticking` HH:MM:SS. Dashboard shows live JS countdown on auction cards.
+Source labels: BaT, C&B, BfB, DuPont, eBay, Cars.com, PCA Mart, AutoTrader, Rennlist, pcarmarket
 
 ---
 
 ## 7. Dashboard
 
 **URL:** https://ocx11.github.io/PTOX11/  
-Built by `new_dashboard.py` → `docs/index.html`, pushed every 2 min.
+Built by `new_dashboard.py` → `docs/index.html`, pushed every 2 min.  
+Auctions: `auction_dashboard.py` → `docs/auctions.html`
 
-**Sort order:** `created_at DESC` — exact timestamp, newest listing at top.  
-**Age badge:** reads `created_at` (full ISO timestamp) for accurate "12m ago" labels.  
-**Cards:** image, tier badge, price, FMV delta, mileage, source badge, auction countdown.
+**⚠️ REDESIGN PENDING** — Full visual overhaul approved. Prompt in Apple Note: "🎨 PTOX11 — Dashboard Redesign Prompt (Claude Code)". Design spec: /Users/claw/Downloads/ptox11_critique.html
+
+Nav after redesign: **Listings · Auctions · Comps · Market · Search** (no Live tab — live_feed.html killed)
 
 ---
 
@@ -150,30 +167,31 @@ Built by `new_dashboard.py` → `docs/index.html`, pushed every 2 min.
 
 | Issue | Severity | Notes |
 |---|---|---|
-| Deal/watch alerts disabled | Medium | Intentional — re-enable when ready (1 line in main.py) |
-| cars.com batching on dashboard | Low | Bootstrap artifact — new listings come in mixed order, settles naturally |
-| AutoTrader count fluctuates 8-49 | Low | Akamai blocks intermittent — curl_cffi usually recovers same cycle |
-| eBay newest listing April 13 | Low | Normal — private eBay sellers don't list daily |
-| 933 sold comps NULL generation | Low | VINs without decodeable series codes — diminishing returns |
+| Deal/watch alerts disabled | Medium | Intentional — re-enable when ready |
+| AutoTrader count fluctuates 8-49 | Low | Akamai blocks intermittent |
+| AutoTrader images 80% | Low | Some listings missing image_url |
+| Rennlist only 5-6 listings | Low | Low-volume source, scraper working correctly |
+| live_feed.html | Low | Deprecated — delete during redesign |
 
 ---
 
-## 9. Open Items
+## 9. Open Items / Roadmap
 
-### Re-enable when ready
-1. **Deal/watch alerts** — uncomment `notify_imessage.main()` in main.py. Tune thresholds after re-enable.
-2. **Price-drop dashboard badge** — silent indicator on cards (no notification). See Apple Note.
+### Next up (approved)
+1. **Dashboard redesign** — Claude Code job. Prompt in Notes. Full visual overhaul per ptox11_critique.html
+2. **PWA push notifications** — replace iMessage with native iOS push, tap → listing URL
 
-### Autonomous (Claude can do solo)
-3. **Sold comp auto-expiry** — archive comps >24 months (zero FMV weight anyway)
-4. **dashboard price-drop badge** — show `📉 -$5k` chip on cards where price dropped
+### Claude can do solo (queue)
+3. FMV audit — fix known-bad estimates
+4. Deal/watch alerts re-enable — 1 line in main.py
+5. AutoTrader image coverage improvement
+6. Sold comp backfill (more BaT history)
 
-### Needs your input
-5. **Dashboard redesign** — Porsche brand colors (Guards Red, Racing Yellow, GT Silver)
-6. **AutoTrader Akamai** — intermittent, not urgent
-
-### Low priority / may drop
-7. **eBay sold comps** — Finding API rate-limited, FMV already 78% HIGH without it
+### Needs owner input
+7. New scrapers — owner researching which dealer-heavy sources are worth building
+8. BMW M / Alpina support — scope TBD
+9. Interactive pricing graph — discuss in Lead Dev chat
+10. Manual FMV calculator — discuss in Lead Dev chat
 
 ---
 
@@ -181,68 +199,43 @@ Built by `new_dashboard.py` → `docs/index.html`, pushed every 2 min.
 
 - **DataImpulse** rotating residential `gw.dataimpulse.com:823`
 - Mandatory for AutoTrader + eBay. Never falls back to bare IP.
-- cars.com and Rennlist: direct curl_cffi (no proxy needed — works better without)
-- BaT + pcarmarket: direct Playwright (no proxy needed)
+- cars.com, Rennlist, BfB, DuPont: direct curl_cffi (no proxy needed)
+- BaT, pcarmarket, C&B, PCA Mart: direct Playwright (no proxy needed)
 
 ---
 
 ## 11. Session Log
 
 ### April 18, 2026
-- scraper_dupont.py built — DuPont Registry via direct API (no Playwright needed)
-- API: POST api.dupontregistry.com/api/v1/en_US/car/list, carBrand=[14], currentPage pagination
-- ~1,681 Porsche listings across 63 pages, 100% image coverage
-- Model/trim correctly inferred from carModel.name (e.g. "Carrera 4S" → model=911, trim=Carrera 4S)
-- Wired into scraper.py DEALERS + db.py _RETAIL_NAMES
-- Tasks also completed: Rennlist trim fix, sold comp auto-expiry, AutoTrader junk record cleanup
-- Commit: d7ca82652
+- DuPont Registry scraper built (scraper_dupont.py) — direct API, ~889 listings, 100% images
+- DuPont URL format fixed (/autos/listing/{year}/porsche/{alias}/{id}), 900 DB records backfilled
+- DuPont upsert dedup hardened — car ID tail match survives future URL changes
+- Rennlist trim field fixed — stops at comma, strips color/mileage/gen artifacts
+- Sold comp auto-expiry added to comp_scraper.py (prunes >24mo on each run)
+- AutoTrader junk bootstrap record cleaned
+- iMessage format standardized across all 10 sources — title dedup fix, source labels, AUCTION/RETAIL tag
+- Pending scrapers (Hagerty, CarGurus, Hemmings, Porsche NA) moved to low priority — owner researching
+- Price-drop badge parked — revisit when system is stable
+- Dashboard redesign approved — next major task
 
-### April 17, 2026 — Evening
-- auction_dashboard.py built → docs/auctions.html (60 auctions, 4 sections)
-- Sections: Ending Soon (<3hr), Later Today (3-24hr), Coming Up (1-7d), No End Time (buy-now/null)
-- Live JS countdown every second, urgent pulse <1hr, ENDED state
-- Wired into main.py — regenerates every 12min scrape cycle
-- Auctions nav tab on index.html now links directly to auctions.html
-- Commit: b3fca1d92
+### April 17, 2026
+- Full investigation session: eBay dedup bug fixed (URL-first lookup), iMessage storm fixed (20-min guard)
+- auction_dashboard.py built → docs/auctions.html (4 sections, live countdown)
+- YEAR_MAX 2024 enforced in eBay + AutoTrader scrapers
+- C&B auction_ends_at NULL fixed
+- eBay holtmotorsports seller sweep added
 
-### April 17, 2026 — Morning
-- `fmv.py score_active_listings()`: added `created_at` + `auction_ends_at` to SELECT + result dict — was missing, causing sort to fail
-- Dashboard sort fixed: `created_at DESC` (full timestamp) — was `date_last_seen` (date-only, all listings tied)
-- Age badge fixed: `created_at` (full timestamp) not `date_first_seen` (date-only → midnight fallback)
-- AutoTrader headed Playwright removed — no more Chrome windows popping up on screen
-
-### April 16, 2026 — Evening
-- Price-drop alerts removed entirely (spam during bootstrap — 305-608/cycle)
-- Deal/watch alerts disabled (uncomment when ready)
-- Dashboard sort fixed from `date_last_seen` → `created_at`
-- Alert dedup cleaned (609 bad drop: keys removed)
-- Autonomous batch: PCA Mart CDN URLs, NULL generation filled 1408→933, HANDOVER refresh
-
-### April 16, 2026 — Day
-- cars.com: 2 → 260 active listings (per-model slugs, direct curl_cffi, VIN-stop incremental)
-- Rennlist 403 fixed (curl_cffi Chrome impersonation, 12s → 0.4s)
-- Auction countdown timer (BaT Unix epoch + C&B ticking text, live JS)
-- iMessage formatting cleanup (eBay URL strip, trim cap, removed redundant tags)
-- C&B source_category DEALER→AUCTION fixed
-- cars.com incremental mode (VIN-based stop, 3-page cap)
-
-### April 15, 2026
-- Cars & Bids scraper built (scraper_cnb.py)
-- Built for Backroads → Playwright (last Distill dependency removed)
-- FMV audit: NONE confidence 14→0, trim fallback logic fixed
-- PWA installed on iPhone
-
-### March 26 – April 14, 2026
-- Full platform build: all 9 scrapers, FMV engine, iMessage alerts, dashboard, GitHub Pages
+### March 26 – April 16, 2026
+- Full platform build: all scrapers, FMV engine, iMessage alerts, dashboard, GitHub Pages
 - BaT comp backfill: 6,010 comps
 - DataImpulse proxy, launchd scheduling, archive capture
+- cars.com: 260 listings via curl_cffi direct
 
 ---
 
 ## 12. VIN Decoder Reference
 
-**Position key:** 1-3=WMI (WP0=Porsche), 4-6=series, 10=model year, 11=plant  
-**Decoder:** https://rennlist.com/forums/vindecoder.php
+**Position key:** 1-3=WMI (WP0=Porsche), 4-6=series, 10=model year, 11=plant
 
 | Series | Model | Generation logic |
 |---|---|---|
@@ -252,21 +245,3 @@ Built by `new_dashboard.py` → `docs/index.html`, pushed every 2 min.
 | CA2/CB2/CC2 | Boxster/Cayman/718 | ≤2004=986, ≤2011=987, ≤2016=981, 2017+=718 |
 | AA0/AB0 | 964/993 | ≤1993=964, 1994+=993 |
 | JA0/JB0 | 930 Turbo | ≤1989=930 |
-
----
-
-## 13. Future Sources (Mid Priority)
-
-Candidates to add — each needs a scraper built:
-
-| Source | URL | Notes |
-|---|---|---|
-| DuPont Registry | dupontregistry.com | Dealer + private, strong Porsche inventory |
-| Hagerty Marketplace | marketplace.hagerty.com | Collector-focused, air-cooled heavy |
-| CarGurus | cargurus.com | Large retail, good price history data |
-| Porsche NA Finder | porsche.com/usa/modelrange/finder | Factory/dealer CPO listings |
-| Hemmings | hemmings.com | Air-cooled / vintage Porsche |
-| iSeeCars | iseecars.com | Aggregator, may dedupe with existing |
-| Carfax Listings | carfax.com/cars-for-sale | Private + dealer |
-
-Build order recommendation: DuPont Registry first (high quality Porsche inventory), then Hagerty (air-cooled depth), then Porsche NA finder (CPO/factory).

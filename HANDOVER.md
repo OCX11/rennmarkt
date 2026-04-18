@@ -213,7 +213,13 @@ Auctions: `auction_dashboard.py` → `docs/auctions.html`
 
 ## 11. Session Log
 
-### April 18, 2026 (evening)
+### April 18, 2026 (evening — scraper fixes)
+- **CRITICAL BUG FIXED:** All scrapers (BaT, PCA Mart, BfB, Rennlist) were emitting `url=` instead of `listing_url=` in their listing dicts. `upsert_listing` couldn't match by URL, so new listings from these sources were never created as new DB records — they were silently absorbed into existing year/model matches. Fix: `scraper.py` (BaT + PCA Mart), `scraper_bfb.py`, `scraper_rennlist.py` all updated to emit `listing_url=`. `main.py` now reads `car.get("listing_url") or car.get("url")` as fallback for all scrapers.
+- **live_feed import crash fixed:** `main.py` was importing `live_feed as lf` (deleted file) — would have crashed next full scrape cycle. Removed import and all 3 call sites.
+- Verified post-fix: BaT 42 active all have URLs, BfB 11/11, Rennlist 5/5, PCA Mart 11/11. New listings from these sources will now create correctly going forward.
+- Commit: 08d53ec8e
+
+### April 18, 2026 (evening — redesign)
 - Dashboard redesign shipped — full visual overhaul (commit cac351d44)
   - PTOX logo, new color system, Syne/DM Mono/DM Sans fonts
   - Chip filters, FMV progress bars, image overlays, horizontal auction cards

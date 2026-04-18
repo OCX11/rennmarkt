@@ -412,9 +412,20 @@ def upsert_listing(conn, dealer, year, make, model, trim, mileage, price, vin, u
             "SELECT id, price, status FROM listings WHERE dealer=? AND listing_url=? LIMIT 1",
             (dealer, url)
         ).fetchone()
+        # For DuPont Registry: URL format changed — also try matching by car ID
+        # extracted from URL tail (e.g. /571925) to avoid duplicate records
+        if row is None and dealer == "DuPont Registry":
+            import re as _re
+            m = _re.search(r"/(\d+)$", url or "")
+            if m:
+                car_id_suffix = "%/" + m.group(1)
+                row = conn.execute(
+                    "SELECT id, price, status FROM listings WHERE dealer=? AND listing_url LIKE ? LIMIT 1",
+                    (dealer, car_id_suffix)
+                ).fetchone()
         # If not found by URL, also check year/make/model to avoid duplicates for
         # sources that change their URLs (not eBay, but defensive)
-        if row is None and dealer not in ("eBay Motors",):
+        if row is None and dealer not in ("eBay Motors", "DuPont Registry"):
             row = conn.execute(
                 """SELECT id, price, status FROM listings
                    WHERE dealer=? AND year=? AND make=? AND model=? AND vin IS NULL

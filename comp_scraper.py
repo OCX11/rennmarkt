@@ -758,6 +758,19 @@ def run_comp_scrape():
     except Exception as e:
         log.error("Classic.com comp scrape failed: %s", e)
 
+    # Auto-expiry: delete sold comps older than 24 months.
+    # These have zero FMV weight (recency decay) and just add noise.
+    try:
+        cur = conn.execute(
+            "DELETE FROM sold_comps WHERE sold_date < date('now', '-24 months') AND sold_date IS NOT NULL"
+        )
+        expired = cur.rowcount
+        conn.commit()
+        if expired:
+            log.info("Comp expiry: removed %d comps older than 24 months", expired)
+    except Exception as e:
+        log.warning("Comp expiry failed: %s", e)
+
     conn.close()
     log.info("Comp scrape complete — %d total records written", total)
     return total

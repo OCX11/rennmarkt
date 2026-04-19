@@ -625,7 +625,7 @@ def save_snapshot(conn, snap_date, dealer, cars):
                VALUES(?,?,?,?,?,?,?,?,?,?)""",
             (snap_date, dealer, key,
              c.get("year"), c.get("make"), c.get("model"), c.get("trim"),
-             c.get("mileage"), c.get("price"), c.get("url"))
+             c.get("mileage"), c.get("price"), c.get("listing_url") or c.get("url"))
         )
 
 

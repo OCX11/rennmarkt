@@ -1377,16 +1377,23 @@ def scrape_pcamart():
             url = f"{BASE}/ads/{adnum}" if adnum else ""
             img_name = _clean(row.get("MAINIMAGENAME"))
             image_url = f"{BASE}/includes/images/martAdImages/{adnum}/{img_name}.jpg" if (img_name and adnum) else None
-            # Use LASTUPDATED (ISO timestamp) as date_first_seen so recently-renewed
-            # listings sort correctly in the dashboard feed
+            # Use LASTUPDATED as date_first_seen so recently-renewed listings
+            # sort correctly. CF format: "April, 18 2026 14:32:00" — parse it.
             last_updated = _clean(row.get("LASTUPDATED")) or ""
             date_fs = None
             if last_updated:
                 try:
-                    # LASTUPDATED is a CF timestamp like "2026-04-18 14:32:00"
-                    date_fs = last_updated[:10]
+                    import datetime as _datetime
+                    # Strip comma then parse "April 18 2026 14:32:00"
+                    lu_clean = last_updated.replace(",", "").strip()
+                    dt = _datetime.datetime.strptime(lu_clean, "%B %d %Y %H:%M:%S")
+                    date_fs = dt.strftime("%Y-%m-%d")
                 except Exception:
-                    pass
+                    try:
+                        # Fallback: ISO prefix
+                        date_fs = last_updated[:10] if len(last_updated) >= 10 else None
+                    except Exception:
+                        pass
             if not year:
                 continue
             c = dict(year=year, make=make, model=model, trim=trim,

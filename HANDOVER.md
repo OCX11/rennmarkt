@@ -1,11 +1,11 @@
 # PTOX11 — Porsche Market Intelligence Platform
-*Last updated: April 18, 2026 (post-redesign)*
+*Last updated: April 19, 2026 (PWA push notifications)*
 
 ---
 
 ## 1. Project Overview
 
-Autonomous Porsche market intelligence platform on a Mac Mini M4. Scrapes 10 sources every 12 minutes, scores every listing against FMV using 6,010 BaT sold comps, and fires iMessage alerts the moment a new listing enters the DB.
+Autonomous Porsche market intelligence platform on a Mac Mini M4. Scrapes 10 sources every 12 minutes, scores every listing against FMV using 6,010 BaT sold comps, and fires **native iOS push notifications** the moment a new listing enters the DB.
 
 **Repo:** https://github.com/OCX11/PTOX11  
 **Dashboard:** https://ocx11.github.io/PTOX11/  
@@ -130,13 +130,24 @@ Small performance car dealership. All purchases are investments. Core range $70K
 
 ## 6. Alert System
 
-### Current State (April 18)
+### Alert System
 | Alert type | Status | Notes |
 |---|---|---|
-| New-listing iMessage | ✅ ACTIVE | Every new listing → one iMessage + thumbnail. 20-min window guard prevents storms. |
-| Auction-ending iMessage | ✅ ACTIVE | TIER1 <3hr, TIER2 <1hr |
-| Deal/watch iMessage | ❌ DISABLED | Uncomment notify_imessage.main() in main.py ~line 323 |
-| Price-drop alerts | ❌ REMOVED | Parked — revisit when system is stable |
+| New-listing push | ✅ ACTIVE | Every new listing → native iOS push. Tap → listing URL. Multi-subscriber. |
+| Auction-ending push | ✅ ACTIVE | TIER1 <3hr, TIER2 <1hr |
+| Deal/watch alerts | ❌ DISABLED | Uncomment notify_push.main() in main.py ~line 323 |
+| Price-drop alerts | ❌ REMOVED | Parked |
+
+### Push Architecture
+- **Push server:** `push_server.py` Flask app on `localhost:5055` — launchd (`com.ptox11.pushserver`)
+- **Tunnel:** cloudflared quick tunnel — launchd (`com.ptox11.cloudflared`) via `run_cloudflared.sh`
+- **Permanent URL:** `https://ptox11-push.openclawx1.workers.dev` — Cloudflare Worker proxies to tunnel
+- **Self-heal:** `update_tunnel_url.sh` — launchd (`com.ptox11.update-tunnel-url`) redeploys Worker on each reboot
+- **Subscribe page:** `https://ocx11.github.io/PTOX11/notify.html` — shareable, multi-device
+- **CF account:** `openclawx1@protonmail.com` / account `9dd4680b69035f1f6668ce0f44f632cc`
+- **CF credentials:** `data/cf_config.json` (gitignored)
+- **VAPID keys:** `data/vapid_keys.json` (gitignored)
+- **Subscriptions:** `data/push_subscriptions.json` (gitignored)
 
 ### iMessage Format (standardized April 18)
 ```
@@ -212,6 +223,17 @@ Auctions: `auction_dashboard.py` → `docs/auctions.html`
 ---
 
 ## 11. Session Log
+
+### April 19, 2026 — PWA Push Notifications
+- iMessage replaced entirely with native iOS Web Push (notify_push.py)
+- push_server.py: Flask app on :5055, VAPID Web Push, multi-subscriber, auto-prunes expired subs
+- docs/sw.js: push event handler added, notification click → opens listing URL in Safari
+- docs/notify.html: subscriber page at ocx11.github.io/PTOX11/notify.html — shareable link
+- Cloudflare Worker: ptox11-push.openclawx1.workers.dev — permanent stable URL
+- Cloudflare account: openclawx1@protonmail.com, workers.dev subdomain: openclawx1
+- Self-heal: update_tunnel_url.sh redeploys Worker on every reboot with fresh tunnel URL
+- 3 new launchd services: com.ptox11.pushserver, com.ptox11.cloudflared, com.ptox11.update-tunnel-url
+- main.py: all notify_imessage calls replaced with notify_push
 
 ### April 18, 2026 (late evening — PCA Mart + data layer fixes)
 - PCA Mart pagination fixed — f-string semicolon escaping bug in evaluate() calls caused only 11/85+ listings to be scraped. Rewrote all evaluate() calls to pass body as JS argument. Now returns 53+ listings across 39 pages.

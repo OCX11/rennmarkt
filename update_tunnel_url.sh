@@ -1,18 +1,22 @@
 #!/bin/bash
-# update_tunnel_url.sh — reads the live cloudflared tunnel URL from its log,
-# patches docs/notify.html, commits, and pushes to GitHub.
-# Runs at boot via launchd AFTER cloudflared has started.
+# update_tunnel_url.sh — on reboot, reads new cloudflared tunnel URL and
+# redeploys Cloudflare Worker so the permanent URL keeps working.
+# Permanent push URL: https://ptox11-push.openclawx1.workers.dev
 
 PROJ="/Users/claw/porsche-tracker"
 LOG="$PROJ/logs/cloudflared.log"
-HTML="$PROJ/docs/notify.html"
-MAX_WAIT=60   # seconds to wait for tunnel to come up
+CF_CONFIG="$PROJ/data/cf_config.json"
+MAX_WAIT=60
+
+# Load CF credentials from gitignored config
+CF_KEY=$(python3 -c "import json; d=json.load(open('$CF_CONFIG')); print(d['cf_key'])")
+CF_EMAIL=$(python3 -c "import json; d=json.load(open('$CF_CONFIG')); print(d['cf_email'])")
+CF_ACCOUNT=$(python3 -c "import json; d=json.load(open('$CF_CONFIG')); print(d['cf_account'])")
+WORKER_NAME=$(python3 -c "import json; d=json.load(open('$CF_CONFIG')); print(d['worker_name'])")
 
 echo "[update_tunnel_url] starting at $(date)"
 
-# Clear stale log so we only find the URL from this boot
-> "$LOG"
-sleep 3   # let cloudflared start writing
+# Wait for tunnel URL to appear in log
 TUNNEL_URL=""
 ELAPSED=0
 while [ -z "$TUNNEL_URL" ] && [ $ELAPSED -lt $MAX_WAIT ]; do
@@ -24,26 +28,20 @@ while [ -z "$TUNNEL_URL" ] && [ $ELAPSED -lt $MAX_WAIT ]; do
 done
 
 if [ -z "$TUNNEL_URL" ]; then
-    echo "[update_tunnel_url] ERROR: tunnel URL not found in log after ${MAX_WAIT}s"
+    echo "[update_tunnel_url] ERROR: no tunnel URL after ${MAX_WAIT}s"
     exit 1
 fi
 
 echo "[update_tunnel_url] tunnel URL: $TUNNEL_URL"
-
-# Patch notify.html — replace any existing push server URL
-sed -i '' "s|const PUSH_SERVER = '.*';|const PUSH_SERVER = '$TUNNEL_URL';|g" "$HTML"
-
-# Verify patch landed
-CURRENT=$(grep "const PUSH_SERVER" "$HTML" | head -1)
-echo "[update_tunnel_url] patched: $CURRENT"
-
-# Save for reference
 echo "$TUNNEL_URL" > "$PROJ/data/tunnel_url.txt"
 
-# Commit and push to GitHub Pages
-cd "$PROJ"
-git add docs/notify.html data/tunnel_url.txt
-git commit -m "chore: update tunnel URL to $TUNNEL_URL" --no-verify 2>&1
-git push origin main 2>&1
+# Redeploy Worker with updated TUNNEL_URL binding
+curl -s "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/workers/scripts/$WORKER_NAME" \
+  -X PUT \
+  -H "X-Auth-Email: $CF_EMAIL" \
+  -H "X-Auth-Key: $CF_KEY" \
+  -F "metadata={\"main_module\":\"worker.js\",\"bindings\":[{\"type\":\"plain_text\",\"name\":\"TUNNEL_URL\",\"text\":\"$TUNNEL_URL\"}],\"compatibility_date\":\"2024-01-01\"};type=application/json" \
+  -F "worker.js=@$PROJ/worker.js;type=application/javascript+module" \
+  | python3 -c "import sys,json; d=json.load(sys.stdin); print('[update_tunnel_url] worker redeploy:', 'OK' if d.get('success') else d.get('errors'))"
 
 echo "[update_tunnel_url] done at $(date)"

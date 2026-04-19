@@ -462,7 +462,6 @@ def generate() -> str:
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="refresh" content="180">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PTOX">
@@ -784,9 +783,73 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 ::-webkit-scrollbar-thumb {{ background:var(--border); border-radius:3px; }}
 ::-webkit-scrollbar-thumb:hover {{ background:var(--muted); }}
 
+/* ── Mobile filter drawer ── */
+.filter-fab {{
+  display:none; align-items:center; gap:6px;
+  padding:7px 14px; border-radius:8px;
+  background:var(--bg3); border:1px solid var(--border);
+  font-family:'DM Mono',monospace; font-size:11px; color:var(--muted);
+  cursor:pointer; transition:all 0.1s; white-space:nowrap;
+}}
+.filter-fab:hover {{ color:var(--text); border-color:var(--muted); }}
+.filter-fab.has-filters {{ border-color:var(--red); color:var(--red); background:#1A0810; }}
+.drawer-overlay {{
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:200;
+}}
+.drawer-overlay.open {{ display:block; }}
+.filter-drawer {{
+  position:fixed; bottom:0; left:0; right:0;
+  background:#0C0C12; border-top:1px solid var(--border);
+  border-radius:16px 16px 0 0; z-index:201;
+  padding:16px 20px 40px;
+  transform:translateY(100%); transition:transform 0.25s ease;
+  max-height:85vh; overflow-y:auto;
+}}
+.filter-drawer.open {{ transform:translateY(0); }}
+.drawer-handle {{
+  width:36px; height:4px; background:var(--border);
+  border-radius:2px; margin:0 auto 16px; display:block;
+}}
+.drawer-title {{
+  font-family:'DM Mono',monospace; font-size:10px; font-weight:500;
+  color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:14px;
+}}
+.drawer-grid {{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }}
+.drawer-section {{ display:flex; flex-direction:column; gap:7px; }}
+.drawer-section-label {{
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--muted);
+}}
+.drawer-chips {{ display:flex; flex-wrap:wrap; gap:5px; }}
+.drawer-range {{ display:flex; gap:6px; }}
+.drawer-range input {{
+  width:100%; padding:9px 10px; border:1px solid var(--border); border-radius:6px;
+  font-family:'DM Mono',monospace; font-size:12px; color:var(--text);
+  background:var(--bg3); outline:none;
+}}
+.drawer-range input:focus {{ border-color:var(--red); }}
+.drawer-checkboxes {{ display:flex; flex-direction:column; gap:10px; }}
+.drawer-checkboxes label {{
+  display:flex; align-items:center; gap:9px;
+  font-family:'DM Mono',monospace; font-size:12px; color:var(--muted);
+}}
+.drawer-checkboxes input[type=checkbox] {{ width:16px; height:16px; accent-color:var(--red); }}
+.drawer-actions {{ display:flex; gap:8px; margin-top:18px; }}
+.drawer-apply {{
+  flex:1; padding:13px; border-radius:8px; background:var(--red); color:#fff;
+  font-family:'DM Mono',monospace; font-size:12px; font-weight:500; border:none; cursor:pointer;
+}}
+.drawer-reset {{
+  padding:13px 18px; border-radius:8px; background:var(--bg3); color:var(--muted);
+  font-family:'DM Mono',monospace; font-size:12px; border:1px solid var(--border); cursor:pointer;
+}}
+
 @media(max-width:768px) {{
   .sidebar {{ display:none; }}
   .topbar-right {{ display:none; }}
+  .filter-fab {{ display:flex; }}
+  .search-input {{ width:150px; }}
+  .search-input:focus {{ width:190px; }}
 }}
 </style>
 </head>
@@ -883,9 +946,12 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 
   <!-- Toolbar -->
   <div class="main-toolbar">
-    <div class="search-wrap">
-      <span class="search-icon">&#x1F50D;</span>
-      <input class="search-input" type="text" id="search-box" placeholder="Year, model, trim&hellip;" oninput="applyFilters()">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="search-wrap">
+        <span class="search-icon">&#x1F50D;</span>
+        <input class="search-input" type="text" id="search-box" placeholder="Year, model, trim&hellip;" oninput="applyFilters()">
+      </div>
+      <button class="filter-fab" id="filter-fab" onclick="openDrawer()">&#x25A6; Filters</button>
     </div>
     <span class="results-count" id="results-count"></span>
   </div>
@@ -983,164 +1049,272 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 </div><!-- /body-area -->
 </div><!-- /app -->
 
+<!-- ── Mobile filter drawer ── -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="filter-drawer" id="filter-drawer">
+  <span class="drawer-handle"></span>
+  <div class="drawer-title">Filters</div>
+  <div class="drawer-grid">
+    <div class="drawer-section">
+      <span class="drawer-section-label">Generation</span>
+      <div class="drawer-chips" id="d-gen-chips">
+        {gen_chips_html}
+      </div>
+    </div>
+    <div class="drawer-section">
+      <span class="drawer-section-label">Source</span>
+      <div class="drawer-chips" id="d-src-chips">
+        {source_chips_html}
+      </div>
+    </div>
+    <div class="drawer-section">
+      <span class="drawer-section-label">Year</span>
+      <div class="drawer-range">
+        <input type="number" id="d-year-min" placeholder="From" min="1984" max="2025" oninput="syncFromDrawer()">
+        <input type="number" id="d-year-max" placeholder="To"   min="1984" max="2025" oninput="syncFromDrawer()">
+      </div>
+    </div>
+    <div class="drawer-section">
+      <span class="drawer-section-label">Price ($)</span>
+      <div class="drawer-range">
+        <input type="number" id="d-price-min" placeholder="Min" oninput="syncFromDrawer()">
+        <input type="number" id="d-price-max" placeholder="Max" oninput="syncFromDrawer()">
+      </div>
+    </div>
+    <div class="drawer-section" style="grid-column:1/-1">
+      <span class="drawer-section-label">Type</span>
+      <div class="drawer-checkboxes">
+        <label><input type="checkbox" id="d-deals" onchange="syncFromDrawer()"> Deals only (&darr;5%+ FMV)</label>
+        <label><input type="checkbox" id="d-tier1" onchange="syncFromDrawer()"> GT / Collector</label>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-actions">
+    <button class="drawer-apply" onclick="closeDrawer()">Apply</button>
+    <button class="drawer-reset" onclick="resetFilters();closeDrawer()">Reset</button>
+  </div>
+</div>
+
 <script>
+// ── Card pool ──────────────────────────────────────────────────────────────────
+var allCards = Array.from(document.querySelectorAll('#cards-grid .card'));
+var visibleCards = [];
+var renderedCount = 0;
+var PAGE = 60;
+
 // ── Chip filter state ─────────────────────────────────────────────────────────
 var activeGens = [];
 var activeSrcs = [];
 
 function toggleChip(btn, type) {{
   btn.classList.toggle('active');
+  var val = btn.dataset.val;
+  document.querySelectorAll('.chip[data-val="' + val + '"]').forEach(function(c) {{
+    if (c !== btn) c.classList.toggle('active', btn.classList.contains('active'));
+  }});
   if (type === 'gen') {{
-    var val = btn.dataset.val;
     var idx = activeGens.indexOf(val);
     if (idx > -1) activeGens.splice(idx,1); else activeGens.push(val);
   }} else {{
-    var val = btn.dataset.val;
     var idx = activeSrcs.indexOf(val);
     if (idx > -1) activeSrcs.splice(idx,1); else activeSrcs.push(val);
   }}
   applyFilters();
-}}
-
-// ── View switching ────────────────────────────────────────────────────────────
-function switchView(name, el) {{
-  document.querySelectorAll('.view').forEach(function(v) {{ v.classList.remove('active'); }});
-  document.querySelectorAll('.nav-item').forEach(function(t) {{ t.classList.remove('active'); }});
-  document.getElementById('view-' + name).classList.add('active');
-  if (el) el.classList.add('active');
-  updateCount();
+  updateFabState();
 }}
 
 // ── Main filter ───────────────────────────────────────────────────────────────
 function applyFilters() {{
-  var yearMin  = parseInt(document.getElementById('f-year-min').value) || 0;
-  var yearMax  = parseInt(document.getElementById('f-year-max').value) || 9999;
-  var priceMin = parseFloat(document.getElementById('f-price-min').value) || 0;
-  var priceMax = parseFloat(document.getElementById('f-price-max').value) || 99999999;
-  var dealsOnly= document.getElementById('f-deals').checked;
-  var tier1Only= document.getElementById('f-tier1').checked;
-  var q        = document.getElementById('search-box').value.toLowerCase();
+  var q       = (document.getElementById('search-box').value || '').toLowerCase();
+  var yMin    = parseInt(document.getElementById('f-year-min').value)  || 0;
+  var yMax    = parseInt(document.getElementById('f-year-max').value)  || 9999;
+  var pMin    = parseInt(document.getElementById('f-price-min').value) || 0;
+  var pMax    = parseInt(document.getElementById('f-price-max').value) || 999999999;
+  var dealsOnly = document.getElementById('f-deals').checked;
+  var tier1Only = document.getElementById('f-tier1').checked;
 
-  var cards = document.querySelectorAll('#cards-grid .card');
-  var shown = 0;
-  cards.forEach(function(card) {{
-    var cardGen      = (card.dataset.gen      || '').toLowerCase();
-    var cardYear     = parseInt(card.dataset.year) || 0;
-    var cardPrice    = parseFloat(card.dataset.price) || 0;
-    var cardTier     = (card.dataset.tier     || '').toUpperCase();
-    var cardText     = card.textContent.toLowerCase();
-    var cardSrcLabel = (card.dataset.srcLabel || '').toLowerCase();
+  visibleCards = [];
+  allCards.forEach(function(c) {{
+    var yr   = parseInt(c.dataset.year)  || 0;
+    var pr   = parseInt(c.dataset.price) || 0;
+    var gen  = c.dataset.gen      || '';
+    var src  = c.dataset.srcLabel || '';
+    var tier = c.dataset.tier     || '';
+    var txt  = (c.dataset.year+' '+c.dataset.model+' '+c.dataset.dealer+' '+c.dataset.gen).toLowerCase();
 
-    var show = true;
-    if (activeGens.length > 0) {{
-      var matched = false;
-      for (var i=0;i<activeGens.length;i++) {{
-        if (cardGen === activeGens[i].toLowerCase()) {{ matched=true; break; }}
-      }}
-      if (!matched) show = false;
-    }}
-    if (show && activeSrcs.length > 0) {{
-      var matched = false;
-      for (var i=0;i<activeSrcs.length;i++) {{
-        if (cardSrcLabel === activeSrcs[i].toLowerCase()) {{ matched=true; break; }}
-      }}
-      if (!matched) show = false;
-    }}
-    if (show && (cardYear < yearMin || cardYear > yearMax)) show = false;
-    if (show && cardPrice > 0 && (cardPrice < priceMin || cardPrice > priceMax)) show = false;
-    if (show && tier1Only && cardTier !== 'TIER1') show = false;
-    if (show && q && !cardText.includes(q)) show = false;
+    var ok = true;
+    if (q && txt.indexOf(q) === -1) ok = false;
+    if (yr < yMin || yr > yMax) ok = false;
+    if (pMin && pr < pMin) ok = false;
+    if (pMax < 999999999 && pr > pMax) ok = false;
+    if (activeGens.length && activeGens.indexOf(gen) === -1) ok = false;
+    if (activeSrcs.length && activeSrcs.indexOf(src) === -1) ok = false;
+    if (dealsOnly && !c.querySelector('.img-deal-badge')) ok = false;
+    if (tier1Only && tier !== 'TIER1') ok = false;
 
-    card.style.display = show ? '' : 'none';
-    if (show) shown++;
+    if (ok) visibleCards.push(c);
   }});
-  updateCount(shown);
+
+  // Virtual render: show only first PAGE, hide the rest
+  renderedCount = Math.min(PAGE, visibleCards.length);
+  allCards.forEach(function(c) {{ c.style.display = 'none'; }});
+  for (var i = 0; i < renderedCount; i++) visibleCards[i].style.display = '';
+
+  var rc = document.getElementById('results-count');
+  if (rc) rc.textContent = visibleCards.length + ' listing' + (visibleCards.length !== 1 ? 's' : '');
+}}
+
+// ── Infinite scroll ───────────────────────────────────────────────────────────
+var _ca = document.querySelector('.content-area');
+if (_ca) {{
+  _ca.addEventListener('scroll', function() {{
+    if (renderedCount >= visibleCards.length) return;
+    if (_ca.scrollTop + _ca.clientHeight >= _ca.scrollHeight - 400) {{
+      var next = Math.min(renderedCount + PAGE, visibleCards.length);
+      for (var i = renderedCount; i < next; i++) visibleCards[i].style.display = '';
+      renderedCount = next;
+    }}
+  }});
 }}
 
 function resetFilters() {{
   activeGens = []; activeSrcs = [];
   document.querySelectorAll('.chip').forEach(function(c) {{ c.classList.remove('active'); }});
-  document.getElementById('f-year-min').value = '';
-  document.getElementById('f-year-max').value = '';
-  document.getElementById('f-price-min').value = '';
-  document.getElementById('f-price-max').value = '';
-  document.getElementById('f-deals').checked = false;
-  document.getElementById('f-tier1').checked = false;
+  ['f-year-min','f-year-max','f-price-min','f-price-max',
+   'd-year-min','d-year-max','d-price-min','d-price-max'].forEach(function(id) {{
+    var el = document.getElementById(id); if (el) el.value = '';
+  }});
+  ['f-deals','f-tier1','d-deals','d-tier1'].forEach(function(id) {{
+    var el = document.getElementById(id); if (el) el.checked = false;
+  }});
   document.getElementById('search-box').value = '';
   applyFilters();
+  updateFabState();
 }}
 
-function updateCount(n) {{
-  var el = document.getElementById('results-count');
-  if (!el) return;
-  var total = document.querySelectorAll('#cards-grid .card').length;
-  el.textContent = (n !== undefined ? n + ' of ' : '') + total + ' listings';
+// ── Drawer ────────────────────────────────────────────────────────────────────
+var _SYNC = [['d-year-min','f-year-min'],['d-year-max','f-year-max'],
+             ['d-price-min','f-price-min'],['d-price-max','f-price-max'],
+             ['d-deals','f-deals'],['d-tier1','f-tier1']];
+
+function syncFromDrawer() {{
+  _SYNC.forEach(function(p) {{
+    var s = document.getElementById(p[0]), d = document.getElementById(p[1]);
+    if (!s || !d) return;
+    if (s.type === 'checkbox') d.checked = s.checked; else d.value = s.value;
+  }});
+  applyFilters(); updateFabState();
+}}
+
+function openDrawer() {{
+  _SYNC.forEach(function(p) {{
+    var s = document.getElementById(p[1]), d = document.getElementById(p[0]);
+    if (!s || !d) return;
+    if (s.type === 'checkbox') d.checked = s.checked; else d.value = s.value;
+  }});
+  document.getElementById('filter-drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}}
+
+function closeDrawer() {{
+  document.getElementById('filter-drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}}
+
+function updateFabState() {{
+  var fab = document.getElementById('filter-fab');
+  if (!fab) return;
+  var on = activeGens.length || activeSrcs.length ||
+    document.getElementById('f-year-min').value ||
+    document.getElementById('f-price-min').value ||
+    document.getElementById('f-deals').checked ||
+    document.getElementById('f-tier1').checked;
+  fab.classList.toggle('has-filters', !!on);
+}}
+
+// ── View switcher ─────────────────────────────────────────────────────────────
+function switchView(name, btn) {{
+  document.querySelectorAll('.view').forEach(function(v) {{ v.classList.remove('active'); }});
+  document.querySelectorAll('.nav-item').forEach(function(b) {{ b.classList.remove('active'); }});
+  var v = document.getElementById('view-' + name);
+  if (v) v.classList.add('active');
+  if (btn) btn.classList.add('active');
+}}
+
+// ── Smart auto-refresh (preserves filter state, no hard reload) ───────────────
+function _autoRefresh() {{
+  fetch(location.href + '?_nc=' + Date.now(), {{cache:'no-store'}})
+    .then(function(r) {{ return r.text(); }})
+    .then(function(html) {{
+      var m = html.match(/<div class="cards-grid" id="cards-grid">([\s\S]*?)<\/div>\s*<\/div>\s*<!--/);
+      if (!m) return;
+      var grid = document.getElementById('cards-grid');
+      if (!grid) return;
+      var tmp = document.createElement('div');
+      tmp.innerHTML = m[1];
+      if (tmp.querySelectorAll('.card').length === allCards.length) return;
+      grid.innerHTML = m[1];
+      allCards = Array.from(grid.querySelectorAll('.card'));
+      applyFilters();
+      startCountdowns();
+    }}).catch(function() {{}});
+}}
+setInterval(_autoRefresh, 180000);
+
+// ── Auction countdown ─────────────────────────────────────────────────────────
+function startCountdowns() {{
+  document.querySelectorAll('.countdown[data-ends]').forEach(function(el) {{
+    function tick() {{
+      var ends = new Date(el.dataset.ends.replace(' ','T') + 'Z');
+      var diff = Math.max(0, ends - Date.now());
+      if (diff === 0) {{ el.textContent = 'Ended'; return; }}
+      var h = Math.floor(diff/3600000);
+      var m = Math.floor((diff%3600000)/60000);
+      var s = Math.floor((diff%60000)/1000);
+      el.textContent = h ? h+'h '+m+'m' : m ? m+'m '+s+'s' : s+'s';
+      setTimeout(tick, 1000);
+    }}
+    tick();
+  }});
 }}
 
 // ── Comps filter / sort ───────────────────────────────────────────────────────
 function filterComps() {{
-  var q   = document.getElementById('comp-search').value.toLowerCase();
+  var q   = (document.getElementById('comp-search').value || '').toLowerCase();
   var gen = document.getElementById('comp-gen-filter').value.toLowerCase();
-  document.querySelectorAll('#comps-body .comp-row').forEach(function(row) {{
-    var text   = row.textContent.toLowerCase();
-    var rowGen = (row.dataset.gen || '').toLowerCase();
-    var show = true;
-    if (q && !text.includes(q)) show = false;
-    if (gen && rowGen !== gen) show = false;
-    row.style.display = show ? '' : 'none';
+  document.querySelectorAll('#comps-body .comp-row').forEach(function(r) {{
+    var txt  = r.textContent.toLowerCase();
+    var rgen = (r.dataset.gen || '').toLowerCase();
+    r.style.display = ((!q || txt.indexOf(q) > -1) && (!gen || rgen === gen)) ? '' : 'none';
   }});
 }}
 
-var _compSortDir = {{}};
+var _compSort = {{col:'date', asc:false}};
 function sortComps(col) {{
-  var tbody = document.getElementById('comps-body');
-  var rows  = Array.from(tbody.querySelectorAll('.comp-row'));
-  var dir   = (_compSortDir[col] = !_compSortDir[col]);
-  var colMap = {{year:1, gen:3, mileage:5, price:6, date:7}};
-  var idx = colMap[col];
-  rows.sort(function(a, b) {{
-    var av = a.cells[idx] ? a.cells[idx].textContent.replace(/[$,]/g,'').trim() : '';
-    var bv = b.cells[idx] ? b.cells[idx].textContent.replace(/[$,]/g,'').trim() : '';
+  _compSort.asc = (_compSort.col === col) ? !_compSort.asc : false;
+  _compSort.col = col;
+  var rows = Array.from(document.querySelectorAll('#comps-body .comp-row'));
+  rows.sort(function(a,b) {{
+    var cells = {{year:1,gen:3,mileage:5,price:6,date:7}};
+    var ci = cells[col] !== undefined ? cells[col] : 7;
+    var av = a.cells[ci] ? a.cells[ci].textContent.replace(/[$,]/g,'') : '';
+    var bv = b.cells[ci] ? b.cells[ci].textContent.replace(/[$,]/g,'') : '';
     var an = parseFloat(av), bn = parseFloat(bv);
-    var cmp = isNaN(an) ? av.localeCompare(bv) : an - bn;
-    return dir ? cmp : -cmp;
+    var cmp = (!isNaN(an) && !isNaN(bn)) ? (an-bn) : av.localeCompare(bv);
+    return _compSort.asc ? cmp : -cmp;
   }});
-  rows.forEach(function(r) {{ tbody.appendChild(r); }});
-}}
-
-// ── Countdown timers ──────────────────────────────────────────────────────────
-function updateCountdowns() {{
-  document.querySelectorAll('.countdown[data-ends]').forEach(function(el) {{
-    var ends = new Date(el.dataset.ends);
-    var diff = ends - new Date();
-    if (diff <= 0) {{
-      el.textContent = 'Ended';
-      return;
-    }}
-    var d = Math.floor(diff / 86400000);
-    var h = Math.floor((diff % 86400000) / 3600000);
-    var m = Math.floor((diff % 3600000) / 60000);
-    var s = Math.floor((diff % 60000) / 1000);
-    el.textContent = d > 0 ? (d + 'd ' + h + 'h ' + m + 'm') : (h + 'h ' + m + 'm ' + s + 's');
-  }});
+  var body = document.getElementById('comps-body');
+  rows.forEach(function(r) {{ body.appendChild(r); }});
 }}
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {{
-  updateCount();
-  updateCountdowns();
-  setInterval(updateCountdowns, 1000);
+window.addEventListener('DOMContentLoaded', function() {{
+  applyFilters();
+  startCountdowns();
 }});
-
-if ('serviceWorker' in navigator) {{
-  window.addEventListener('load', function() {{
-    navigator.serviceWorker.register('/PTOX11/sw.js')
-      .then(function(reg) {{ console.log('SW registered:', reg.scope); }})
-      .catch(function(err) {{ console.log('SW registration failed:', err); }});
-  }});
-}}
 </script>
-</body>
 </html>"""
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)

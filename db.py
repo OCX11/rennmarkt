@@ -2,7 +2,7 @@
 import re
 import sqlite3
 import json
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 DB_PATH = Path(__file__).parent / "data" / "inventory.db"
@@ -457,11 +457,15 @@ def upsert_listing(conn, dealer, year, make, model, trim, mileage, price, vin, u
                    body_style=COALESCE(?,body_style), seller_type=COALESCE(?,seller_type),
                    feed_type=COALESCE(feed_type,?),
                    auction_ends_at=COALESCE(?,auction_ends_at),
-                   image_url_cdn=COALESCE(?,image_url_cdn)
+                   image_url_cdn=COALESCE(?,image_url_cdn),
+                   date_first_seen=CASE WHEN ? IS NOT NULL AND ? > date_first_seen
+                                   THEN ? ELSE date_first_seen END
                WHERE id=?""",
             (today, price, trim, mileage, url, image_url, source_category(dealer), tier,
              color, transmission, location, condition, body_style, seller_type,
-             feed_type, auction_ends_at, image_url_cdn, listing_id)
+             feed_type, auction_ends_at, image_url_cdn,
+             date_first_seen, date_first_seen, date_first_seen,
+             listing_id)
         )
         if price_changed and price and price > 0 and price < 2_000_000:
             conn.execute(
@@ -499,6 +503,21 @@ def archive_listing(conn, listing_id, reason="sold"):
            WHERE id=?""",
         (reason, listing_id)
     )
+
+
+def archive_stale_listings(conn, days=90):
+    """Move active listings not seen in `days` days to sold/archived status.
+    Returns count of listings archived."""
+    cutoff = (date.today() - timedelta(days=days)).isoformat()
+    result = conn.execute(
+        """UPDATE listings
+           SET status='sold', archived_at=datetime('now'), archive_reason='stale_90d'
+           WHERE status='active'
+             AND date_last_seen < ?
+             AND date_last_seen IS NOT NULL""",
+        (cutoff,)
+    )
+    return result.rowcount
 
 
 def update_listing_paths(conn, listing_id, html_path=None, screenshot_path=None):

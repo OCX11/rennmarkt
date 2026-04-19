@@ -133,11 +133,21 @@ def run_snapshot(dealer_results: dict, today: str):
             # Save raw snapshot
             database.save_snapshot(conn, today, dealer_name, cars)
 
-            # Mark no-longer-seen as sold
-            before = conn.execute(
+            # Mark no-longer-seen as sold.
+            # Safety guard: for sources where pagination may be partial, only mark
+            # sold if we scraped at least as many as currently active (with 20% buffer).
+            # This prevents partial scrapes from mass-flagging cars as sold.
+            currently_active = conn.execute(
                 "SELECT COUNT(*) FROM listings WHERE dealer=? AND status='active'",
                 (dealer_name,)
             ).fetchone()[0]
+            min_threshold = max(5, int(currently_active * 0.5))
+            if len(cars) < min_threshold:
+                log.warning("  [%s] Only %d cars scraped vs %d active — skipping sold-marking (partial scrape guard)",
+                            dealer_name, len(cars), currently_active)
+                continue
+
+            before = currently_active
             database.mark_sold(conn, dealer_name, active_keys, today)
             after = conn.execute(
                 "SELECT COUNT(*) FROM listings WHERE dealer=? AND status='active'",
@@ -152,6 +162,10 @@ def run_snapshot(dealer_results: dict, today: str):
             "Snapshot complete — new: %d  price changes: %d  sold: %d",
             new_total, updated_total, sold_total
         )
+        # Archive listings not seen in 90+ days
+        archived = database.archive_stale_listings(conn, days=90)
+        if archived:
+            log.info("Archived %d stale listings (90d rule)", archived)
     return new_total, updated_total, sold_total, new_ids
 
 

@@ -1376,12 +1376,22 @@ def scrape_pcamart():
             adnum = row.get("ADNUMBER")
             url = f"{BASE}/ads/{adnum}" if adnum else ""
             img_name = _clean(row.get("MAINIMAGENAME"))
-            # Actual image path: /includes/images/martAdImages/{adnum}/{imgname}.jpg
             image_url = f"{BASE}/includes/images/martAdImages/{adnum}/{img_name}.jpg" if (img_name and adnum) else None
+            # Use LASTUPDATED (ISO timestamp) as date_first_seen so recently-renewed
+            # listings sort correctly in the dashboard feed
+            last_updated = _clean(row.get("LASTUPDATED")) or ""
+            date_fs = None
+            if last_updated:
+                try:
+                    # LASTUPDATED is a CF timestamp like "2026-04-18 14:32:00"
+                    date_fs = last_updated[:10]
+                except Exception:
+                    pass
             if not year:
                 continue
             c = dict(year=year, make=make, model=model, trim=trim,
-                     mileage=mileage, price=price, vin=None, listing_url=url, image_url=image_url)
+                     mileage=mileage, price=price, vin=None, listing_url=url, image_url=image_url,
+                     date_first_seen=date_fs)
             if _is_valid_listing(c):
                 out.append(c)
         return out
@@ -1434,62 +1444,60 @@ def scrape_pcamart():
             if not first:
                 log.debug("PCA Mart: interception missed page1, using evaluate fallback")
                 try:
-                    form_p1 = FORM_TEMPLATE.format(page=1).replace("'", "\\'")
-                    first = pg.evaluate(f"""
-                        fetch('/search/', {{
+                    first = pg.evaluate(
+                        """(body) => fetch('/search/', {
                             method: 'POST',
-                            headers: {{'Content-Type': 'application/x-www-form-urlencoded'}},
-                            body: '{form_p1}'
-                        }}).then(r => r.json())
-                    """)
+                            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                            body: body
+                        }).then(r => r.json())""",
+                        FORM_TEMPLATE.format(page=1)
+                    )
                 except Exception as e:
                     log.warning("PCA Mart fallback evaluate failed: %s", e)
 
-            # ColdFusion gates /search/ behind a valid CF session cookie. When the
-            # POST fires immediately after domcontentloaded the cookie isn't always
-            # accepted yet, so the server returns TOTALRECORDS=0 despite valid JSON.
-            # Retry the POST up to 2 more times with a delay to let the session settle.
-            for _retry in range(2):
+            # Helper: POST /search/ with body passed as JS argument to avoid
+            # f-string escaping issues with semicolons in yearRange/priceRange.
+            def _pca_fetch(page_num):
+                body = FORM_TEMPLATE.format(page=page_num)
+                return pg.evaluate(
+                    """(body) => fetch('/search/', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        body: body
+                    }).then(r => r.json())""",
+                    body
+                )
+
+            # ColdFusion gates /search/ behind a valid CF session cookie. Retry
+            # page 1 up to 2 times if TOTALRECORDS comes back 0.
+            for _retry in range(3):
                 _total = int((first.get("DATA") or {}).get("TOTALRECORDS", [0])[0] or 0) if first else 0
                 if _total > 0:
                     break
-                log.debug("PCA Mart: page1 returned 0 records, retrying in 3s (attempt %d/2)...",
+                log.debug("PCA Mart: page1 returned 0 records, retrying in 3s (attempt %d/3)...",
                           _retry + 1)
                 time.sleep(3)
                 try:
-                    form_p1 = FORM_TEMPLATE.format(page=1).replace("'", "\\'")
-                    first = pg.evaluate(f"""
-                        fetch('/search/', {{
-                            method: 'POST',
-                            headers: {{'Content-Type': 'application/x-www-form-urlencoded'}},
-                            body: '{form_p1}'
-                        }}).then(r => r.json())
-                    """)
+                    first = _pca_fetch(1)
                 except Exception as e:
                     log.warning("PCA Mart page1 retry %d failed: %s", _retry + 1, e)
                     first = None
 
             if first:
                 cars.extend(_parse_cf_page(first))
-                # TOTALRECORDS lives inside DATA dict, not at the top level
                 total = (first.get("DATA") or {}).get("TOTALRECORDS", [0])[0] or 0
                 pages = max(1, (int(total) + 19) // 20) if total else 1
+                log.info("PCA Mart: %d total records across %d pages", total, pages)
 
-                for pg_num in range(2, min(pages + 1, 60)):
+                for pg_num in range(2, min(pages + 1, 80)):
                     try:
-                        form = FORM_TEMPLATE.format(page=pg_num).replace("'", "\\'")
-                        result = pg.evaluate(f"""
-                            fetch('/search/', {{
-                                method: 'POST',
-                                headers: {{'Content-Type': 'application/x-www-form-urlencoded'}},
-                                body: '{form}'
-                            }}).then(r => r.json())
-                        """)
+                        result = _pca_fetch(pg_num)
                         batch = _parse_cf_page(result)
-                        if not batch:
-                            break
+                        if not batch and pg_num > 5:
+                            # Allow up to 3 empty pages before stopping
+                            pass
                         cars.extend(batch)
-                        time.sleep(0.3)
+                        time.sleep(0.2)
                     except Exception as e:
                         log.warning("PCA Mart page %d error: %s", pg_num, e)
                         break

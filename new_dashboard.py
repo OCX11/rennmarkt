@@ -576,7 +576,7 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 .chip {{
   font-family:'DM Mono',monospace; font-size:10px;
   background:var(--bg3); border:1px solid var(--border);
-  color:#8888A0; padding:4px 9px; border-radius:20px;
+  color:#9898B0; padding:4px 9px; border-radius:20px;
   cursor:pointer; transition:all 0.1s;
 }}
 .chip:hover {{ color:var(--text); border-color:var(--muted); }}
@@ -693,27 +693,27 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 .card-top-row {{
   display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;
 }}
-.card-age {{ font-family:'DM Mono',monospace; font-size:9px; color:#7A7A8E; }}
+.card-age {{ font-family:'DM Mono',monospace; font-size:10px; color:#8A8A9E; }}
 .card-title {{
-  font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500;
-  color:#E8E8F4; margin-bottom:4px; line-height:1.35;
+  font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500;
+  color:#F0F0FC; margin-bottom:4px; line-height:1.35;
 }}
 .tier-badge {{
   display:inline-block; font-family:'DM Mono',monospace; font-size:9px; font-weight:500;
   background:#1A0A00; color:var(--yellow); padding:2px 7px; border-radius:3px;
   margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;
-  border:1px solid #3A2000;
+  border:1px solid #4A2800;
 }}
 .card-price-row {{
   display:flex; align-items:baseline; gap:6px; margin-bottom:8px;
 }}
 .price-lbl {{ font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); }}
-.price-ask    {{ font-family:'DM Mono',monospace; font-size:16px; font-weight:500; color:#fff; letter-spacing:-0.5px; }}
-.price-auction{{ font-family:'DM Mono',monospace; font-size:16px; font-weight:500; color:#A78BFA; letter-spacing:-0.5px; }}
+.price-ask    {{ font-family:'DM Mono',monospace; font-size:17px; font-weight:600; color:#fff; letter-spacing:-0.5px; }}
+.price-auction{{ font-family:'DM Mono',monospace; font-size:17px; font-weight:600; color:#C4B5FD; letter-spacing:-0.5px; }}
 
 /* ── FMV bar ── */
 .fmv-block {{ margin-bottom:7px; }}
-.fmv-top-row {{ display:flex; justify-content:space-between; font-family:'DM Mono',monospace; font-size:9px; margin-bottom:5px; }}
+.fmv-top-row {{ display:flex; justify-content:space-between; font-family:'DM Mono',monospace; font-size:10px; margin-bottom:5px; }}
 .fmv-label {{ color:var(--muted); }}
 .fmv-delta-txt {{ font-weight:500; }}
 .fmv-delta-txt.bar-great {{ color:var(--green); }}
@@ -735,8 +735,8 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
   position:absolute; left:50%; top:0; bottom:0;
   width:1px; background:rgba(255,255,255,0.12);
 }}
-.fmv-bottom-row {{ display:flex; justify-content:space-between; font-family:'DM Mono',monospace; font-size:9px; }}
-.fmv-val-txt {{ color:var(--muted); }}
+.fmv-bottom-row {{ display:flex; justify-content:space-between; font-family:'DM Mono',monospace; font-size:10px; }}
+.fmv-val-txt {{ color:#A0A0B4; }}
 .fmv-comps-txt {{ color:#6B6B7D; }}
 .fmv-none {{
   display:flex; align-items:center; gap:5px;
@@ -748,9 +748,9 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
   font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-bottom:5px;
 }}
 .countdown {{ color:var(--red); font-weight:500; }}
-.card-meta {{ font-family:'DM Mono',monospace; font-size:9px; color:#7A7A8E; }}
+.card-meta {{ font-family:'DM Mono',monospace; font-size:10px; color:#8A8A9E; }}
 .days-stale {{ color:#F87171; font-weight:500; }}
-.badge {{ font-family:'DM Mono',monospace; font-size:9px; font-weight:500; padding:2px 6px; border-radius:3px; display:inline-block; }}
+.badge {{ font-family:'DM Mono',monospace; font-size:10px; font-weight:500; padding:2px 7px; border-radius:3px; display:inline-block; }}
 
 /* ── Table view (comps) ── */
 .tbl-wrap {{ overflow-x:auto; background:var(--bg2); border:1px solid var(--border); border-radius:6px; }}
@@ -842,7 +842,14 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
   font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1px;
   text-transform:uppercase; color:var(--text); font-weight:500;
 }}
-.drawer-chips {{ display:flex; flex-wrap:wrap; gap:5px; }}
+.drawer-chips {{ display:flex; flex-wrap:wrap; gap:8px; }}
+.drawer-chips .chip {{
+  font-size:13px; padding:9px 16px; border-radius:24px;
+  border-color:var(--border); color:var(--text);
+}}
+.drawer-chips .chip.active {{
+  background:#2A0815; border-color:var(--red); color:var(--red);
+}}
 .drawer-range {{ display:flex; gap:6px; }}
 .drawer-range input {{
   width:100%; padding:12px 12px; border:1px solid var(--border); border-radius:8px;
@@ -1268,12 +1275,19 @@ function updateFabState() {{
 }}
 
 // ── View switcher ─────────────────────────────────────────────────────────────
+var _currentView = 'listings';
 function switchView(name, btn) {{
   document.querySelectorAll('.view').forEach(function(v) {{ v.classList.remove('active'); }});
   document.querySelectorAll('.nav-item').forEach(function(b) {{ b.classList.remove('active'); }});
   var v = document.getElementById('view-' + name);
   if (v) v.classList.add('active');
   if (btn) btn.classList.add('active');
+  // Re-render listings only if switching back from another tab
+  if (name === 'listings' && _currentView !== 'listings') {{
+    // Listings are already rendered — just restart countdowns
+    startCountdowns();
+  }}
+  _currentView = name;
 }}
 
 // ── Smart auto-refresh (no reload, no filter wipe) ───────────────────────────

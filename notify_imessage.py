@@ -77,9 +77,18 @@ def _load_config() -> dict:
 def _load_seen() -> dict:
     if SEEN_FILE.exists():
         try:
-            return json.loads(SEEN_FILE.read_text())
+            data = json.loads(SEEN_FILE.read_text())
         except Exception:
-            pass
+            return {}
+        # Prune entries older than 30 days
+        cutoff = (datetime.now() - timedelta(days=30)).isoformat()
+        pruned = {k: v for k, v in data.items()
+                  if v.get("alerted_at", "") >= cutoff}
+        if len(pruned) < len(data):
+            log.info("seen_alerts: pruned %d entries older than 30 days", len(data) - len(pruned))
+            SEEN_FILE.parent.mkdir(exist_ok=True)
+            SEEN_FILE.write_text(json.dumps(pruned, indent=2))
+        return pruned
     return {}
 
 
@@ -314,13 +323,12 @@ def notify_new_listings(conn, new_listing_ids):
         msg = _format_new_listing(s)
         ok  = _send_imessage(recipient, msg)
 
-        seen[seen_key] = {
-            "alerted_at": datetime.now().isoformat(),
-            "alerted":    ok,
-        }
-        _save_seen(seen)  # save after each so a crash mid-run doesn't re-send
-
         if ok:
+            seen[seen_key] = {
+                "alerted_at": datetime.now().isoformat(),
+                "alerted":    True,
+            }
+            _save_seen(seen)  # save after each so a crash mid-run doesn't re-send
             sent += 1
             log.info("  → iMessage sent to %s", recipient)
             import time as _time
@@ -418,10 +426,9 @@ def notify_auction_ending(conn):
         log.info("ENDING SOON: %s %s %s — %dh %dm remaining",
                  s.get("year"), s.get("model"), s.get("trim") or "", rem_h, rem_m)
 
-        seen[seen_key] = {"alerted_at": datetime.now().isoformat(), "alerted": False}
         ok = _send_imessage(recipient, msg)
         if ok:
-            seen[seen_key]["alerted"] = True
+            seen[seen_key] = {"alerted_at": datetime.now().isoformat(), "alerted": True}
             sent += 1
             log.info("  → ending-soon iMessage sent to %s", recipient)
             img_url = s.get("image_url") or ""
@@ -429,9 +436,9 @@ def notify_auction_ending(conn):
                 img_url = s.get("image_url_cdn") or ""
             if img_url and img_url.startswith("http"):
                 _send_imessage_image(recipient, img_url)
+            _save_seen(seen)
         else:
             log.error("  → ending-soon iMessage delivery failed")
-        _save_seen(seen)
 
     log.info("Ending-soon alerts: %d sent", sent)
 

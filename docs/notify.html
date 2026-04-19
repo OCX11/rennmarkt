@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PTOX11 — Push Notifications</title>
+<link rel="manifest" href="/PTOX11/manifest.json">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --border: #2a2d3a;
+    --accent: #e8a045;
+    --green: #4caf73;
+    --red: #e05555;
+    --text: #e8eaf0;
+    --muted: #7a7e91;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 32px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+  }
+  .logo { font-size: 40px; margin-bottom: 12px; }
+  h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 6px; }
+  .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 32px; line-height: 1.5; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+    font-size: 15px;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 28px;
+    cursor: pointer;
+    width: 100%;
+    transition: opacity .15s;
+  }
+  .btn:hover { opacity: .88; }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .btn.secondary {
+    background: transparent;
+    color: var(--red);
+    border: 1px solid var(--red);
+    margin-top: 12px;
+  }
+  .status {
+    margin-top: 24px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    display: none;
+  }
+  .status.ok  { background: #1e2f22; color: var(--green); border: 1px solid #2d4a32; display: block; }
+  .status.err { background: #2f1e1e; color: var(--red);   border: 1px solid #4a2d2d; display: block; }
+  .status.info { background: #1e2330; color: #7fb3d3; border: 1px solid #2d3a4a; display: block; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+  .back { color: var(--muted); font-size: 13px; text-decoration: none; }
+  .back:hover { color: var(--text); }
+  #label-row { margin-bottom: 20px; text-align: left; }
+  #label-row label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 6px; }
+  #label-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 14px;
+    padding: 10px 12px;
+    outline: none;
+  }
+  #label-input:focus { border-color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">🏎</div>
+  <h1>Push Notifications</h1>
+  <p class="subtitle">Get an instant push when a new Porsche listing drops — tap to open it directly.</p>
+
+  <div id="label-row">
+    <label for="label-input">Your name (optional)</label>
+    <input id="label-input" type="text" placeholder="e.g. T's iPhone" maxlength="40">
+  </div>
+
+  <button class="btn" id="subscribe-btn" onclick="handleSubscribe()">
+    🔔 Enable Notifications
+  </button>
+  <button class="btn secondary" id="unsub-btn" onclick="handleUnsubscribe()" style="display:none">
+    🔕 Disable Notifications
+  </button>
+
+  <div id="status" class="status"></div>
+
+  <hr class="divider">
+  <a href="/PTOX11/" class="back">← Back to dashboard</a>
+</div>
+
+<script>
+// The push server URL — will be set to your Cloudflare Tunnel URL
+// This value is patched by setup_push.sh after tunnel creation
+const PUSH_SERVER = 'https://politics-calculated-sorted-yellow.trycloudflare.com';
+
+function showStatus(msg, type = 'ok') {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status ' + type;
+}
+
+async function getPublicKey() {
+  const resp = await fetch(PUSH_SERVER + '/vapid-public-key');
+  const { publicKey } = await resp.json();
+  return publicKey;
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(base64);
+  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+}
+
+async function checkExistingSubscription() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const existing = await reg.pushManager.getSubscription();
+    if (existing) {
+      document.getElementById('subscribe-btn').style.display = 'none';
+      document.getElementById('unsub-btn').style.display = '';
+      document.getElementById('label-row').style.display = 'none';
+      showStatus('✅ Notifications are enabled on this device.', 'ok');
+    }
+  } catch (e) {}
+}
+
+async function handleSubscribe() {
+  const btn = document.getElementById('subscribe-btn');
+  btn.disabled = true;
+  btn.textContent = 'Setting up…';
+
+  try {
+    if (!('serviceWorker' in navigator)) throw new Error('Service workers not supported');
+    if (!('PushManager' in window)) throw new Error('Push not supported on this browser/device');
+
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') throw new Error('Notification permission denied');
+
+    const reg = await navigator.serviceWorker.register('/PTOX11/sw.js', { scope: '/PTOX11/' });
+    await navigator.serviceWorker.ready;
+
+    const publicKey = await getPublicKey();
+    const subscription = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicKey),
+    });
+
+    const label = document.getElementById('label-input').value.trim();
+    const resp = await fetch(PUSH_SERVER + '/subscribe?label=' + encodeURIComponent(label), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(subscription),
+    });
+
+    if (!resp.ok) throw new Error('Server rejected subscription');
+    const result = await resp.json();
+
+    btn.style.display = 'none';
+    document.getElementById('unsub-btn').style.display = '';
+    document.getElementById('label-row').style.display = 'none';
+    showStatus('✅ You\'re subscribed! ' + (result.total > 1 ? result.total + ' devices total.' : 'Notifications will arrive instantly.'), 'ok');
+
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = '🔔 Enable Notifications';
+    showStatus('⚠️ ' + err.message, 'err');
+  }
+}
+
+async function handleUnsubscribe() {
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (sub) {
+      await fetch(PUSH_SERVER + '/unsubscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ endpoint: sub.endpoint }),
+      });
+      await sub.unsubscribe();
+    }
+    document.getElementById('unsub-btn').style.display = 'none';
+    document.getElementById('subscribe-btn').style.display = '';
+    document.getElementById('subscribe-btn').disabled = false;
+    document.getElementById('subscribe-btn').textContent = '🔔 Enable Notifications';
+    document.getElementById('label-row').style.display = '';
+    showStatus('Notifications disabled on this device.', 'info');
+  } catch (err) {
+    showStatus('Failed to unsubscribe: ' + err.message, 'err');
+  }
+}
+
+checkExistingSubscription();
+</script>
+</body>
+</html>

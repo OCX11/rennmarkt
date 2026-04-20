@@ -1368,6 +1368,68 @@ function _autoRefresh() {{
 }}
 setInterval(_autoRefresh, 180000);
 
+
+// ── Pull-to-refresh ───────────────────────────────────────────────────────────
+(function() {{
+  var PTR_THRESHOLD = 80;
+  var startY = 0;
+  var pulling = false;
+  var indicator = null;
+
+  function getIndicator() {{
+    if (!indicator) {{
+      indicator = document.createElement('div');
+      indicator.id = 'ptr-indicator';
+      indicator.style.cssText = [
+        'position:fixed','top:0','left:0','right:0',
+        'height:4px',
+        'background:linear-gradient(90deg,#e00400,#ffcc00)',
+        'transform:scaleX(0)','transform-origin:left',
+        'transition:transform 0.15s ease,opacity 0.3s ease',
+        'z-index:9999','pointer-events:none','opacity:0'
+      ].join(';');
+      document.body.appendChild(indicator);
+    }}
+    return indicator;
+  }}
+
+  function setProgress(ratio) {{
+    var el = getIndicator();
+    el.style.opacity = ratio > 0 ? '1' : '0';
+    el.style.transform = 'scaleX(' + Math.min(ratio, 1) + ')';
+    el.style.transition = ratio > 0 ? 'none' : 'transform 0.15s ease,opacity 0.3s ease';
+  }}
+
+  function triggerRefresh() {{
+    setProgress(1);
+    getIndicator().style.background = '#00c853';
+    _autoRefresh();
+    setTimeout(function() {{ setProgress(0); }}, 800);
+  }}
+
+  document.addEventListener('touchstart', function(e) {{
+    if (window.scrollY === 0 && e.touches.length === 1) {{
+      startY = e.touches[0].clientY;
+      pulling = true;
+    }}
+  }}, {{passive: true}});
+
+  document.addEventListener('touchmove', function(e) {{
+    if (!pulling) return;
+    var dy = e.touches[0].clientY - startY;
+    if (dy <= 0) {{ pulling = false; setProgress(0); return; }}
+    setProgress(Math.min(dy / PTR_THRESHOLD, 1));
+  }}, {{passive: true}});
+
+  document.addEventListener('touchend', function(e) {{
+    if (!pulling) return;
+    var dy = (e.changedTouches[0].clientY - startY);
+    pulling = false;
+    if (dy >= PTR_THRESHOLD) {{ triggerRefresh(); }}
+    else {{ setProgress(0); }}
+  }}, {{passive: true}});
+}})();
+
 // ── Auction countdown ─────────────────────────────────────────────────────────
 function startCountdowns() {{
   document.querySelectorAll('.countdown[data-ends]').forEach(function(el) {{

@@ -1330,6 +1330,25 @@ def scrape_bat():
     return _dedupe(cars)
 
 
+def fetch_bat_sold_price(url):
+    """Fetch a BaT listing page and parse the final hammer price.
+
+    BaT shows 'Sold for $XX,XXX' on the closed auction page.
+    Returns int price or None. All errors are swallowed — must not
+    break the scrape cycle on failure.
+    """
+    try:
+        r = SESSION.get(url, timeout=20, allow_redirects=True)
+        if r.status_code != 200:
+            return None
+        m = re.search(r"[Ss]old\s+for\s+\$\s*([\d,]+)", r.text)
+        if m:
+            return int(m.group(1).replace(",", ""))
+    except Exception as exc:
+        log.debug("fetch_bat_sold_price error %s: %s", url, exc)
+    return None
+
+
 def scrape_pcamart():
     """mart.pca.org — ColdFusion platform, Playwright required.
     POST /search/ returns column-oriented JSON. Paginate through all pages.

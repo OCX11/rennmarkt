@@ -40,6 +40,7 @@ log = logging.getLogger(__name__)
 # ---- imports after logging setup -------------------------------------------
 import db as database
 import scraper as sc
+import scraper_cnb as sc_cnb
 import dashboard as dash
 import new_dashboard as ndash
 import auction_dashboard as auc_dash
@@ -78,6 +79,62 @@ def write_scrape_summary(results: dict, today: str):
         f.write(summary + "\n")
 
     print("\n" + summary)
+
+
+def _capture_auction_result(conn, dealer_name, listing, today):
+    """Fetch the final hammer price for a just-sold auction listing and upsert to sold_comps.
+
+    Called immediately after mark_sold() for BaT and Cars and Bids listings.
+    All errors are caught internally — must never raise.
+    """
+    url = listing.get("listing_url")
+    if not url:
+        return
+    try:
+        if dealer_name == "Bring a Trailer":
+            final_price = sc.fetch_bat_sold_price(url)
+            source = "BaT"
+        else:
+            final_price = sc_cnb.fetch_cnb_sold_price(url)
+            source = "Cars and Bids"
+
+        if final_price is None:
+            log.debug("[%s] No final price found for %s", dealer_name, url)
+            return
+
+        listing_id = listing.get("id")
+        old_price = listing.get("price")
+
+        # Update listing price if the parsed hammer price differs
+        if old_price != final_price:
+            conn.execute(
+                "UPDATE listings SET price=? WHERE id=?",
+                (final_price, listing_id)
+            )
+            log.info("[%s] Final hammer price updated $%s → $%s  %s",
+                     dealer_name,
+                     f"{old_price:,}" if old_price else "?",
+                     f"{final_price:,}", url)
+
+        # Upsert to sold_comps
+        database.upsert_sold_comp(
+            conn,
+            source=source,
+            year=listing.get("year"),
+            make="Porsche",
+            model=listing.get("model"),
+            trim=listing.get("trim"),
+            mileage=listing.get("mileage"),
+            sold_price=final_price,
+            sold_date=today,
+            listing_url=url,
+            image_url=listing.get("image_url"),
+        )
+        log.info("[%s] Sold comp upserted: %s %s $%s",
+                 dealer_name, listing.get("year"), listing.get("model"),
+                 f"{final_price:,}")
+    except Exception as exc:
+        log.warning("[%s] _capture_auction_result error: %s", dealer_name, exc)
 
 
 def run_snapshot(dealer_results: dict, today: str):
@@ -150,7 +207,29 @@ def run_snapshot(dealer_results: dict, today: str):
                 continue
 
             before = currently_active
+            # For BaT and C&B, record timestamp before mark_sold so we can
+            # query which listings were just archived and attempt a final fetch.
+            _pre_sold_ts = None
+            if dealer_name in ("Bring a Trailer", "Cars and Bids"):
+                _pre_sold_ts = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+
             database.mark_sold(conn, dealer_name, active_keys, today)
+
+            # Attempt final price capture for auction listings just marked sold
+            if _pre_sold_ts is not None:
+                try:
+                    newly_sold = conn.execute(
+                        """SELECT id, listing_url, year, model, trim, mileage, price, image_url
+                           FROM listings
+                           WHERE dealer=? AND status='sold' AND archive_reason='sold'
+                             AND archived_at >= ?""",
+                        (dealer_name, _pre_sold_ts)
+                    ).fetchall()
+                    for sold_row in newly_sold:
+                        _capture_auction_result(conn, dealer_name, dict(sold_row), today)
+                except Exception as cap_exc:
+                    log.warning("[%s] Auction result capture error: %s", dealer_name, cap_exc)
+
             after = conn.execute(
                 "SELECT COUNT(*) FROM listings WHERE dealer=? AND status='active'",
                 (dealer_name,)

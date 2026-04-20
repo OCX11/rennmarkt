@@ -265,6 +265,34 @@ def _parse_cards(html):
     return listings
 
 
+def fetch_cnb_sold_price(url):
+    """Fetch a Cars and Bids listing page and parse the final hammer price.
+
+    C&B shows 'Sold for $XX,XXX' on the closed auction page.
+    Returns int price or None. All errors are swallowed — must not
+    break the scrape cycle on failure.
+    """
+    try:
+        import requests as _req
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/120.0.0.0 Safari/537.36"
+            ),
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        }
+        r = _req.get(url, headers=headers, timeout=20, allow_redirects=True)
+        if r.status_code != 200:
+            return None
+        m = re.search(r"[Ss]old\s+for\s+\$\s*([\d,]+)", r.text)
+        if m:
+            return int(m.group(1).replace(",", ""))
+    except Exception as exc:
+        log.debug("fetch_cnb_sold_price error %s: %s", url, exc)
+    return None
+
+
 def scrape_cnb():
     """Public entry point — returns list of active Porsche auction dicts."""
     log.info("Scraping Cars and Bids\u2026")

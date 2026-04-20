@@ -238,6 +238,7 @@ def _card(car: dict, fmv_score: dict) -> str:
     location = car.get("location", "") or ""
     trans    = car.get("transmission", "") or ""
     days     = car.get("days_on_site") or 0
+    dom_days = car.get("days_on_market") or 0
     tier     = car.get("tier", "") or ""
     auction_ends_at = car.get("auction_ends_at") or ""
     is_auc   = _is_auction(dealer)
@@ -310,6 +311,7 @@ def _card(car: dict, fmv_score: dict) -> str:
     if trans:    chips.append(_h(trans))
     if mileage:  chips.append(f"{_m(mileage)} mi")
     if location: chips.append(_h(location[:22]))
+    if dom_days > 0: chips.append(f'<span class="dom-chip">&#x23F1;{dom_days}d</span>')
     chips_html = " &middot; ".join(chips)
 
     days_html = ""
@@ -411,8 +413,17 @@ def generate() -> str:
             if yr < 1984 or yr > 2024: return False
             return True
         active = [c for c in active if _keep(c)]
+        today_d = date.today()
         for c in active:
             c["_fmv"] = fmv_by_id.get(c["id"], {"fmv": None, "confidence": "NONE", "comp_count": 0})
+            dfs = (c.get("date_first_seen") or "")[:10]
+            if dfs:
+                try:
+                    c["days_on_market"] = (today_d - date.fromisoformat(dfs)).days
+                except Exception:
+                    c["days_on_market"] = 0
+            else:
+                c["days_on_market"] = 0
 
         active_sorted = sorted(active,
                                key=lambda c: c.get("created_at") or c.get("date_first_seen") or "",
@@ -456,6 +467,7 @@ def generate() -> str:
                 "tier": c.get("tier") or "",
                 "deal": pct is not None and pct <= -10,
                 "cool": ("air" if (int(c.get("year") or 0) <= 1998 and "911" in (c.get("model") or "").lower()) else ("water" if (int(c.get("year") or 0) >= 1999 and "911" in (c.get("model") or "").lower()) else None)),
+                "dom":  c.get("days_on_market") or 0,
                 "txt":  ((str(c.get("year") or "") + " " + (c.get("model") or "") + " " +
                           (c.get("dealer") or "") + " " + _gen(c.get("year"), c.get("model")))).lower(),
             })
@@ -752,6 +764,7 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 .countdown {{ color:var(--red); font-weight:500; }}
 .card-meta {{ font-family:'DM Mono',monospace; font-size:10px; color:#8A8A9E; }}
 .days-stale {{ color:#F87171; font-weight:500; }}
+.dom-chip {{ color:#6B6B7D; }}
 .badge {{ font-family:'DM Mono',monospace; font-size:10px; font-weight:500; padding:2px 7px; border-radius:3px; display:inline-block; }}
 
 /* ── Table view (comps) ── */
@@ -1002,7 +1015,15 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
       </div>
       <button class="filter-fab" id="filter-fab" onclick="openDrawer()">&#x25A6; Filters</button>
     </div>
-    <span class="results-count" id="results-count"></span>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <select id="sort-select" onchange="applyFilters()" style="padding:6px 8px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:10px;outline:none;background:var(--bg3);color:var(--text)">
+        <option value="new">Newest First</option>
+        <option value="price_asc">Price &#x2191;</option>
+        <option value="price_desc">Price &#x2193;</option>
+        <option value="dom_desc">Longest Listed</option>
+      </select>
+      <span class="results-count" id="results-count"></span>
+    </div>
   </div>
 
   <div class="content-area">
@@ -1215,6 +1236,16 @@ function applyFilters() {{
     if (activeCooling && d.cool !== activeCooling) return false;
     return true;
   }});
+
+  var _sortEl = document.getElementById('sort-select');
+  var _sortVal = _sortEl ? _sortEl.value : 'new';
+  if (_sortVal === 'price_asc') {{
+    visibleCards.sort(function(a, b) {{ return (a.pr || 0) - (b.pr || 0); }});
+  }} else if (_sortVal === 'price_desc') {{
+    visibleCards.sort(function(a, b) {{ return (b.pr || 0) - (a.pr || 0); }});
+  }} else if (_sortVal === 'dom_desc') {{
+    visibleCards.sort(function(a, b) {{ return (b.dom || 0) - (a.dom || 0); }});
+  }}
 
   renderedCount = 0;
   renderCards();

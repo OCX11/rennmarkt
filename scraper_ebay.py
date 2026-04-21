@@ -374,6 +374,8 @@ def _search_page(token, page):
         "filter": "conditionIds:{3000|4000|6000},price:[25000..],priceCurrency:USD,itemLocationCountry:US",
         # aspect_filter: restrict to Make=Porsche server-side (eliminates Mercedes etc.)
         "aspect_filter": "categoryAspects:Make{Porsche}",
+        # EXTENDED fieldgroup returns localizedAspects (mileage, VIN, etc.)
+        "fieldgroups": "MATCHING_ITEMS,EXTENDED",
         "sort": "newlyListed",
         "limit": "20",
         "offset": str(page * 20),
@@ -442,6 +444,7 @@ def _search_seller(token, seller_username):
         "q": "porsche",
         "category_ids": "6001",
         "filter": "sellers:{%s},conditionIds:{3000|4000|6000},priceCurrency:USD" % seller_username,
+        "fieldgroups": "MATCHING_ITEMS,EXTENDED",
         "sort": "newlyListed",
         "limit": "50",
     }
@@ -471,6 +474,75 @@ def _search_seller(token, seller_username):
     except Exception as e:
         log.warning("eBay seller search (%s) failed: %s", seller_username, e)
         return []
+
+
+def _fetch_item_details(token, item_id):
+    """Fetch full item details including localizedAspects (mileage, VIN, trim).
+    The search endpoint doesn't return aspects — only the individual item API does.
+    Returns the aspects list or empty list on failure.
+    """
+    url = "https://api.ebay.com/buy/browse/v1/item/" + item_id
+    headers = {
+        "Authorization": "Bearer {}".format(token),
+        "X-EBAY-C-MARKETPLACE-ID": "EBAY_US",
+        "Accept": "application/json",
+    }
+    proxies = _get_proxies()
+    try:
+        r = requests.get(url, headers=headers, timeout=15, proxies=proxies)
+        if r.status_code != 200:
+            return []
+        data = r.json()
+        return data.get("localizedAspects", [])
+    except Exception:
+        return []
+
+
+def _enrich_with_details(token, results, raw_items):
+    """Enrich parsed results with mileage/VIN from individual item API.
+    Only fetches details for items missing mileage (saves API calls).
+    raw_items is the list of raw API item dicts (need itemId).
+    """
+    # Build itemId lookup
+    url_to_item_id = {}
+    for item in raw_items:
+        web_url = item.get("itemWebUrl", "")
+        item_id = item.get("itemId", "")
+        if web_url and item_id:
+            url_to_item_id[web_url] = item_id
+
+    enriched = 0
+    for car in results:
+        if car.get("mileage"):
+            continue  # already has mileage
+        item_id = url_to_item_id.get(car.get("url", ""))
+        if not item_id:
+            continue
+        aspects = _fetch_item_details(token, item_id)
+        if not aspects:
+            continue
+        # Extract mileage and VIN from aspects
+        mi = _extract_mileage(aspects)
+        vin = _extract_vin(aspects)
+        if mi:
+            car["mileage"] = mi
+            enriched += 1
+        if vin and not car.get("vin"):
+            car["vin"] = vin
+        # Also try to get trim from aspects
+        if not car.get("trim") or car.get("trim") == car.get("model"):
+            for a in aspects:
+                if a.get("name", "").lower() == "trim":
+                    car["trim"] = a.get("value", "")
+                    break
+                elif a.get("name", "").lower() == "submodel":
+                    car["trim"] = a.get("value", "")
+                    break
+        time.sleep(0.3)  # rate limit: ~3 calls/sec
+
+    if enriched:
+        log.info("eBay: enriched %d listings with mileage from item API", enriched)
+    return results
 
 
 def _fetch_pages(token, max_pages):
@@ -508,6 +580,8 @@ def _fetch_pages(token, max_pages):
                     filtered_out += 1
                     continue
 
+                # Stash itemId on the car dict for later enrichment
+                car["_item_id"] = item.get("itemId", "")
                 all_listings.append(car)
                 new_this_page += 1
 
@@ -623,6 +697,41 @@ def scrape_ebay(max_pages=None):
                 log.info("eBay seller sweep '%s': %d new listings added", seller, s_added)
 
         merged = list(cached_by_url.values())
+
+        # Enrich any listings still missing mileage (from cache or new)
+        need_enrich = [l for l in merged if not l.get("mileage")]
+        if need_enrich:
+            log.info("eBay: enriching %d cached listings with mileage from item API...", len(need_enrich))
+            for car in need_enrich:
+                # Get item ID from stashed field or reconstruct from URL
+                item_id = car.get("_item_id")
+                if not item_id:
+                    url = car.get("url", "")
+                    m = re.search(r"/itm/(\d+)", url)
+                    if m:
+                        item_id = "v1|%s|0" % m.group(1)
+                if not item_id:
+                    continue
+                aspects = _fetch_item_details(token, item_id)
+                if aspects:
+                    mi = _extract_mileage(aspects)
+                    vin = _extract_vin(aspects)
+                    if mi:
+                        car["mileage"] = mi
+                    if vin and not car.get("vin"):
+                        car["vin"] = vin
+                    if not car.get("trim") or car["trim"] in (car.get("model"), "Base", "BASE", ""):
+                        for a in aspects:
+                            if a.get("name", "").lower() in ("trim", "submodel"):
+                                car["trim"] = a.get("value", "")
+                                break
+                time.sleep(0.3)
+            enriched_mi = sum(1 for l in need_enrich if l.get("mileage"))
+            log.info("eBay: enriched %d/%d with mileage", enriched_mi, len(need_enrich))
+
+        # Clean up internal keys before caching
+        for l in merged:
+            l.pop("_item_id", None)
         _save_cache(merged)
         log.info("eBay scrape complete: %d listings (%d new this cycle)", len(merged), new_count)
         return merged
@@ -633,6 +742,32 @@ def scrape_ebay(max_pages=None):
         listings = _fetch_pages(token, pages_for_full)
 
         if listings:
+            # Enrich listings missing mileage via individual item API
+            need_enrich = [l for l in listings if not l.get("mileage") and l.get("_item_id")]
+            if need_enrich:
+                log.info("eBay: enriching %d listings with mileage from item API...", len(need_enrich))
+                for car in need_enrich:
+                    aspects = _fetch_item_details(token, car["_item_id"])
+                    if aspects:
+                        mi = _extract_mileage(aspects)
+                        vin = _extract_vin(aspects)
+                        if mi:
+                            car["mileage"] = mi
+                        if vin and not car.get("vin"):
+                            car["vin"] = vin
+                        # Fill trim from aspects if missing
+                        if not car.get("trim") or car["trim"] in (car.get("model"), "Base", "BASE", ""):
+                            for a in aspects:
+                                if a.get("name", "").lower() in ("trim", "submodel"):
+                                    car["trim"] = a.get("value", "")
+                                    break
+                    time.sleep(0.3)
+                enriched_mi = sum(1 for l in need_enrich if l.get("mileage"))
+                log.info("eBay: enriched %d/%d with mileage", enriched_mi, len(need_enrich))
+
+            # Clean up internal _item_id key before caching
+            for l in listings:
+                l.pop("_item_id", None)
             _save_cache(listings)
             log.info("eBay: cache updated (%d listings)", len(listings))
         elif cached_listings:

@@ -595,8 +595,25 @@ def _trim_match_score(target_trim: Optional[str], comp_trim: Optional[str]) -> f
 
     if t is None and c is None:
         return 0.6   # both unknown — ok match
-    if t is None or c is None:
-        return 0.4   # one known, one not
+    if t is None:
+        # Target trim unknown — assume base model. Penalize high-performance
+        # trims so GT3/Turbo/GT4 comps don't inflate base-model FMVs.
+        # A no-trim eBay 911 listing is almost always a base Carrera.
+        if c is None:
+            return 0.5
+        _HIGH_PERF = {"GT3", "GT3 RS", "GT3 Touring", "GT3 Cup",
+                      "GT2", "GT2 RS", "GT4", "GT4 RS",
+                      "Turbo", "Turbo S", "Turbo Coupe", "Turbo Cabriolet",
+                      "Speedster", "Sport Classic", "S/T", "Dakar",
+                      "RS America", "America Roadster",
+                      "Spyder", "Spyder RS",
+                      "GTS", "Targa 4 GTS", "Carrera GTS",
+                      "Singer", "918 Spyder", "Carrera GT"}
+        if c in _HIGH_PERF:
+            return 0.0  # exclude — high-perf comp irrelevant for no-trim listing
+        return 0.5  # unknown target vs known base-ish comp — decent match
+    if c is None:
+        return 0.4   # known target vs unknown comp — weak match
     if t.lower() == c.lower():
         return 1.0   # exact
 
@@ -739,9 +756,11 @@ def get_fmv(
         trim_score  = _trim_match_score(norm_trim, comp.trim_normalized)
         recency     = _recency_weight(comp.sold_date)
         source_w    = comp.source_weight
-        # If we know the target trim and the comp trim is a complete mismatch,
-        # exclude it — don't use a GT3 RS to price a Sport Classic.
-        if norm_trim and comp.trim_normalized and trim_score == 0.0:
+        # Exclude comps with zero trim match score. This fires when:
+        # 1. Known target vs known comp in different families (GT3 RS vs Sport Classic)
+        # 2. Unknown target (None) vs high-performance comp (GT3, Turbo, etc.)
+        #    — _trim_match_score returns 0.0 for high-perf comps when target is None
+        if trim_score == 0.0 and comp.trim_normalized:
             return 0.0
         return gen_match * (0.4 + 0.6 * trim_score) * recency * source_w
 

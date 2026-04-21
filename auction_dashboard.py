@@ -203,7 +203,7 @@ def _auction_card(car: dict, fmv_score: dict, urgent: bool = False) -> str:
     urgent_cls = " urgent" if urgent else ""
 
     return (
-        f'<div class="auc-card{urgent_cls}" onclick="window.open(\'{_h(url)}\',\'_blank\')">\n'
+        f'<div class="auc-card{urgent_cls}" onclick="openListing(\'{_h(url)}\')">\n'
         f'  {img_html}\n'
         f'  <div class="auc-body">\n'
         f'    <div class="auc-top-row">\n'
@@ -574,6 +574,19 @@ function tickAll() {{
 
 tickAll();
 setInterval(tickAll, 1000);
+
+// ── PWA-safe listing navigation ───────────────────────────────────────────────
+function openListing(url) {{
+  if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {{
+    window.location.href = url;
+  }} else {{
+    window.open(url, '_blank');
+  }}
+}}
+
+window.addEventListener('pageshow', function(e) {{
+  if (e.persisted) {{ /* page restored from bfcache — no action needed */ }}
+}});
 </script>
 </body>
 </html>"""

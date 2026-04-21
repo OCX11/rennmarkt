@@ -330,7 +330,7 @@ def _card(car: dict, fmv_score: dict) -> str:
         f'data-gen="{_h(gen_str)}" data-tier="{_h(tier)}" data-price="{price or 0}" '
         f'data-src-label="{_h(src_label)}" '
         f'data-source-type="{"auction" if is_auc else "retail"}" '
-        f'onclick="window.open(\'{_h(url)}\',\'_blank\')">\n'
+        f'onclick="openListing(\'{_h(url)}\')">\n'
         f'  {img_html}\n'
         f'  <div class="card-body">\n'
         f'    <div class="card-top-row">'
@@ -1477,6 +1477,20 @@ function sortComps(col) {{
   var body = document.getElementById('comps-body');
   rows.forEach(function(r) {{ body.appendChild(r); }});
 }}
+
+// ── PWA-safe listing navigation ───────────────────────────────────────────────
+function openListing(url) {{
+  // In PWA standalone mode, navigate in-place so Done returns to the app
+  if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {{
+    window.location.href = url;
+  }} else {{
+    window.open(url, '_blank');
+  }}
+}}
+
+window.addEventListener('pageshow', function(e) {{
+  if (e.persisted) {{ /* page restored from bfcache — no action needed */ }}
+}});
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {{

@@ -74,6 +74,7 @@ button{padding:8px 18px;border:none;border-radius:6px;font-size:13px;font-weight
       <option>cars.com</option>
       <option>Rennlist</option>
       <option>Built for Backroads</option>
+      <option>DuPont Registry</option>
     </select>
     <select id="q-status">
       <option value="">All status</option>
@@ -156,7 +157,7 @@ function doSearch() {
       ? '<span class="badge badge-active">Active</span>'
       : '<span class="badge badge-sold">Sold</span>';
     const seen = l.date_first_seen ? l.date_first_seen.split('T')[0] : '';
-    return `<div class="card" onclick="window.open('${l.listing_url}','_blank')">
+    return `<div class="card" onclick="openListing('${l.listing_url}')">
       ${img}${placeholder}
       <div class="card-body">
         <div class="card-title">${l.year} Porsche ${l.model}${l.trim ? ' ' + l.trim : ''}</div>
@@ -184,6 +185,19 @@ function clearAll() {
 
 document.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
 loadData();
+
+function openListing(url) {
+  // In PWA standalone mode, navigate in-place so Done returns to the app
+  if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+    window.location.href = url;
+  } else {
+    window.open(url, '_blank');
+  }
+}
+
+window.addEventListener('pageshow', function(e) {
+  if (e.persisted) { /* page restored from bfcache — no action needed */ }
+});
 </script>
 </body>
 </html>

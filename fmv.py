@@ -138,14 +138,121 @@ _TRIM_ALIASES = {
     "carrera coupe 6-speed":            "Carrera Coupe",
     "targa 5-speed":                    "Carrera Targa",
 
-    # GT3 family
+    # ── Missing trim variants from scraper/comp audit ────────────────────────
+    # High-frequency unmatched trims found in listings + sold_comps data.
+
+    # Bare gearbox-only trims (comp data) — map to base of context model
+    "5-speed":                          None,      # bare gearbox, no trim info
+    "6-speed":                          None,      # bare gearbox, no trim info
+    "7-speed":                          None,
+
+    # "S" variants with body/gearbox suffixes
+    "s 6-speed":                        "S",
+    "s 5-speed":                        "S",
+    "s 7-speed":                        "S",
+    "s coupe":                          "S",
+    "s cabriolet":                      "S",
+    "s cabriolet 2d":                   "S",
+    "s 2dr coupe":                      "S",
+    "s 6-speed track car":              "S",
+    "s track car":                      "S",
+    "s 6-speed race car":               "S",
+    "s roadster":                       "S",
+    "s roadster 2d":                    "S",
+    "s coupe 2d":                       "S",
+    "s limited edition 6-speed":        "S",
+    "s 550 anniversary edition 6-speed": "S",
+
+    # Base model aliases
+    "base":                             None,      # base model — no trim
+    "base 2dr convertible":             None,
+    "base (m5)":                        None,
+    "2dr roadster":                     None,      # base Boxster body style
+    "convertible":                      None,      # base Cabriolet
+    "convertible 2d":                   None,
+    "boxster roadster 2d":              None,      # base 718 Boxster
+
+    # 911 Carrera short aliases
+    "4s":                               "Carrera 4S",
+    "4 gts":                            "Carrera 4 GTS",
+    "carrera t 7-speed":                "Carrera T",
+    "carrera t 6-speed":                "Carrera T",
+    "991 carrera s":                    "Carrera S",
+    "991 carrera":                      "Carrera",
+
+    # 992 special trims
+    "dakar":                            "Dakar",
+    "st":                               "S/T",
+    "s/t":                              "S/T",
+    "s/t heritage design":              "S/T",
+
+    # Body-style-first formats (eBay/AutoTrader)
+    "2dr cabriolet turbo":              "Turbo",
+    "2dr coupe turbo":                  "Turbo",
+    "2dr cabriolet turbo s":            "Turbo S",
+    "2dr coupe turbo s":                "Turbo S",
+    "2dr coupe gt3":                    "GT3",
+    "2dr coupe gt3 rs":                 "GT3 RS",
+    "awd 2dr coupe":                    "Carrera 4",
+    "turbo awd 2dr coupe":              "Turbo",
+
+    # GT3RS without space (common scraper artifact)
+    "gt3rs":                            "GT3 RS",
+    "gt3 rs 4.0":                       "GT3 RS",
+    "gt2rs":                            "GT2 RS",
+    "gt4rs":                            "GT4 RS",
+
+    # Bare "911" as trim (eBay artifact — model repeated in trim field)
+    "911":                              None,
+
+    # Boxster/Cayman special editions
+    "rs 60 spyder":                     "Spyder",
+    "rs 60 spyder 6-speed":             "Spyder",
+    "boxster 25 years":                 "Boxster 25 Years",
+    "25 years":                         "Boxster 25 Years",
+
+    # 964-era special models
+    "america roadster 5-speed":         "America Roadster",
+    "america roadster":                 "America Roadster",
+    "rs america":                       "RS America",
+    "rs america rs america":            "RS America",  # eBay duplicate artifact
+
+    # 993 special editions
+    "40th anniversary 6-speed":         "Carrera",
+    "40th anniversary edition 6-speed": "Carrera",
+    "50th anniversary edition":         "Carrera",
+
+    # Air-cooled era variants
+    "carrera 2.7 mfi coupe":            "Carrera",
+    "carrera 3.0 targa":                "Carrera Targa",
+    "soft-window targa":                "Carrera Targa",
+
+    # Weissach package variants
+    "weissach coupe":                   "GT3 RS",  # Weissach = GT3 RS or GT2 RS option
+
+    # Restomod/exotic identifiers (normalize so they can be excluded or weighted)
+    "reimagined by singer":             "Singer",
+    "918 spyder":                       "918 Spyder",
+    "carrera gt":                       "Carrera GT",
+
+    # Race/track cars
+    "race car":                         None,      # exclude from FMV — not road cars
+    "gt3 cup":                          "GT3 Cup",
+    "limited edition 5-speed":          "S",
+
+    # 718 model-in-trim artifacts
+    "718 cayman":                       "Cayman",
+    "718 cayman s":                     "S",
+    "718 boxster":                      "Boxster",
+    "718":                              None,      # bare 718, no trim info
+
+        # GT3 family
     "gt3 rs weissach":          "GT3 RS",
     "gt3 rs tribute to carrera rs": "GT3 RS",
     "gt3 rs":                   "GT3 RS",
     "gt3 touring 6-speed":      "GT3 Touring",
     "gt3 touring":              "GT3 Touring",
     "gt3 6-speed":              "GT3",
-    "gt3 cup":                  "GT3 Cup",
     "gt3":                      "GT3",
     # GT2 family
     "gt2 rs weissach":          "GT2 RS",
@@ -189,7 +296,6 @@ _TRIM_ALIASES = {
     # Air-cooled
     "sc 5-speed":               "SC",
     "sc":                       "SC",
-    "rs america":               "RS America",
     # Cayman/Boxster
     "r":                        "R",
 
@@ -269,11 +375,8 @@ _TRIM_ALIASES = {
     "spyder spyder":                    "Spyder",    # eBay duplicate artifact
     "roadster":                         "Boxster",   # base 718 Boxster
     "roadster 2d":                      "Boxster",
-    "s roadster":                       "S",
-    "s roadster 2d":                    "S",
     "coupe":                            "Cayman",    # base 718 Cayman
     "coupe 2d":                         "Cayman",
-    "s coupe 2d":                       "S",
     "boxster spyder":                   "Spyder",    # 987/981 Boxster Spyder
 
     # ── Carrera base body-style variants ─────────────────────────────────────
@@ -326,18 +429,24 @@ _TRIM_ALIASES = {
 # We EXCLUDE the bare "carrera" key because it is too short and would
 # incorrectly absorb "Carrera 2 Coupe 5-Speed" and similar variant trims
 # that already receive accurate comp matching through their exact strings.
-_TRIM_ALIAS_KEYS_BY_LEN = sorted(_TRIM_ALIASES.keys(), key=len, reverse=True)
+_TRIM_ALIAS_KEYS_BY_LEN = sorted((k for k, v in _TRIM_ALIASES.items() if v is not None), key=len, reverse=True)
 _PREFIX_MATCH_EXCLUDED = frozenset({"carrera"})
 
 
 def normalize_trim(trim: Optional[str]) -> Optional[str]:
-    """Return canonical trim name for grouping. None if unknown."""
+    """Return canonical trim name for grouping. None if unknown.
+
+    Returns None for trims explicitly mapped to None (e.g. 'Base', '5-Speed')
+    meaning the trim carries no useful grouping info.
+    """
     if not trim:
         return None
     key = trim.lower().strip()
-    exact = _TRIM_ALIASES.get(key)
-    if exact is not None:
-        return exact
+    # Use sentinel to distinguish 'key not found' from 'key maps to None'
+    _MISSING = object()
+    exact = _TRIM_ALIASES.get(key, _MISSING)
+    if exact is not _MISSING:
+        return exact  # may be None for trims like 'Base', '5-Speed'
     # Prefix match: "GT4 RS Weissach Package, CCB..." → "GT4 RS"
     for alias_key in _TRIM_ALIAS_KEYS_BY_LEN:
         if alias_key in _PREFIX_MATCH_EXCLUDED:
@@ -712,7 +821,7 @@ def get_fmv(
     # The threshold matches the HIGH-confidence cutoff so we only tighten when
     # the exact-trim signal is strong enough to stand alone.
     exact_trim_comps = [(c, s) for c, s in use_comps
-                        if _trim_match_score(norm_trim, c.trim_normalized) >= 0.9]
+                        if _trim_match_score(norm_trim, c.trim_normalized) >= 1.0]
     if len(exact_trim_comps) >= 4:
         use_comps = exact_trim_comps
 

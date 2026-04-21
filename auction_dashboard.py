@@ -277,8 +277,15 @@ def generate() -> str:
         ).fetchall()
         cars = [dict(r) for r in rows]
 
-    for c in cars:
-        c["_fmv"] = fmv_by_id.get(c["id"], {"fmv": None, "confidence": "NONE", "comp_count": 0})
+        # Recently ended auctions (sold in last 48 hours)
+        ended_rows = conn.execute(
+            """SELECT * FROM listings
+               WHERE source_category='AUCTION' AND status='sold'
+               AND auction_ends_at IS NOT NULL
+               AND auction_ends_at >= datetime('now', '-48 hours')
+               ORDER BY auction_ends_at DESC"""
+        ).fetchall()
+        ended_cars = [dict(r) for r in ended_rows]
 
     def _parse_ends(s):
         if not s: return None
@@ -286,6 +293,13 @@ def generate() -> str:
             return datetime.fromisoformat(s.replace("Z", "+00:00"))
         except Exception:
             return None
+
+    for c in cars:
+        c["_fmv"] = fmv_by_id.get(c["id"], {"fmv": None, "confidence": "NONE", "comp_count": 0})
+
+    for c in ended_cars:
+        c["_fmv"] = fmv_by_id.get(c["id"], {"fmv": None, "confidence": "NONE", "comp_count": 0})
+        c["_ends_dt"] = _parse_ends(c.get("auction_ends_at"))
 
     ending_soon = []
     later_today = []
@@ -322,11 +336,12 @@ def generate() -> str:
     s_today  = _section("Later Today", "3 &ndash; 24 hours",        _cards(later_today),               "&#x23F0;",  len(later_today))
     s_coming = _section("Coming Up",   "Beyond 24 hours",           _cards(coming_up),                 "&#x1F4C5;", len(coming_up))
     s_noend  = _section("No End Time", "Buy-now / end time unknown", _cards(no_end_time),               "&#x1F3F7;", len(no_end_time))
+    s_ended  = _section("Recently Ended", "Last 48 hours &mdash; final prices", _cards(ended_cars), "&#x1F3C1;", len(ended_cars), "ended")
 
     total   = len(cars)
     now_str = now_utc.strftime("%b %d, %Y %H:%M UTC")
 
-    html = _build_html(s_ending, s_today, s_coming, s_noend, total, len(ending_soon), len(later_today), len(coming_up), now_str)
+    html = _build_html(s_ending, s_today, s_coming, s_noend, s_ended, total, len(ending_soon), len(later_today), len(coming_up), len(ended_cars), now_str)
     OUT_PATH.write_text(html, encoding="utf-8")
     print(f"[auction_dashboard] wrote {OUT_PATH} ({total} auctions)")
     return html
@@ -334,7 +349,7 @@ def generate() -> str:
 
 # ── HTML template ─────────────────────────────────────────────────────────────
 
-def _build_html(s_ending, s_today, s_coming, s_noend, total, n_ending, n_today, n_coming, now_str) -> str:
+def _build_html(s_ending, s_today, s_coming, s_noend, s_ended, total, n_ending, n_today, n_coming, n_ended, now_str) -> str:
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -531,6 +546,7 @@ a {{ color:inherit; text-decoration:none; }}
   {s_today}
   {s_coming}
   {s_noend}
+{s_ended}
 </div>
 
 <script>

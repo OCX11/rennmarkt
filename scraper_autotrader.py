@@ -261,15 +261,37 @@ def _parse_inventory_item(listing_id, item, owners=None):
     else:
         url = _BASE_URL + f"/cars-for-sale/vehicle/{listing_id}"
 
-    # First real https:// image from images.sources
+    # First real https:// image — images may be a dict{sources:[...]} or a list
     image_url = None
-    images_obj = item.get("images", {})
+    images_obj = item.get("images")
     if isinstance(images_obj, dict):
-        sources = images_obj.get("sources", [])
-        if sources and isinstance(sources[0], dict):
-            src = sources[0].get("src", "")
-            if src.startswith("https://"):
-                image_url = src
+        sources = images_obj.get("sources") or []
+        for _s in sources:
+            if isinstance(_s, dict):
+                _src = _s.get("src") or ""
+                if _src.startswith("https://"):
+                    image_url = _src
+                    break
+            elif isinstance(_s, str) and _s.startswith("https://"):
+                image_url = _s
+                break
+    elif isinstance(images_obj, list):
+        for _s in images_obj:
+            if isinstance(_s, dict):
+                _src = _s.get("src") or ""
+                if _src.startswith("https://"):
+                    image_url = _src
+                    break
+            elif isinstance(_s, str) and _s.startswith("https://"):
+                image_url = _s
+                break
+    # Fallback: top-level photo field (some API shapes)
+    if not image_url:
+        for _field in ("primaryPhotoUrl", "heroPhotoUrl", "thumbnailPhoto", "photoUrl"):
+            _src = item.get(_field) or ""
+            if isinstance(_src, str) and _src.startswith("https://"):
+                image_url = _src
+                break
 
     location = _clean(item.get("ownerName"))
 
@@ -490,13 +512,25 @@ def _parse_rest_listing(item):
     else:
         url = _BASE_URL + f"/cars-for-sale/vehicle/{listing_id}"
 
-    # Image: REST API returns images as list of dicts with 'src'
+    # Image: REST API returns images as list of dicts or strings
     image_url = None
     images = item.get("images") or []
-    if images and isinstance(images[0], dict):
-        src = images[0].get("src", "")
-        if src.startswith("https://"):
-            image_url = src
+    for _img in images:
+        if isinstance(_img, dict):
+            _src = _img.get("src") or _img.get("url") or ""
+            if isinstance(_src, str) and _src.startswith("https://"):
+                image_url = _src
+                break
+        elif isinstance(_img, str) and _img.startswith("https://"):
+            image_url = _img
+            break
+    # Fallback: top-level photo field (some API response shapes)
+    if not image_url:
+        for _field in ("primaryPhotoUrl", "heroPhotoUrl", "thumbnailPhoto", "photoUrl"):
+            _src = item.get(_field) or ""
+            if isinstance(_src, str) and _src.startswith("https://"):
+                image_url = _src
+                break
 
     location = _clean(item.get("ownerName"))
 

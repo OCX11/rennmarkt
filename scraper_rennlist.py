@@ -96,6 +96,11 @@ _PORSCHE_KW_RE = re.compile(
     re.I,
 )
 
+# Non-target Porsche models — Rennlist classifieds include the full Porsche lineup,
+# but we only want 911/Cayman/Boxster/718. Block these early to prevent
+# e.g. "Cayenne Turbo" being inferred as a 911 via the Turbo variant mapping.
+_RENNLIST_BLOCKED = frozenset({"cayenne", "panamera", "macan", "taycan"})
+
 
 def _int(s):
     if s is None:
@@ -253,6 +258,11 @@ def _parse_html(html: str) -> list:
         text_content = item.get_text(separator="\n", strip=True)
 
         if not _YEAR_RE.search(text_content):
+            continue
+
+        # Skip non-target Porsche models (Cayenne, Panamera, Macan, Taycan)
+        text_lower = text_content.lower()
+        if any(b in text_lower for b in _RENNLIST_BLOCKED):
             continue
 
         # URL

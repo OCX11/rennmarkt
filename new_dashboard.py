@@ -491,7 +491,12 @@ def generate() -> str:
         new_today_ids = set(c["id"] for c in new_today)
         n_active   = len(active)
         n_new      = len(new_today)
-        n_auctions = len(auctions)
+        # Query auction count directly from DB to match the auction page exactly.
+        # Using the filtered 'active' list would miss any auction listings that
+        # fail _keep() or were added between dashboard builds.
+        n_auctions = conn.execute(
+            "SELECT COUNT(*) FROM listings WHERE status='active' AND source_category='AUCTION'"
+        ).fetchone()[0]
         n_comps    = len(comps)
         n_deals    = sum(1 for c in active if (
                          c["_fmv"].get("fmv") and c.get("price") and

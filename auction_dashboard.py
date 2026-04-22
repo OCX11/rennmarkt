@@ -357,16 +357,15 @@ def generate() -> str:
                float(r[1]) < float(fmv_by_id[r[0]]["fmv"]) * 0.90
         )
 
-        # Recently ended auctions (sold in last 48 hours, end time must be in the past)
-        # Guard: auction_ends_at <= now prevents incorrectly-marked-sold active auctions
-        # from appearing here (e.g. listings wiped by scraper bug with future end dates)
+        # Auction Completed — marked sold in last 48 hours, auction end time already passed.
+        # Use archived_at for the recency window (not auction_ends_at) so scraper-wiped
+        # active listings with future end dates never appear here.
         ended_rows = conn.execute(
             """SELECT * FROM listings
                WHERE source_category='AUCTION' AND status='sold'
-               AND auction_ends_at IS NOT NULL
-               AND auction_ends_at >= datetime('now', '-48 hours')
-               AND auction_ends_at <= datetime('now')
-               ORDER BY auction_ends_at DESC"""
+               AND archived_at >= datetime('now', '-48 hours')
+               AND (auction_ends_at IS NULL OR auction_ends_at <= datetime('now'))
+               ORDER BY archived_at DESC"""
         ).fetchall()
         ended_cars = [dict(r) for r in ended_rows]
 
@@ -385,22 +384,18 @@ def generate() -> str:
         c["_ends_dt"] = _parse_ends(c.get("auction_ends_at"))
 
     ending_soon = []
-    later_today = []
     coming_up   = []
     no_end_time = []
 
-    three_hr  = now_utc + timedelta(hours=3)
-    one_day   = now_utc + timedelta(hours=24)
+    one_day = now_utc + timedelta(hours=24)
 
     for c in cars:
         ends_dt = _parse_ends(c.get("auction_ends_at"))
         c["_ends_dt"] = ends_dt
         if ends_dt is None or ends_dt <= now_utc:
             no_end_time.append(c)
-        elif ends_dt <= three_hr:
-            ending_soon.append(c)
         elif ends_dt <= one_day:
-            later_today.append(c)
+            ending_soon.append(c)
         else:
             coming_up.append(c)
 
@@ -409,22 +404,20 @@ def generate() -> str:
         return d if d else datetime(9999, 12, 31, tzinfo=timezone.utc)
 
     ending_soon.sort(key=_sort_key)
-    later_today.sort(key=_sort_key)
     coming_up.sort(key=_sort_key)
 
     def _cards(lst, urgent=False):
         return "\n".join(_auction_card(c, c["_fmv"], urgent=urgent) for c in lst)
 
-    s_ending = _section("Ending Soon", "Under 3 hours",             _cards(ending_soon, urgent=True), "&#x1F525;", len(ending_soon), "ending-soon", hide_if_empty=True)
-    s_today  = _section("Later Today", "3 &ndash; 24 hours",        _cards(later_today),               "&#x23F0;",  len(later_today))
-    s_coming = _section("Coming Up",   "Beyond 24 hours",           _cards(coming_up),                 "&#x1F4C5;", len(coming_up))
-    s_noend  = _section("No End Time", "Buy-now / end time unknown", _cards(no_end_time),               "&#x1F3F7;", len(no_end_time))
-    s_ended  = _section("Recently Ended", "Last 48 hours &mdash; final prices", _cards(ended_cars), "&#x1F3C1;", len(ended_cars), "ended")
+    s_ending = _section("Ending Soon",     "24 hours or less",           _cards(ending_soon, urgent=True), "&#x1F525;", len(ending_soon), "ending-soon", hide_if_empty=True)
+    s_coming = _section("Ending This Week","Beyond 24 hours",            _cards(coming_up),                "&#x1F4C5;", len(coming_up))
+    s_noend  = _section("No End Time",     "Buy-now / end time unknown", _cards(no_end_time),              "&#x1F3F7;", len(no_end_time))
+    s_ended  = _section("Auction Completed", "Last 48 hours &mdash; final prices", _cards(ended_cars),    "&#x1F3C1;", len(ended_cars), "ended")
 
     total   = len(cars)
     now_str = now_utc.strftime("%b %d, %Y %H:%M UTC")
 
-    html = _build_html(s_ending, s_today, s_coming, s_noend, s_ended, total, len(ending_soon), len(later_today), len(coming_up), len(ended_cars), now_str, n_listings_total, n_comps_total, n_new_today, n_deals)
+    html = _build_html(s_ending, s_coming, s_noend, s_ended, total, len(ending_soon), len(coming_up), len(ended_cars), now_str, n_listings_total, n_comps_total, n_new_today, n_deals)
     OUT_PATH.write_text(html, encoding="utf-8")
     print(f"[auction_dashboard] wrote {OUT_PATH} ({total} auctions)")
     return html
@@ -432,7 +425,7 @@ def generate() -> str:
 
 # ── HTML template ─────────────────────────────────────────────────────────────
 
-def _build_html(s_ending, s_today, s_coming, s_noend, s_ended, total, n_ending, n_today, n_coming, n_ended, now_str, n_listings_total=0, n_comps_total=0, n_new_today=0, n_deals=0) -> str:
+def _build_html(s_ending, s_coming, s_noend, s_ended, total, n_ending, n_coming, n_ended, now_str, n_listings_total=0, n_comps_total=0, n_new_today=0, n_deals=0) -> str:
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -531,7 +524,7 @@ a {{ color:inherit; text-decoration:none; }}
 .auc-body {{ padding:10px 12px; flex:1; display:flex; flex-direction:column; gap:0; min-width:0; }}
 .auc-top-row {{ display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }}
 .gen-label {{ font-family:'DM Mono',monospace; font-size:9px; color:#4B4B5D; }}
-.auc-title {{ font-family:'DM Sans',sans-serif; font-size:12px; color:#C0C0D0; margin-bottom:4px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }}
+.auc-title {{ font-family:'DM Sans',sans-serif; font-size:12px; color:#C0C0D0; margin-bottom:4px; line-height:1.3; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }}
 .tier-badge {{ display:inline-block; font-family:'DM Mono',monospace; font-size:8px; font-weight:500; background:#1A0A00; color:var(--yellow); padding:2px 6px; border-radius:3px; margin-bottom:4px; text-transform:uppercase; border:1px solid #3A2000; letter-spacing:0.5px; }}
 .auc-bid-row {{ display:flex; align-items:baseline; gap:7px; margin-bottom:4px; }}
 .bid-label {{ font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); }}
@@ -638,7 +631,6 @@ a {{ color:inherit; text-decoration:none; }}
 
 <div class="page-body">
   {s_ending}
-  {s_today}
   {s_coming}
   {s_noend}
 {s_ended}

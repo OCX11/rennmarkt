@@ -210,6 +210,11 @@ _VARIANT_TO_MODEL = [
 # so they don't get misclassified via variant inference (e.g. Cayenne Turbo → "911").
 _TITLE_BLOCKED = frozenset({"cayenne", "macan", "panamera", "taycan"})
 
+# Non-Porsche makes that slip through eBay's category Make=Porsche filter.
+# If the title lacks "porsche" AND contains one of these, it's a mislisted BMW/etc.
+_NON_PORSCHE_MAKES = frozenset({"bmw", "mercedes", "audi", "ferrari", "lamborghini",
+                                 "maserati", "bentley", "rolls-royce", "jaguar"})
+
 
 def _extract_model(title):
     """Return base model (911/Cayman/Boxster/718/718 Cayman/718 Boxster) from title.
@@ -322,6 +327,14 @@ def _parse_item(item):
     Returns dict or None if a fatal field is missing.
     """
     title = item.get("title", "")
+    title_lower = title.lower()
+
+    # Reject non-Porsche makes that slip through eBay's server-side Make=Porsche filter.
+    # Only flag when "porsche" is absent AND a competing make name is present.
+    if "porsche" not in title_lower and any(m in title_lower for m in _NON_PORSCHE_MAKES):
+        log.debug("eBay: rejecting non-Porsche title: %s", title[:80])
+        return None
+
     aspects = item.get("localizedAspects")
 
     buying_options = item.get("buyingOptions") or []

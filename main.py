@@ -218,6 +218,26 @@ def run_snapshot(dealer_results: dict, today: str):
             if dealer_name in ("Bring a Trailer", "Cars and Bids"):
                 _pre_sold_ts = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
+            # Auction guard: for BaT/C&B/pcarmarket, never allow mark_sold to wipe
+            # a listing whose auction hasn't ended yet. This bulletproofs against
+            # scraper truncation (site pagination changes, partial fetches, etc.).
+            # A listing is only eligible for mark_sold if its auction has actually ended.
+            _AUCTION_DEALERS = frozenset({"Bring a Trailer", "Cars and Bids", "pcarmarket"})
+            if dealer_name in _AUCTION_DEALERS:
+                future_urls = set(
+                    r[0] for r in conn.execute(
+                        """SELECT listing_url FROM listings
+                           WHERE dealer=? AND status='active'
+                           AND auction_ends_at > datetime('now')
+                           AND listing_url IS NOT NULL""",
+                        (dealer_name,)
+                    ).fetchall()
+                )
+                if future_urls:
+                    active_keys |= future_urls
+                    log.debug("[%s] Auction guard: protecting %d future-ending listings",
+                              dealer_name, len(future_urls))
+
             database.mark_sold(conn, dealer_name, active_keys, today)
 
             # Attempt final price capture for auction listings just marked sold

@@ -188,6 +188,86 @@ def _check_stale_log(log_path, seen):
         log.error("health_monitor: failed to send stale-log push alert")
 
 
+
+# ---------------------------------------------------------------------------
+# Service health checks
+# ---------------------------------------------------------------------------
+
+_LAUNCHD_SERVICES = {
+    'com.porschetracker.scrape': 'run_daily.sh',
+    'com.porschetracker.archive-capture': 'archive_capture.py',
+    'com.porschetracker.distill-poller': 'distill_poller.py',
+    'com.porschetracker.distill-receiver': 'distill_receiver.py',
+    'com.porschetracker.distill-watcher': 'distill_watcher.py',
+}
+
+
+def _check_services(seen):
+    """Check if key launchd services are running. Alert + attempt restart if not."""
+    import subprocess
+    today = date.today().isoformat()
+
+    try:
+        result = subprocess.run(['launchctl', 'list'], capture_output=True, text=True, timeout=10)
+        running_labels = result.stdout
+    except Exception as e:
+        log.warning("health_monitor: launchctl list failed: %s", e)
+        return
+
+    for label, desc in _LAUNCHD_SERVICES.items():
+        if label not in running_labels:
+            key = "service_down:" + label
+            if seen.get(key) == today:
+                continue
+
+            log.warning("health_monitor: service %s (%s) not running", label, desc)
+
+            # Attempt restart
+            try:
+                plist = Path.home() / "Library" / "LaunchAgents" / (label + ".plist")
+                if plist.exists():
+                    subprocess.run(['launchctl', 'load', str(plist)], timeout=10)
+                    log.info("health_monitor: attempted restart of %s", label)
+            except Exception as e:
+                log.warning("health_monitor: restart failed for %s: %s", label, e)
+
+            msg = "%s is not running (attempted restart)" % desc
+            if _send_push("⚠️ Service Down", msg):
+                _mark_alerted(seen, key)
+
+
+def _check_proxy(seen):
+    """Check DataImpulse proxy health with a simple request."""
+    today = date.today().isoformat()
+    key = "proxy_down"
+    if seen.get(key) == today:
+        return
+
+    try:
+        proxy_cfg_path = DATA_DIR / "proxy_config.json"
+        if not proxy_cfg_path.exists():
+            return
+        with open(proxy_cfg_path) as f:
+            cfg = json.load(f)
+        if not cfg.get("enabled"):
+            return
+
+        proxy_url = "http://%s:%s@%s:%s" % (
+            cfg.get("username", ""), cfg.get("password", ""),
+            cfg.get("host", ""), cfg.get("port", ""))
+        proxies = {"http": proxy_url, "https": proxy_url}
+
+        resp = requests.get("https://api.ipify.org", proxies=proxies, timeout=15)
+        if resp.status_code == 200 and resp.text.strip():
+            log.info("health_monitor: proxy OK (exit IP: %s)", resp.text.strip())
+        else:
+            raise Exception("HTTP %d" % resp.status_code)
+    except Exception as e:
+        log.warning("health_monitor: proxy check failed: %s", e)
+        msg = "DataImpulse proxy health check failed: %s" % str(e)[:100]
+        if _send_push("⚠️ Proxy Down", msg):
+            _mark_alerted(seen, key)
+
 # ---------------------------------------------------------------------------
 # Public entry point
 # ---------------------------------------------------------------------------
@@ -211,6 +291,8 @@ def main():
 
     _check_zero_runs(runs, active_sources, seen)
     _check_stale_log(log_path, seen)
+    _check_services(seen)
+    _check_proxy(seen)
 
     _save_seen(seen)
 

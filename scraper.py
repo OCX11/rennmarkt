@@ -113,6 +113,13 @@ def _is_valid_listing(car: dict) -> bool:
     if any(kw in model_trim for kw in _JUNK_KEYWORDS_STRICT):
         return False
 
+    # Exclude 914s scraped into the 911 category. A real 911 won't have "914" or
+    # "1.8" (the 914's engine displacement) as a prominent trim token.
+    trim_lower = (car.get("trim") or "").lower()
+    if model == "911" and ("1.8 targa" in trim_lower or
+                           ("914" in trim_lower and "914-6" not in trim_lower)):
+        return False
+
     # Mileage cap (only when present)
     mileage = car.get("mileage")
     if mileage is not None and mileage > MILEAGE_MAX:

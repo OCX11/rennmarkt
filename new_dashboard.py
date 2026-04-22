@@ -97,6 +97,14 @@ def _m(v) -> str:
 def _h(s) -> str:
     return _html.escape(str(s or ""))
 
+def _dedup_model_trim(model: str, trim: str) -> str:
+    """Return 'model trim' with leading model word removed from trim if duplicated."""
+    m = (model or "").strip()
+    t = (trim or "").strip()
+    if t and m and t.lower().startswith(m.lower()):
+        t = t[len(m):].lstrip()
+    return (m + (" " + t if t else "")).strip()
+
 def _age_label(dt_str: str) -> str:
     if not dt_str: return ""
     try:
@@ -300,26 +308,13 @@ def _card(car: dict, fmv_score: dict) -> str:
     if tier == "TIER1":
         tier_html = '<span class="tier-badge">GT / Collector</span>'
 
-    # Placeholder SVG
-    placeholder_svg = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='165'%3E"
-                       "%3Crect width='400' height='165' fill='%2318181F'/%3E"
-                       "%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' "
-                       "font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E")
+    # Placeholder SVG — single quotes encoded as %27 so the string is safe inside onerror="this.src='...'"
+    placeholder_svg = ("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27165%27%3E"
+                       "%3Crect width=%27400%27 height=%27165%27 fill=%27%2318181F%27/%3E"
+                       "%3Ctext x=%2750%25%27 y=%2750%25%27 dominant-baseline=%27middle%27 text-anchor=%27middle%27 "
+                       "font-family=%27monospace%27 font-size=%2712%27 fill=%27%2325252E%27%3ENo photo%3C/text%3E%3C/svg%3E")
 
-    is_pca_img = "mart.pca.org" in img
-    if img and is_pca_img:
-        img_id = f"pcaimg_{abs(hash(img)) % 999999}"
-        img_inner = (
-            f'<img id="{img_id}" src="{placeholder_svg}" alt="{_h(str(year)+" "+model)}" class="card-img" loading="lazy">'
-            f'<script>(function(){{'
-            f'var x=new XMLHttpRequest();x.open("GET","{_h(img)}",true);'
-            f'x.setRequestHeader("Referer","https://mart.pca.org/");'
-            f'x.responseType="blob";'
-            f'x.onload=function(){{if(x.status==200){{var u=URL.createObjectURL(x.response);document.getElementById("{img_id}").src=u;}}}};'
-            f'x.send();'
-            f'}})();</script>'
-        )
-    elif img:
+    if img:
         img_inner = (
             f'<img src="{_h(img)}" alt="{_h(str(year)+" "+model)}" class="card-img" loading="lazy" '
             f'onerror="this.src=\'{placeholder_svg}\'">'
@@ -370,7 +365,7 @@ def _card(car: dict, fmv_score: dict) -> str:
         f'{_badge(dealer)}'
         f'<span class="card-age" data-created="{_h(created)}"></span>'
         f'</div>\n'
-        f'    <div class="card-title">{year} Porsche {_h(model)}{(" " + _h(trim)) if trim else ""}</div>\n'
+        f'    <div class="card-title">{year} Porsche {_h(_dedup_model_trim(model, trim))}</div>\n'
         f'    {tier_html}\n'
         f'    <div class="card-price-row">'
         f'<span class="price-lbl">{price_lbl}</span>'
@@ -949,7 +944,7 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
       <span class="pill-label">Auctions</span>
       <span class="pill-count">{n_auctions:,} active</span>
     </a>
-    <button class="pill" onclick="switchView('comps',this)">
+    <button id="pill-comps" class="pill" onclick="switchView('comps',this)">
       <span class="pill-label">Comps</span>
       <span class="pill-count">{n_comps:,} total</span>
     </button>
@@ -1002,8 +997,8 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
   <div class="filter-group">
     <span class="filter-group-label">Year</span>
     <div class="filter-range">
-      <input type="number" id="f-year-min" placeholder="From" min="1984" max="2025" oninput="applyFilters()">
-      <input type="number" id="f-year-max" placeholder="To"   min="1984" max="2025" oninput="applyFilters()">
+      <input type="number" id="f-year-min" placeholder="From" min="1984" max="2024" oninput="applyFilters()">
+      <input type="number" id="f-year-max" placeholder="To"   min="1984" max="2024" oninput="applyFilters()">
     </div>
   </div>
 
@@ -1194,8 +1189,8 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
     <div class="drawer-section">
       <span class="drawer-section-label">Year</span>
       <div class="drawer-range">
-        <input type="number" id="d-year-min" placeholder="From" min="1984" max="2025" oninput="syncFromDrawer()">
-        <input type="number" id="d-year-max" placeholder="To"   min="1984" max="2025" oninput="syncFromDrawer()">
+        <input type="number" id="d-year-min" placeholder="From" min="1984" max="2024" oninput="syncFromDrawer()">
+        <input type="number" id="d-year-max" placeholder="To"   min="1984" max="2024" oninput="syncFromDrawer()">
       </div>
     </div>
     <div class="drawer-section">
@@ -1565,6 +1560,9 @@ function updateTimestamps() {{
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {{
+  if (window.location.hash === '#comps') {{
+    switchView('comps', document.getElementById('pill-comps'));
+  }}
   applyFilters();
   startCountdowns();
   updateTimestamps();

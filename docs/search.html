@@ -105,16 +105,16 @@ button{padding:8px 18px;border:none;border-radius:6px;font-size:13px;font-weight
     <input id="q-miles-max" placeholder="Max mileage" type="number" />
     <select id="q-source">
       <option value="">All sources</option>
-      <option>Bring a Trailer</option>
-      <option>Cars and Bids</option>
-      <option>eBay Motors</option>
-      <option>PCA Mart</option>
-      <option>pcarmarket</option>
-      <option>AutoTrader</option>
-      <option>cars.com</option>
-      <option>Rennlist</option>
-      <option>Built for Backroads</option>
-      <option>DuPont Registry</option>
+      <option value="Bring a Trailer">Bring a Trailer</option>
+      <option value="Cars and Bids">Cars and Bids</option>
+      <option value="eBay Motors">eBay Motors</option>
+      <option value="PCA Mart">PCA Mart</option>
+      <option value="pcarmarket">pcarmarket</option>
+      <option value="AutoTrader">AutoTrader</option>
+      <option value="cars.com">cars.com</option>
+      <option value="Rennlist">Rennlist</option>
+      <option value="Built for Backroads">Built for Backroads</option>
+      <option value="DuPont Registry">DuPont Registry</option>
     </select>
     <select id="q-status">
       <option value="">All status</option>
@@ -148,6 +148,11 @@ async function loadData() {
 }
 
 function val(id) { return document.getElementById(id).value.trim().toLowerCase(); }
+
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
 
 function doSearch() {
   const vin = val('q-vin');
@@ -197,19 +202,19 @@ function doSearch() {
       ? '<span class="badge badge-active">Active</span>'
       : '<span class="badge badge-sold">Sold</span>';
     const seen = l.date_first_seen ? l.date_first_seen.split('T')[0] : '';
-    return `<div class="card" onclick="openListing('${l.listing_url}')">
+    return `<div class="card" data-url="${esc(l.listing_url)}" onclick="openListing(this.dataset.url)">
       ${img}${placeholder}
       <div class="card-body">
-        <div class="card-title">${l.year} Porsche ${l.model}${l.trim ? ' ' + l.trim : ''}</div>
+        <div class="card-title">${l.year} Porsche ${esc(l.model)}${l.trim ? ' ' + esc(l.trim) : ''}</div>
         <div class="card-meta">${miles} &nbsp;·&nbsp; ${seen}</div>
         <div class="card-row">
           <span class="price">${price}</span>
           ${statusBadge}
         </div>
         <div class="card-row" style="margin-top:6px">
-          <span class="source-badge">${l.dealer}</span>
+          <span class="source-badge">${esc(l.dealer)}</span>
         </div>
-        ${l.vin ? `<div class="vin">${l.vin}</div>` : ''}
+        ${l.vin ? `<div class="vin">${esc(l.vin)}</div>` : ''}
       </div>
     </div>`;
   }).join('');

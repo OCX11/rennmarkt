@@ -344,6 +344,18 @@ def generate() -> str:
         n_comps_total = conn.execute(
             "SELECT COUNT(*) FROM sold_comps WHERE sold_price IS NOT NULL"
         ).fetchone()[0]
+        n_new_today = conn.execute(
+            "SELECT COUNT(*) FROM listings WHERE status='active' AND date(date_first_seen)=date('now')"
+        ).fetchone()[0]
+        active_price_rows = conn.execute(
+            "SELECT id, price FROM listings WHERE status='active' AND price IS NOT NULL"
+        ).fetchall()
+        n_deals = sum(
+            1 for r in active_price_rows
+            if fmv_by_id.get(r[0], {}).get("fmv") and
+               fmv_by_id.get(r[0], {}).get("confidence", "NONE") != "NONE" and
+               float(r[1]) < float(fmv_by_id[r[0]]["fmv"]) * 0.90
+        )
 
         # Recently ended auctions (sold in last 48 hours)
         ended_rows = conn.execute(
@@ -409,7 +421,7 @@ def generate() -> str:
     total   = len(cars)
     now_str = now_utc.strftime("%b %d, %Y %H:%M UTC")
 
-    html = _build_html(s_ending, s_today, s_coming, s_noend, s_ended, total, len(ending_soon), len(later_today), len(coming_up), len(ended_cars), now_str, n_listings_total, n_comps_total)
+    html = _build_html(s_ending, s_today, s_coming, s_noend, s_ended, total, len(ending_soon), len(later_today), len(coming_up), len(ended_cars), now_str, n_listings_total, n_comps_total, n_new_today, n_deals)
     OUT_PATH.write_text(html, encoding="utf-8")
     print(f"[auction_dashboard] wrote {OUT_PATH} ({total} auctions)")
     return html
@@ -417,7 +429,7 @@ def generate() -> str:
 
 # ── HTML template ─────────────────────────────────────────────────────────────
 
-def _build_html(s_ending, s_today, s_coming, s_noend, s_ended, total, n_ending, n_today, n_coming, n_ended, now_str, n_listings_total=0, n_comps_total=0) -> str:
+def _build_html(s_ending, s_today, s_coming, s_noend, s_ended, total, n_ending, n_today, n_coming, n_ended, now_str, n_listings_total=0, n_comps_total=0, n_new_today=0, n_deals=0) -> str:
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -454,16 +466,15 @@ a {{ color:inherit; text-decoration:none; }}
   display:flex; align-items:center; justify-content:space-between;
   padding:0 24px; position:sticky; top:0; z-index:50;
 }}
-.topbar-left {{ display:flex; align-items:center; gap:4px; }}
-.logo {{ font-family:'Syne',sans-serif; font-size:14px; font-weight:800; color:var(--text); letter-spacing:6px; text-transform:uppercase; margin-right:16px; white-space:nowrap; flex-shrink:0; }}
-.logo span {{ color:var(--red); }}
-.stats-bar {{ display:flex; gap:1px; margin:0 12px 8px; background:#1a1a1a; border-radius:14px; overflow:hidden; border:1px solid #2a2a2a; }}
+.logo {{ font-family:'Syne',sans-serif; font-size:14px; font-weight:800; color:#fff; letter-spacing:6px; white-space:nowrap; flex-shrink:0; text-decoration:none; }}
+.logo span {{ color:#c0392b; }}
+.stats-bar {{ display:flex; gap:1px; margin:0 12px 8px; background:#2a2a2a; border-radius:14px; overflow:hidden; border:1px solid #2a2a2a; }}
 .stat-cell {{ flex:1; padding:12px 8px 10px; text-align:center; background:#141414; cursor:pointer; transition:background 0.15s; position:relative; text-decoration:none; color:inherit; }}
 .stat-cell:first-child {{ border-radius:13px 0 0 13px; }}
 .stat-cell:last-child {{ border-radius:0 13px 13px 0; }}
 .stat-cell:hover {{ background:#1c1c1c; }}
 .stat-cell.active {{ background:#1e1e1e; }}
-.stat-cell.active::after {{ content:''; position:absolute; bottom:0; left:20%; right:20%; height:2px; background:#c0392b; border-radius:1px; }}
+.stat-cell.active::after {{ content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:#c0392b; }}
 .stat-cell + .stat-cell {{ border-left:1px solid #2a2a2a; }}
 .stat-number {{ font-size:22px; font-weight:700; letter-spacing:-0.5px; line-height:1.1; color:#e8e4df; }}
 .stat-number.green {{ color:#4ade80; }}
@@ -482,15 +493,6 @@ a {{ color:inherit; text-decoration:none; }}
 .topbar-right {{ font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); display:flex; align-items:center; gap:16px; }}
 .live-dot {{ display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--green); margin-right:5px; animation:pulse 1.5s infinite; }}
 @keyframes pulse {{ 0%,100% {{ opacity:1; }} 50% {{ opacity:0.4; }} }}
-
-/* ── Stats strip ── */
-.stats-strip {{ display:flex; gap:1px; background:var(--border); border-bottom:1px solid var(--border); }}
-
-.stat-num {{ font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--text); letter-spacing:-1px; line-height:1; }}
-.stat-num.red {{ color:var(--red); }}
-.stat-num.yellow {{ color:var(--yellow); }}
-.stat-num.green {{ color:var(--green); }}
-.stat-lbl {{ font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:0.5px; }}
 
 /* ── Page body ── */
 .page-body {{ max-width:1300px; margin:0 auto; padding:24px 20px 48px; }}
@@ -583,13 +585,15 @@ a {{ color:inherit; text-decoration:none; }}
   .topbar-right {{ display:none; }}
   .cards-grid {{ grid-template-columns:1fr; }}
   .page-body {{ padding:12px 12px 32px; }}
+  .stats-bar {{ margin:0 8px 8px; }}
+  .stat-number {{ font-size:18px; }}
 }}
 </style>
 </head>
 <body>
 
 <header class="topbar">
-  <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">PTOX<span>11</span></a>
+  <a class="logo" href="index.html">PTOX<span>11</span></a>
   <button class="more-btn" onclick="toggleDropdown()">More &#x25BE;</button>
 </header>
 <div class="stats-bar">
@@ -597,10 +601,10 @@ a {{ color:inherit; text-decoration:none; }}
     <div class="stat-number">{n_listings_total:,}</div>
     <div class="stat-label">Active</div>
   </a>
-  <div class="stat-cell">
-    <div class="stat-number">—</div>
+  <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
+    <div class="stat-number">{n_new_today}</div>
     <div class="stat-label">New Today</div>
-  </div>
+  </a>
   <div class="stat-cell active">
     <div class="stat-number red">{total}</div>
     <div class="stat-label">Auctions</div>
@@ -609,10 +613,10 @@ a {{ color:inherit; text-decoration:none; }}
     <div class="stat-number">{n_comps_total:,}</div>
     <div class="stat-label">Comps</div>
   </a>
-  <div class="stat-cell">
-    <div class="stat-number green">—</div>
+  <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
+    <div class="stat-number green">{n_deals}</div>
     <div class="stat-label">Deals</div>
-  </div>
+  </a>
 </div>
 <div class="dropdown-overlay" id="dd-overlay">
   <div class="dd-backdrop" onclick="closeDropdown()"></div>
@@ -620,30 +624,12 @@ a {{ color:inherit; text-decoration:none; }}
     <div class="dd-item"><span class="dd-icon">&#x2605;</span> My Cars</div>
     <a class="dd-item" href="search.html"><span class="dd-icon">&#x1F50D;</span> Search</a>
     <div class="dd-divider"></div>
+    <a class="dd-item" href="calculator.html"><span class="dd-icon">&#x1F4B0;</span> FMV Calculator</a>
     <a class="dd-item" href="market_report.html"><span class="dd-icon">&#x1F4CA;</span> Market Reports</a>
     <a class="dd-item" href="notify.html"><span class="dd-icon">&#x1F514;</span> Notifications</a>
     <div class="dd-divider"></div>
+    <div class="dd-item"><span class="dd-icon">&#x1F3A8;</span> Theme</div>
     <div class="dd-item"><span class="dd-icon">&#x2699;&#xFE0F;</span> Settings</div>
-  </div>
-</div>
-
-<!-- Stats strip -->
-<div class="stats-strip">
-  <div class="stat-cell">
-    <div class="stat-num red">{total}</div>
-    <div class="stat-lbl">Active Auctions</div>
-  </div>
-  <div class="stat-cell">
-    <div class="stat-num" id="stat-ending">{n_ending}</div>
-    <div class="stat-lbl">Ending &lt; 3hr</div>
-  </div>
-  <div class="stat-cell">
-    <div class="stat-num yellow">{n_today}</div>
-    <div class="stat-lbl">Later Today</div>
-  </div>
-  <div class="stat-cell">
-    <div class="stat-num green">{n_coming}</div>
-    <div class="stat-lbl">Coming Up</div>
   </div>
 </div>
 
@@ -690,8 +676,6 @@ function tickAll() {{
       }}
     }}
   }});
-  var es = document.getElementById('stat-ending');
-  if (es) es.textContent = endingSoon;
 }}
 
 tickAll();

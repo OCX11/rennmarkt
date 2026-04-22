@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PTOX11">
+<meta name="theme-color" content="#0f1117">
+<link rel="manifest" href="manifest.json">
+<title>PTOX11 — FMV Calculator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap');
+:root{--red:#c0392b;--bg:#0d0d0d;--bg2:#141414;--bg3:#1c1c1c;--border:#2a2a2a;--text:#e8e4df;--muted:#7a7570;--green:#4ade80;--yellow:#EAB308;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh}
+
+/* ── Nav ── */
+.topbar{height:52px;background:#141414;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:100;}
+.logo{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fff;letter-spacing:6px;white-space:nowrap;flex-shrink:0;text-decoration:none;}
+.logo span{color:#c0392b;}
+.more-btn{padding:7px 11px;border-radius:14px;font-size:11px;font-weight:500;color:#666;background:transparent;border:1px solid #333;display:flex;align-items:center;gap:3px;cursor:pointer;flex-shrink:0;margin-left:auto;}
+.more-btn:hover{border-color:#555;color:#aaa;}
+.dropdown-overlay{display:none;}
+.dropdown-overlay.show{display:block;}
+.dropdown{position:fixed;right:14px;top:54px;background:#222;border:1px solid #333;border-radius:12px;padding:6px;min-width:190px;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:200;}
+.dd-item{padding:10px 14px;font-size:14px;color:#ccc;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;text-decoration:none;}
+.dd-item:hover{background:#2a2a2a;}
+.dd-item.active{color:#fff;background:#1a1a1a;}
+.dd-icon{font-size:15px;width:20px;text-align:center;}
+.dd-divider{height:1px;background:#333;margin:4px 10px;}
+.dd-backdrop{position:fixed;inset:0;z-index:199;}
+
+/* ── Stats bar ── */
+.stats-bar{display:flex;gap:1px;margin:0 12px 8px;background:#2a2a2a;border-radius:14px;overflow:hidden;border:1px solid #2a2a2a;}
+.stat-cell{flex:1;padding:12px 8px 10px;text-align:center;background:#141414;cursor:pointer;transition:background 0.15s;position:relative;text-decoration:none;color:inherit;}
+.stat-cell:first-child{border-radius:13px 0 0 13px;}
+.stat-cell:last-child{border-radius:0 13px 13px 0;}
+.stat-cell:hover{background:#1c1c1c;}
+.stat-cell.active{background:#1e1e1e;}
+.stat-cell.active::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:#c0392b;}
+.stat-cell+.stat-cell{border-left:1px solid #2a2a2a;}
+.stat-number{font-size:22px;font-weight:700;letter-spacing:-0.5px;line-height:1.1;color:#e8e4df;}
+.stat-number.green{color:#4ade80;}
+.stat-number.red{color:#c0392b;}
+.stat-label{font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#666;margin-top:3px;}
+
+/* ── Page body ── */
+.page-wrap{max-width:680px;margin:0 auto;padding:24px 16px 80px;}
+.page-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:2px;margin-bottom:6px;}
+.page-sub{font-size:13px;color:var(--muted);margin-bottom:28px;}
+
+/* ── Form card ── */
+.calc-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:500px){.form-grid{grid-template-columns:1fr;}}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-label{font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);}
+.form-label-note{font-weight:400;text-transform:none;font-size:10px;letter-spacing:0;}
+.form-group input,.form-group select{
+  background:var(--bg);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);padding:10px 12px;font-size:14px;width:100%;
+  -webkit-appearance:none;appearance:none;
+}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--red);}
+.form-group input::placeholder{color:var(--muted);}
+.form-group select option{background:#222;}
+.span-full{grid-column:1 / -1;}
+.calc-btn{
+  width:100%;margin-top:16px;padding:14px;
+  background:var(--red);color:#fff;border:none;border-radius:10px;
+  font-size:15px;font-weight:700;cursor:pointer;letter-spacing:0.5px;
+  transition:opacity 0.15s;
+}
+.calc-btn:hover{opacity:0.85;}
+.calc-btn:disabled{opacity:0.35;cursor:not-allowed;}
+
+/* ── Results ── */
+.result-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px;}
+.fmv-hero{padding:28px 20px 22px;text-align:center;background:linear-gradient(135deg,#1a0a0a 0%,#141414 100%);border-bottom:1px solid var(--border);}
+.fmv-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.fmv-price{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1;}
+.fmv-range{font-size:13px;color:var(--muted);margin-top:10px;}
+.fmv-range span{color:var(--text);}
+.mileage-note{font-size:12px;color:var(--muted);margin-top:8px;font-style:italic;}
+.badges-row{display:flex;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap;}
+.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+.badge-high{background:#052210;color:#4ade80;border:1px solid #1a4a2e;}
+.badge-medium{background:#2a1f00;color:#EAB308;border:1px solid #4a3800;}
+.badge-low{background:#1a0a0a;color:#f87171;border:1px solid #4a1515;}
+.badge-muted{background:var(--bg3);color:var(--muted);border:1px solid var(--border);}
+
+/* ── Comp rows ── */
+.comps-header{padding:13px 20px 10px;font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+.comp-row{display:flex;align-items:center;padding:12px 20px;border-bottom:1px solid var(--border);gap:12px;transition:background 0.1s;}
+.comp-row:last-child{border-bottom:none;}
+.comp-row:hover{background:var(--bg3);}
+.comp-info{flex:1;min-width:0;}
+.comp-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.comp-detail{font-size:11px;color:var(--muted);margin-top:2px;}
+.comp-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.comp-price{font-size:14px;font-weight:700;color:var(--green);white-space:nowrap;}
+.comp-link{color:var(--muted);text-decoration:none;font-size:13px;line-height:1;}
+.comp-link:hover{color:var(--text);}
+
+/* ── No result ── */
+.no-result{padding:48px 20px;text-align:center;color:var(--muted);font-size:14px;}
+.no-result-icon{font-size:36px;margin-bottom:12px;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="index.html">PTOX<span>11</span></a>
+  <button class="more-btn" onclick="toggleDropdown()">More &#x25BE;</button>
+</header>
+
+<div class="stats-bar">
+  <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
+    <div class="stat-number" id="sb-active">&#x2014;</div>
+    <div class="stat-label">Active</div>
+  </a>
+  <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
+    <div class="stat-number" id="sb-new">&#x2014;</div>
+    <div class="stat-label">New Today</div>
+  </a>
+  <a class="stat-cell" href="auctions.html" style="text-decoration:none;color:inherit">
+    <div class="stat-number red" id="sb-auctions">&#x2014;</div>
+    <div class="stat-label">Auctions</div>
+  </a>
+  <a class="stat-cell active" href="calculator.html" style="text-decoration:none;color:inherit">
+    <div class="stat-number" id="sb-comps">&#x2014;</div>
+    <div class="stat-label">Comps</div>
+  </a>
+  <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
+    <div class="stat-number green">&#x2014;</div>
+    <div class="stat-label">Deals</div>
+  </a>
+</div>
+
+<div class="dropdown-overlay" id="dd-overlay">
+  <div class="dd-backdrop" onclick="closeDropdown()"></div>
+  <div class="dropdown">
+    <div class="dd-item"><span class="dd-icon">&#x2605;</span> My Cars</div>
+    <a class="dd-item" href="search.html"><span class="dd-icon">&#x1F50D;</span> Search</a>
+    <div class="dd-divider"></div>
+    <a class="dd-item active" href="calculator.html"><span class="dd-icon">&#x1F4B0;</span> FMV Calculator</a>
+    <a class="dd-item" href="market_report.html"><span class="dd-icon">&#x1F4CA;</span> Market Reports</a>
+    <a class="dd-item" href="notify.html"><span class="dd-icon">&#x1F514;</span> Notifications</a>
+    <div class="dd-divider"></div>
+    <div class="dd-item"><span class="dd-icon">&#x2699;&#xFE0F;</span> Settings</div>
+  </div>
+</div>
+
+<div class="page-wrap">
+  <div class="page-title">FMV Calculator</div>
+  <div class="page-sub">Instant estimate from BaT sold comps — enter year, model, and trim.</div>
+
+  <div class="calc-card">
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Year</label>
+        <input type="number" id="inp-year" min="1960" max="2024" placeholder="e.g. 2019" oninput="onYearInput()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Model</label>
+        <select id="inp-model" onchange="onModelChange()">
+          <option value="">Select model</option>
+          <option value="911">911</option>
+          <option value="Cayman">Cayman</option>
+          <option value="Boxster">Boxster</option>
+        </select>
+      </div>
+      <div class="form-group span-full">
+        <label class="form-label">Trim</label>
+        <select id="inp-trim" onchange="onTrimChange()">
+          <option value="_none">Select year &amp; model first</option>
+        </select>
+      </div>
+      <div class="form-group span-full">
+        <label class="form-label">Mileage <span class="form-label-note">(optional)</span></label>
+        <input type="number" id="inp-mileage" min="0" placeholder="e.g. 15000">
+      </div>
+    </div>
+    <button class="calc-btn" id="calc-btn" onclick="calculate()" disabled>Estimate FMV</button>
+  </div>
+
+  <div id="result-area"></div>
+</div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+var DATA = null;
+
+async function loadData() {
+  try {
+    var r = await fetch('calculator_data.json');
+    DATA = await r.json();
+    var sb = document.getElementById('sb-comps');
+    if (sb) sb.textContent = (DATA.total_comps || 0).toLocaleString();
+  } catch(e) {
+    document.getElementById('result-area').innerHTML =
+      '<div class="no-result"><div class="no-result-icon">&#x26A0;&#xFE0F;</div>Could not load comp data. Make sure calculator_data.json exists.</div>';
+  }
+  try {
+    var r2 = await fetch('search_data.json');
+    var listings = await r2.json();
+    var today = new Date().toISOString().split('T')[0];
+    var active = listings.filter(function(l){ return l.status === 'active'; }).length;
+    var newToday = listings.filter(function(l){ return l.status === 'active' && (l.date_first_seen||'').startsWith(today); }).length;
+    var auctionDealers = new Set(['bring a trailer','bat','pcarmarket','cars & bids','cars and bids','carsandbids','classic.com']);
+    var auctions = listings.filter(function(l){ return l.status === 'active' && auctionDealers.has((l.dealer||'').toLowerCase()); }).length;
+    document.getElementById('sb-active').textContent = active.toLocaleString();
+    document.getElementById('sb-new').textContent = newToday;
+    document.getElementById('sb-auctions').textContent = auctions;
+  } catch(_) {}
+}
+
+// ── Generation mapping (mirrors fmv.py get_generation) ───────────────────────
+function getGeneration(year, model, trim) {
+  if (!year) return null;
+  var m = (model || '').toLowerCase();
+  var t = (trim || '').toLowerCase();
+
+  if (m === '911' || m.indexOf('911') !== -1) {
+    if (year <= 1963) return '356_era';
+    if (year <= 1973) return '901_swb_lwb';
+    if (year <= 1977) return 'g_series_early';
+    if (year <= 1983) return 'g_series_sc';
+    if (year <= 1989) return 'g_series_32';
+    if (year <= 1994) return '964';
+    if (year <= 1998) return '993';
+    if (year <= 2004) return '996';
+    if (year <= 2013) return '997';
+    if (year <= 2019) return '991';
+    return '992';
+  }
+  if (m === 'cayman') {
+    if (year <= 2012) return '987_cayman';
+    if (year <= 2016) return '981_cayman';
+    return '718_cayman';
+  }
+  if (m === 'boxster') {
+    if (year <= 2004) return '986_boxster';
+    if (year <= 2012) return '987_boxster';
+    if (year <= 2016) return '981_boxster';
+    return '718_boxster';
+  }
+  if (m === '718' || m === '718 cayman') return '718_cayman';
+  if (m === '718 boxster' || m === '718 spyder') return '718_boxster';
+  return m || 'unknown';
+}
+
+var GEN_LABEL = {
+  '992': '992 (2020–)',
+  '991': '991 (2012–19)',
+  '997': '997 (2005–13)',
+  '996': '996 (1999–04)',
+  '993': '993 (1995–98)',
+  '964': '964 (1990–94)',
+  'g_series_32': 'G-Series 3.2 (1984–89)',
+  'g_series_sc': 'G-Series SC (1978–83)',
+  'g_series_early': 'G-Series (1974–77)',
+  '901_swb_lwb': '911 Classic (1965–73)',
+  '356_era': '356 era',
+  '718_cayman': '718 Cayman (2017–)',
+  '981_cayman': '981 Cayman (2013–16)',
+  '987_cayman': '987 Cayman (2006–12)',
+  '718_boxster': '718 Boxster (2017–)',
+  '981_boxster': '981 Boxster (2013–16)',
+  '987_boxster': '987 Boxster (2005–12)',
+  '986_boxster': '986 Boxster (1997–04)',
+};
+
+// ── Formatters ────────────────────────────────────────────────────────────────
+function fmt(n) {
+  if (n == null || n === undefined) return '—';
+  return '$' + Math.round(n).toLocaleString();
+}
+
+function fmtMi(n) {
+  if (!n && n !== 0) return '';
+  return Math.round(n).toLocaleString() + ' mi';
+}
+
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function confidenceBadge(c) {
+  if (c === 'HIGH')   return '<span class="badge badge-high">&#x25CF; HIGH</span>';
+  if (c === 'MEDIUM') return '<span class="badge badge-medium">&#x25CF; MEDIUM</span>';
+  if (c === 'LOW')    return '<span class="badge badge-low">&#x25CF; LOW</span>';
+  return '<span class="badge badge-muted">NO DATA</span>';
+}
+
+// ── Trim dropdown ─────────────────────────────────────────────────────────────
+function updateTrimDropdown(year, model) {
+  var trimEl = document.getElementById('inp-trim');
+  if (!DATA || !year || !model) {
+    trimEl.innerHTML = '<option value="_none">Select year &amp; model first</option>';
+    return;
+  }
+  var gen = getGeneration(year, model, '');
+  if (!gen) {
+    trimEl.innerHTML = '<option value="_none">Unknown generation</option>';
+    return;
+  }
+  var genData = DATA.by_generation && DATA.by_generation[gen];
+  if (!genData) {
+    trimEl.innerHTML = '<option value="_none">No comps for ' + esc(GEN_LABEL[gen] || gen) + '</option>';
+    return;
+  }
+  var trims = Object.keys(genData).sort(function(a, b) {
+    if (a === '' && b !== '') return 1;
+    if (a !== '' && b === '') return -1;
+    return a.localeCompare(b);
+  });
+  trimEl.innerHTML = '<option value="_none">Select trim</option>';
+  for (var i = 0; i < trims.length; i++) {
+    var t = trims[i];
+    var g = genData[t];
+    var label = t || 'Base / Unspecified';
+    var countStr = g.count === 1 ? '1 comp' : g.count + ' comps';
+    var opt = document.createElement('option');
+    opt.value = t;
+    opt.textContent = label + '  (' + countStr + ')';
+    trimEl.appendChild(opt);
+  }
+}
+
+// ── Event handlers ────────────────────────────────────────────────────────────
+function onYearInput() {
+  var year = parseInt(document.getElementById('inp-year').value);
+  var model = document.getElementById('inp-model').value;
+  if (year >= 1960 && year <= 2024 && model) {
+    updateTrimDropdown(year, model);
+  }
+  updateBtn();
+}
+
+function onModelChange() {
+  var year = parseInt(document.getElementById('inp-year').value);
+  var model = document.getElementById('inp-model').value;
+  updateTrimDropdown(year >= 1960 && year <= 2024 ? year : null, model);
+  document.getElementById('result-area').innerHTML = '';
+  updateBtn();
+}
+
+function onTrimChange() {
+  updateBtn();
+  var year = parseInt(document.getElementById('inp-year').value);
+  var model = document.getElementById('inp-model').value;
+  var trim = document.getElementById('inp-trim').value;
+  if (year >= 1960 && year <= 2024 && model && trim && trim !== '_none') {
+    calculate();
+  }
+}
+
+function updateBtn() {
+  var year = parseInt(document.getElementById('inp-year').value);
+  var model = document.getElementById('inp-model').value;
+  var trim = document.getElementById('inp-trim').value;
+  var ready = year >= 1960 && year <= 2024 && !!model && !!trim && trim !== '_none';
+  document.getElementById('calc-btn').disabled = !ready;
+}
+
+// ── Main calculate ────────────────────────────────────────────────────────────
+function calculate() {
+  if (!DATA) return;
+  var year = parseInt(document.getElementById('inp-year').value);
+  var model = document.getElementById('inp-model').value;
+  var trimVal = document.getElementById('inp-trim').value;
+  var mileage = parseInt(document.getElementById('inp-mileage').value) || null;
+
+  if (!year || !model || !trimVal || trimVal === '_none') return;
+
+  var gen = getGeneration(year, model, trimVal);
+  var genData = DATA.by_generation && DATA.by_generation[gen];
+
+  if (!genData || !(trimVal in genData)) {
+    document.getElementById('result-area').innerHTML =
+      '<div class="no-result"><div class="no-result-icon">&#x1F50D;</div>No comps found for this combination.</div>';
+    return;
+  }
+
+  var g = genData[trimVal];
+  var genLabel = GEN_LABEL[gen] || gen;
+  var trimLabel = trimVal || 'Base';
+
+  // Mileage note
+  var mileageNote = '';
+  if (mileage !== null && g.comps && g.comps.length > 0) {
+    var compMiles = g.comps.filter(function(c){ return c.mileage; }).map(function(c){ return c.mileage; });
+    if (compMiles.length > 0) {
+      var avgMiles = Math.round(compMiles.reduce(function(a,b){ return a+b; }, 0) / compMiles.length);
+      var diff = mileage - avgMiles;
+      if (Math.abs(diff) > 2000) {
+        var sign = diff > 0 ? 'higher' : 'lower';
+        mileageNote = '<div class="mileage-note">Your mileage (' + fmtMi(mileage) + ') is ' +
+          fmtMi(Math.abs(diff)) + ' ' + sign + ' than recent comp avg (' + fmtMi(avgMiles) + '). Estimate unadjusted.</div>';
+      }
+    }
+  }
+
+  // Comp rows
+  var compRows = '';
+  if (g.comps && g.comps.length > 0) {
+    for (var i = 0; i < g.comps.length; i++) {
+      var c = g.comps[i];
+      var miStr = c.mileage ? fmtMi(c.mileage) : '';
+      var dateStr = c.sold_date ? c.sold_date.substring(0, 7) : '';
+      var meta = [miStr, c.source || '', dateStr].filter(function(s){ return s; }).join(' &middot; ');
+      var linkHtml = c.listing_url
+        ? '<a class="comp-link" href="' + esc(c.listing_url) + '" target="_blank" rel="noopener">&#x2197;</a>'
+        : '';
+      compRows += '<div class="comp-row">' +
+        '<div class="comp-info">' +
+          '<div class="comp-name">' + esc((c.year||'') + ' Porsche ' + (c.model||'') + (c.trim ? ' ' + c.trim : '')) + '</div>' +
+          (meta ? '<div class="comp-detail">' + meta + '</div>' : '') +
+        '</div>' +
+        '<div class="comp-right">' +
+          '<div class="comp-price">' + fmt(c.sold_price) + '</div>' +
+          linkHtml +
+        '</div>' +
+      '</div>';
+    }
+  }
+
+  document.getElementById('result-area').innerHTML =
+    '<div class="result-card">' +
+      '<div class="fmv-hero">' +
+        '<div class="fmv-label">Estimated FMV</div>' +
+        '<div class="fmv-price">' + fmt(g.median) + '</div>' +
+        '<div class="fmv-range">Range: <span>' + fmt(g.p25) + '</span> &ndash; <span>' + fmt(g.p75) + '</span></div>' +
+        mileageNote +
+        '<div class="badges-row">' +
+          confidenceBadge(g.confidence) +
+          '<span class="badge badge-muted">' + g.count + ' comp' + (g.count !== 1 ? 's' : '') + '</span>' +
+          '<span class="badge badge-muted">' + esc(genLabel) + '</span>' +
+        '</div>' +
+      '</div>' +
+      (compRows ? '<div class="comps-header">Recent Sold Comps</div>' + compRows : '') +
+    '</div>';
+}
+
+// ── Nav ───────────────────────────────────────────────────────────────────────
+function toggleDropdown() {
+  document.getElementById('dd-overlay').classList.toggle('show');
+}
+function closeDropdown() {
+  document.getElementById('dd-overlay').classList.remove('show');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>

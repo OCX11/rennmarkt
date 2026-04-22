@@ -430,6 +430,13 @@ def main():
     except Exception as e:
         log.warning("Auction dashboard generation failed: %s", e)
 
+    try:
+        import build_calculator_data
+        build_calculator_data.build()
+        log.info("Calculator data built")
+    except Exception as e:
+        log.warning("Calculator data build failed: %s", e)
+
     # Regenerate reports
     for label, fn in [
         ("Market report", rpt.generate),

@@ -14,15 +14,15 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh}
 .topbar{height:52px;background:#141414;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:100;}
-.logo{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--text);letter-spacing:6px; text-transform:uppercase;margin-right:16px;white-space:nowrap;flex-shrink:0;text-decoration:none;}
-.logo span{color:var(--red);}
-.stats-bar { display:flex; gap:1px; margin:0 12px 8px; background:#1a1a1a; border-radius:14px; overflow:hidden; border:1px solid #2a2a2a; }
-.stat-cell { flex:1; padding:12px 8px 10px; text-align:center; background:#141414; cursor:pointer; transition:background 0.15s; position:relative; text-decoration:none; color:inherit; }
-.stat-cell:first-child { border-radius:13px 0 0 13px; }
-.stat-cell:last-child { border-radius:0 13px 13px 0; }
-.stat-cell:hover { background:#1c1c1c; }
-.stat-cell.active { background:#1e1e1e; }
-.stat-cell.active::after { content:""; position:absolute; bottom:0; left:20%; right:20%; height:2px; background:#c0392b; border-radius:1px; }
+.logo{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fff;letter-spacing:6px;white-space:nowrap;flex-shrink:0;text-decoration:none;}
+.logo span{color:#c0392b;}
+.stats-bar{display:flex;gap:1px;margin:0 12px 8px;background:#2a2a2a;border-radius:14px;overflow:hidden;border:1px solid #2a2a2a;}
+.stat-cell{flex:1;padding:12px 8px 10px;text-align:center;background:#141414;cursor:pointer;transition:background 0.15s;position:relative;text-decoration:none;color:inherit;}
+.stat-cell:first-child{border-radius:13px 0 0 13px;}
+.stat-cell:last-child{border-radius:0 13px 13px 0;}
+.stat-cell:hover{background:#1c1c1c;}
+.stat-cell.active{background:#1e1e1e;}
+.stat-cell.active::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:#c0392b;}
 .stat-cell + .stat-cell { border-left:1px solid #2a2a2a; }
 .stat-number { font-size:22px; font-weight:700; letter-spacing:-0.5px; line-height:1.1; color:#e8e4df; }
 .stat-number.green { color:#4ade80; }
@@ -73,30 +73,30 @@ button{padding:8px 18px;border:none;border-radius:6px;font-size:13px;font-weight
 </head>
 <body>
 <header class="topbar">
-  <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">PTOX<span>11</span></a>
+  <a class="logo" href="index.html">PTOX<span>11</span></a>
   <button class="more-btn" onclick="toggleDropdown()">More &#x25BE;</button>
 </header>
 <div class="stats-bar">
   <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
-    <div class="stat-number">—</div>
+    <div class="stat-number" id="sb-active">—</div>
     <div class="stat-label">Active</div>
   </a>
-  <div class="stat-cell">
-    <div class="stat-number">—</div>
+  <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
+    <div class="stat-number" id="sb-new">—</div>
     <div class="stat-label">New Today</div>
-  </div>
+  </a>
   <a class="stat-cell" href="auctions.html" style="text-decoration:none;color:inherit">
-    <div class="stat-number red">—</div>
+    <div class="stat-number red" id="sb-auctions">—</div>
     <div class="stat-label">Auctions</div>
   </a>
   <a class="stat-cell" href="index.html#comps" style="text-decoration:none;color:inherit">
     <div class="stat-number">—</div>
     <div class="stat-label">Comps</div>
   </a>
-  <div class="stat-cell">
+  <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
     <div class="stat-number green">—</div>
     <div class="stat-label">Deals</div>
-  </div>
+  </a>
 </div>
 <div class="dropdown-overlay" id="dd-overlay">
   <div class="dd-backdrop" onclick="closeDropdown()"></div>
@@ -104,9 +104,11 @@ button{padding:8px 18px;border:none;border-radius:6px;font-size:13px;font-weight
     <div class="dd-item"><span class="dd-icon">&#x2605;</span> My Cars</div>
     <a class="dd-item" href="search.html"><span class="dd-icon">&#x1F50D;</span> Search</a>
     <div class="dd-divider"></div>
+    <a class="dd-item" href="calculator.html"><span class="dd-icon">&#x1F4B0;</span> FMV Calculator</a>
     <a class="dd-item" href="market_report.html"><span class="dd-icon">&#x1F4CA;</span> Market Reports</a>
     <a class="dd-item" href="notify.html"><span class="dd-icon">&#x1F514;</span> Notifications</a>
     <div class="dd-divider"></div>
+    <div class="dd-item"><span class="dd-icon">&#x1F3A8;</span> Theme</div>
     <div class="dd-item"><span class="dd-icon">&#x2699;&#xFE0F;</span> Settings</div>
   </div>
 </div>
@@ -158,7 +160,14 @@ async function loadData() {
   try {
     const r = await fetch(DATA_URL);
     allListings = await r.json();
-    document.getElementById('db-count').textContent = allListings.length.toLocaleString() + ' listings in database';
+    const auctionDealers = new Set(['bring a trailer','bat','pcarmarket','cars & bids','cars and bids','carsandbids','classic.com']);
+    const today = new Date().toISOString().split('T')[0];
+    const nActive = allListings.filter(l => l.status === 'active').length;
+    const nNew = allListings.filter(l => l.status === 'active' && (l.date_first_seen || '').startsWith(today)).length;
+    const nAuctions = allListings.filter(l => l.status === 'active' && auctionDealers.has((l.dealer || '').toLowerCase())).length;
+    const sbActive = document.getElementById('sb-active'); if (sbActive) sbActive.textContent = nActive.toLocaleString();
+    const sbNew = document.getElementById('sb-new'); if (sbNew) sbNew.textContent = nNew;
+    const sbAuctions = document.getElementById('sb-auctions'); if (sbAuctions) sbAuctions.textContent = nAuctions;
   } catch(e) {
     document.getElementById('results').innerHTML = '<div class="no-results"><div class="icon">⚠️</div>Could not load listing data</div>';
   }

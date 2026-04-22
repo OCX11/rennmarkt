@@ -488,6 +488,7 @@ def generate() -> str:
         auctions = [c for c in active if _is_auction(c.get("dealer", ""))]
 
         new_today  = [c for c in d["new_today"]  if _keep(c)]
+        new_today_ids = set(c["id"] for c in new_today)
         n_active   = len(active)
         n_new      = len(new_today)
         n_auctions = len(auctions)
@@ -495,7 +496,7 @@ def generate() -> str:
         n_deals    = sum(1 for c in active if (
                          c["_fmv"].get("fmv") and c.get("price") and
                          c["_fmv"]["confidence"] != "NONE" and
-                         float(c["price"]) < float(c["_fmv"]["fmv"]) * 0.95))
+                         float(c["price"]) < float(c["_fmv"]["fmv"]) * 0.90))
 
         health     = _source_health()
         health_html = _health_pills(health)
@@ -515,6 +516,7 @@ def generate() -> str:
                 "src":  _BADGE_CFG.get((c.get("dealer") or "").lower().strip(), (None,None,(c.get("dealer") or "")[:12]))[2],
                 "tier": c.get("tier") or "",
                 "deal": pct is not None and pct <= -10,
+                "nt":   c["id"] in new_today_ids,
                 "cool": ("air" if (int(c.get("year") or 0) <= 1998 and "911" in (c.get("model") or "").lower()) else ("water" if (int(c.get("year") or 0) >= 1999 and "911" in (c.get("model") or "").lower()) else None)),
                 "dom":  c.get("days_on_market") or 0,
                 "txt":  ((str(c.get("year") or "") + " " + (c.get("model") or "") + " " +
@@ -583,16 +585,16 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 }}
 .logo {{
   font-family:'Syne',sans-serif; font-size:14px; font-weight:800;
-  color:var(--text); letter-spacing:2px; margin-right:16px; white-space:nowrap; flex-shrink:0;
+  color:#fff; letter-spacing:6px; white-space:nowrap; flex-shrink:0; text-decoration:none;
 }}
-.logo span {{ color:var(--red); }}
-.stats-bar {{ display:flex; gap:1px; margin:0 12px 8px; background:#1a1a1a; border-radius:14px; overflow:hidden; border:1px solid #2a2a2a; }}
+.logo span {{ color:#c0392b; }}
+.stats-bar {{ display:flex; gap:1px; margin:0 12px 8px; background:#2a2a2a; border-radius:14px; overflow:hidden; border:1px solid #2a2a2a; }}
 .stat-cell {{ flex:1; padding:12px 8px 10px; text-align:center; background:#141414; cursor:pointer; transition:background 0.15s; position:relative; }}
 .stat-cell:first-child {{ border-radius:13px 0 0 13px; }}
 .stat-cell:last-child {{ border-radius:0 13px 13px 0; }}
 .stat-cell:hover {{ background:#1c1c1c; }}
 .stat-cell.active {{ background:#1e1e1e; }}
-.stat-cell.active::after {{ content:''; position:absolute; bottom:0; left:20%; right:20%; height:2px; background:var(--red); border-radius:1px; }}
+.stat-cell.active::after {{ content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:#c0392b; }}
 .stat-cell + .stat-cell {{ border-left:1px solid #2a2a2a; }}
 .stat-number {{ font-size:22px; font-weight:700; letter-spacing:-0.5px; line-height:1.1; color:var(--text); }}
 .stat-number.green {{ color:var(--green); }}
@@ -678,25 +680,6 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 
 /* ── Main content ── */
 .main {{ flex:1; display:flex; flex-direction:column; overflow:hidden; }}
-
-/* ── Stats strip ── */
-.stats-strip {{
-  display:flex; gap:1px; background:var(--border);
-  border-bottom:1px solid var(--border);
-}}
-.stat-cell {{
-  flex:1; background:var(--bg2); padding:12px 16px; text-align:center;
-}}
-.stat-num {{
-  font-family:'DM Mono',monospace; font-size:20px; font-weight:500;
-  color:var(--text); letter-spacing:-1px; line-height:1;
-}}
-.stat-num.green  {{ color:var(--green); }}
-.stat-num.yellow {{ color:var(--yellow); }}
-.stat-lbl {{
-  font-family:'DM Mono',monospace; font-size:9px; color:var(--muted);
-  margin-top:4px; text-transform:uppercase; letter-spacing:0.5px;
-}}
 
 .main-toolbar {{
   padding:10px 20px; background:var(--bg2); border-bottom:1px solid var(--border);
@@ -955,7 +938,6 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
   .topbar {{ padding:8px 12px; }}
   .stats-bar {{ margin:0 8px 8px; }}
   .stat-number {{ font-size:18px; }}
-  .pill {{ min-width:60px; font-size:12px; }}
 }}
 </style>
 </head>
@@ -964,11 +946,11 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 
 <!-- ── Nav ── -->
 <header class="topbar">
-  <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">PTOX<span>11</span></a>
+  <a class="logo" href="index.html">PTOX<span>11</span></a>
   <button class="more-btn" onclick="toggleDropdown()">More &#x25BE;</button>
 </header>
 <div class="stats-bar">
-  <div class="stat-cell active" onclick="switchView('listings',this)">
+  <div class="stat-cell active" onclick="switchView('listings',this);resetFilters()">
     <div class="stat-number">{n_active:,}</div>
     <div class="stat-label">Active</div>
   </div>
@@ -995,9 +977,11 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
     <div class="dd-item"><span class="dd-icon">&#x2605;</span> My Cars</div>
     <a class="dd-item" href="search.html"><span class="dd-icon">&#x1F50D;</span> Search</a>
     <div class="dd-divider"></div>
+    <a class="dd-item" href="calculator.html"><span class="dd-icon">&#x1F4B0;</span> FMV Calculator</a>
     <a class="dd-item" href="market_report.html"><span class="dd-icon">&#x1F4CA;</span> Market Reports</a>
     <a class="dd-item" href="notify.html"><span class="dd-icon">&#x1F514;</span> Notifications</a>
     <div class="dd-divider"></div>
+    <div class="dd-item"><span class="dd-icon">&#x1F3A8;</span> Theme</div>
     <div class="dd-item"><span class="dd-icon">&#x2699;&#xFE0F;</span> Settings</div>
   </div>
 </div>
@@ -1047,7 +1031,7 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
   <div class="filter-group">
     <span class="filter-group-label">Type</span>
     <div class="filter-checkboxes">
-      <label><input type="checkbox" id="f-deals" onchange="applyFilters()"> Deals only (&darr;5%+ FMV)</label>
+      <label><input type="checkbox" id="f-deals" onchange="applyFilters()"> Deals only (&darr;10%+ FMV)</label>
       <label><input type="checkbox" id="f-tier1" onchange="applyFilters()"> GT / Collector</label>
     </div>
   </div>
@@ -1057,30 +1041,6 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 
 <!-- ── Main ── -->
 <main class="main">
-
-  <!-- Stats strip -->
-  <div class="stats-strip">
-    <div class="stat-cell">
-      <div class="stat-num">{n_active:,}</div>
-      <div class="stat-lbl">Active</div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-num">{n_new:,}</div>
-      <div class="stat-lbl">New Today</div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-num yellow">{n_auctions}</div>
-      <div class="stat-lbl">Auctions</div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-num">{n_comps:,}</div>
-      <div class="stat-lbl">Comps</div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-num green">{n_deals}</div>
-      <div class="stat-lbl">Deals</div>
-    </div>
-  </div>
 
   <!-- Toolbar -->
   <div class="main-toolbar">
@@ -1237,7 +1197,7 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
     <div class="drawer-section" style="grid-column:1/-1">
       <span class="drawer-section-label">Type</span>
       <div class="drawer-checkboxes">
-        <label><input type="checkbox" id="d-deals" onchange="syncFromDrawer()"> Deals only (&darr;5%+ FMV)</label>
+        <label><input type="checkbox" id="d-deals" onchange="syncFromDrawer()"> Deals only (&darr;10%+ FMV)</label>
         <label><input type="checkbox" id="d-tier1" onchange="syncFromDrawer()"> GT / Collector</label>
       </div>
     </div>
@@ -1259,6 +1219,7 @@ var PAGE = 48;
 var activeGens = [];
 var activeSrcs = [];
 var activeCooling = null;
+var filterNewToday = false;
 
 function toggleCooling(btn, type) {{
   if (activeCooling === type) {{
@@ -1310,6 +1271,7 @@ function applyFilters() {{
     if (dealsOnly && !d.deal) return false;
     if (tier1Only && d.tier !== 'TIER1') return false;
     if (activeCooling && d.cool !== activeCooling) return false;
+    if (filterNewToday && !d.nt) return false;
     return true;
   }});
 
@@ -1362,6 +1324,7 @@ if (_ca) {{
 function resetFilters() {{
   activeGens = []; activeSrcs = [];
   activeCooling = null;
+  filterNewToday = false;
   document.querySelectorAll('.chip').forEach(function(c) {{ c.classList.remove('active'); }});
   ['f-year-min','f-year-max','f-price-min','f-price-max',
    'd-year-min','d-year-max','d-price-min','d-price-max'].forEach(function(id) {{
@@ -1421,7 +1384,7 @@ function updateFabState() {{
 var _currentView = 'listings';
 function switchView(name, btn) {{
   document.querySelectorAll('.view').forEach(function(v) {{ v.classList.remove('active'); }});
-  document.querySelectorAll('.pill').forEach(function(b) {{ b.classList.remove('active'); }});
+  document.querySelectorAll('.stat-cell').forEach(function(b) {{ b.classList.remove('active'); }});
   var v = document.getElementById('view-' + name);
   if (v) v.classList.add('active');
   if (btn) btn.classList.add('active');
@@ -1430,10 +1393,16 @@ function switchView(name, btn) {{
 }}
 
 function filterToday() {{
-  // TODO: filter cards to today's listings
+  filterNewToday = true;
+  var fd = document.getElementById('f-deals'); if (fd) fd.checked = false;
+  var dd = document.getElementById('d-deals'); if (dd) dd.checked = false;
+  applyFilters(); updateFabState();
 }}
 function filterDeals() {{
-  // TODO: filter cards to deals only (10%+ below FMV)
+  filterNewToday = false;
+  var fd = document.getElementById('f-deals'); if (fd) fd.checked = true;
+  var dd = document.getElementById('d-deals'); if (dd) dd.checked = true;
+  applyFilters(); updateFabState();
 }}
 function toggleDropdown() {{
   document.getElementById('dd-overlay').classList.toggle('show');
@@ -1601,7 +1570,8 @@ function updateTimestamps() {{
 // ── Init ──────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {{
   if (window.location.hash === '#comps') {{
-    switchView('comps', document.getElementById('pill-comps'));
+    var compsCell = document.querySelector('.stat-cell[onclick*="comps"]');
+    switchView('comps', compsCell);
   }}
   applyFilters();
   startCountdowns();
@@ -1613,6 +1583,11 @@ window.addEventListener('DOMContentLoaded', function() {{
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(html, encoding="utf-8")
+    (BASE_DIR / "docs" / "stats.json").write_text(
+        json.dumps({"n_active": n_active, "n_new": n_new, "n_auctions": n_auctions,
+                    "n_comps": n_comps, "n_deals": n_deals}),
+        encoding="utf-8"
+    )
     return str(OUT_PATH)
 
 

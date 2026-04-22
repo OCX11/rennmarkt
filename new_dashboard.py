@@ -506,14 +506,14 @@ def generate() -> str:
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
 
 :root {{
-  --red:    #D6293E;
-  --bg:     #0A0A0C;
-  --bg2:    #111116;
-  --bg3:    #18181F;
-  --border: #25252E;
-  --text:   #F0F0F8;
-  --muted:  #8A8A9A;
-  --green:  #22C55E;
+  --red:    #c0392b;
+  --bg:     #0d0d0d;
+  --bg2:    #141414;
+  --bg3:    #1c1c1c;
+  --border: #2a2a2a;
+  --text:   #e8e4df;
+  --muted:  #7a7570;
+  --green:  #4ade80;
   --yellow: #EAB308;
 }}
 
@@ -528,29 +528,30 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 /* ── Topbar / Nav ── */
 .topbar {{
   height:52px; min-height:52px;
-  background:#0C0C12; border-bottom:1px solid var(--border);
+  background:#141414; border-bottom:1px solid var(--border);
   display:flex; align-items:center; justify-content:space-between;
   padding:0 24px; gap:16px; z-index:50;
 }}
-.topbar-left {{ display:flex; align-items:center; gap:4px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }}
-.topbar-left::-webkit-scrollbar {{ display:none; }}
 .logo {{
   font-family:'Syne',sans-serif; font-size:14px; font-weight:800;
-  color:var(--text); letter-spacing:2px; margin-right:20px; white-space:nowrap;
+  color:var(--text); letter-spacing:2px; margin-right:16px; white-space:nowrap; flex-shrink:0;
 }}
 .logo span {{ color:var(--red); }}
-.nav-item {{
-  font-family:'DM Mono',monospace; font-size:13px; font-weight:500;
-  letter-spacing:0.5px; text-transform:uppercase;
-  color:var(--muted); padding:0 16px; height:52px;
-  display:flex; align-items:center;
-  border-bottom:2px solid transparent; transition:all 0.1s;
-  cursor:pointer;
-}}
-.nav-item:hover {{ color:var(--text); }}
-.nav-item.active {{ color:var(--text); border-bottom-color:var(--red); }}
-.nav-bell {{ padding:0 12px; opacity:0.6; }}
-.nav-bell:hover {{ opacity:1; color:var(--red); }}
+.pill-group {{ display:flex; gap:4px; flex:1; justify-content:center; }}
+.pill {{ padding:6px 0; min-width:78px; border-radius:14px; font-size:13px; font-weight:600; color:#666; background:transparent; border:1px solid transparent; text-align:center; display:flex; flex-direction:column; align-items:center; gap:1px; text-decoration:none; cursor:pointer; transition:all 0.15s; }}
+.pill.active {{ color:var(--text); background:#222; border-color:#444; }}
+.pill .pill-count {{ font-size:10px; font-weight:500; color:#555; }}
+.pill.active .pill-count {{ color:#999; }}
+.more-btn {{ padding:7px 11px; border-radius:14px; font-size:11px; font-weight:500; color:#666; background:transparent; border:1px solid #333; display:flex; align-items:center; gap:3px; cursor:pointer; flex-shrink:0; }}
+.more-btn:hover {{ border-color:#555; color:#aaa; }}
+.dropdown-overlay {{ display:none; }}
+.dropdown-overlay.show {{ display:block; }}
+.dropdown {{ position:fixed; right:14px; top:54px; background:#222; border:1px solid #333; border-radius:12px; padding:6px; min-width:180px; box-shadow:0 8px 32px rgba(0,0,0,0.5); z-index:200; }}
+.dd-item {{ padding:10px 14px; font-size:14px; color:#ccc; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:10px; }}
+.dd-item:hover {{ background:#2a2a2a; }}
+.dd-icon {{ font-size:15px; width:20px; text-align:center; }}
+.dd-divider {{ height:1px; background:#333; margin:4px 10px; }}
+.dd-backdrop {{ position:fixed; inset:0; z-index:199; }}
 .topbar-right {{
   display:flex; align-items:center; gap:12px;
   font-family:'DM Mono',monospace; font-size:10px; color:var(--muted);
@@ -894,9 +895,9 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
   .filter-fab {{ display:flex; }}
   .search-input {{ width:150px; }}
   .search-input:focus {{ width:190px; }}
-  .nav-item {{ padding:0 10px; font-size:11px; }}
-  .logo {{ margin-right:10px; font-size:13px; }}
+  .logo {{ margin-right:6px; font-size:13px; }}
   .topbar {{ padding:0 12px; }}
+  .pill {{ min-width:60px; font-size:12px; }}
 }}
 </style>
 </head>
@@ -905,26 +906,39 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 
 <!-- ── Nav ── -->
 <header class="topbar">
-  <div class="topbar-left">
-    <a class="logo" onclick="switchView('listings',document.querySelector('.nav-item'))" style="cursor:pointer;text-decoration:none;">PTO<span>X</span></a>
-    <button class="nav-item active" onclick="switchView('listings',this)">Listings</button>
-    <a class="nav-item" href="auctions.html">Auctions</a>
-    <button class="nav-item" onclick="switchView('comps',this)">Comps</button>
-    <button class="nav-item" onclick="switchView('market',this)">Market</button>
-    <a class="nav-item" href="search.html">Search</a>
-    <a class="nav-item nav-bell" href="notify.html" title="Push Notifications">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-        <line x1="3" y1="3" x2="21" y2="21" style="display:none"/>
-      </svg>
+  <a class="logo" onclick="switchView('listings',document.querySelector('.pill-group .pill'))" style="cursor:pointer;text-decoration:none;">PTO<span>X</span></a>
+  <div class="pill-group">
+    <button class="pill active" onclick="switchView('listings',this)">
+      <span class="pill-label">Listings</span>
+      <span class="pill-count">{n_active:,} active</span>
+    </button>
+    <a class="pill" href="auctions.html">
+      <span class="pill-label">Auctions</span>
+      <span class="pill-count">{n_auctions:,} active</span>
     </a>
+    <button class="pill" onclick="switchView('comps',this)">
+      <span class="pill-label">Comps</span>
+      <span class="pill-count">{n_comps:,} total</span>
+    </button>
   </div>
+  <button class="more-btn" onclick="toggleDropdown()">More &#x25BE;</button>
   <div class="topbar-right">
     <div class="health-pills">{health_html}</div>
     <span>{now_str}</span>
   </div>
 </header>
+<div class="dropdown-overlay" id="dd-overlay">
+  <div class="dd-backdrop" onclick="closeDropdown()"></div>
+  <div class="dropdown">
+    <div class="dd-item"><span class="dd-icon">&#x2605;</span> My Cars</div>
+    <a class="dd-item" href="search.html"><span class="dd-icon">&#x1F50D;</span> Search</a>
+    <div class="dd-divider"></div>
+    <a class="dd-item" href="market_report.html"><span class="dd-icon">&#x1F4CA;</span> Market Reports</a>
+    <a class="dd-item" href="notify.html"><span class="dd-icon">&#x1F514;</span> Notifications</a>
+    <div class="dd-divider"></div>
+    <div class="dd-item"><span class="dd-icon">&#x2699;&#xFE0F;</span> Settings</div>
+  </div>
+</div>
 
 <div class="body-area">
 
@@ -1345,12 +1359,19 @@ function updateFabState() {{
 var _currentView = 'listings';
 function switchView(name, btn) {{
   document.querySelectorAll('.view').forEach(function(v) {{ v.classList.remove('active'); }});
-  document.querySelectorAll('.nav-item').forEach(function(b) {{ b.classList.remove('active'); }});
+  document.querySelectorAll('.pill').forEach(function(b) {{ b.classList.remove('active'); }});
   var v = document.getElementById('view-' + name);
   if (v) v.classList.add('active');
   if (btn) btn.classList.add('active');
   _currentView = name;
   if (name === 'listings') startCountdowns();
+}}
+
+function toggleDropdown() {{
+  document.getElementById('dd-overlay').classList.toggle('show');
+}}
+function closeDropdown() {{
+  document.getElementById('dd-overlay').classList.remove('show');
 }}
 
 // ── Smart auto-refresh (no reload, no filter wipe) ───────────────────────────

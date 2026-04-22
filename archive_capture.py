@@ -79,11 +79,56 @@ def _year_from_listing(year) -> int:
 
 # ── HTML capture ──────────────────────────────────────────────────────────────
 
-def capture_html(listing_id: int, url: str, year: int, vin: str) -> str:
+def _capture_html_playwright(listing_id: int, url: str, year: int, vin: str) -> str:
     """
-    Fetch listing HTML with requests.
+    Fetch listing HTML via Playwright for JS-rendered pages (e.g. Cars and Bids).
     Returns relative path on success, 'FAILED' on error.
     """
+    try:
+        from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
+
+        html_dir  = _archive_dir("html", year)
+        fname     = f"{listing_id}_{_safe_id(vin, listing_id)}.html"
+        full_path = html_dir / fname
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            ctx = browser.new_context(
+                viewport={"width": SCREENSHOT_WIDTH, "height": SCREENSHOT_HEIGHT},
+                user_agent=UA,
+            )
+            page = ctx.new_page()
+            try:
+                page.goto(url, wait_until="domcontentloaded", timeout=30_000)
+                page.wait_for_timeout(4_000)   # let React render
+            except PWTimeout:
+                log.warning("  PW HTML nav timeout: %s", url[:80])
+            html_content = page.content()
+            browser.close()
+
+        if not html_content or len(html_content) < 500:
+            log.warning("  PW HTML too short (%d bytes): %s", len(html_content or ""), url[:80])
+            return "FAILED"
+
+        full_path.write_text(html_content, encoding="utf-8")
+        rel_path = str(full_path.relative_to(BASE_DIR))
+        log.debug("  PW HTML saved → %s (%d bytes)", rel_path, len(html_content))
+        return rel_path
+
+    except Exception as exc:
+        log.warning("  PW HTML error: %s — %s", url[:80], exc)
+        return "FAILED"
+
+
+def capture_html(listing_id: int, url: str, year: int, vin: str) -> str:
+    """
+    Fetch listing HTML. Uses Playwright for JS-rendered sites (carsandbids.com),
+    requests for everything else.
+    Returns relative path on success, 'FAILED' on error.
+    """
+    if "carsandbids.com" in url:
+        return _capture_html_playwright(listing_id, url, year, vin)
+
     try:
         resp = requests.get(
             url,
@@ -160,7 +205,10 @@ def run_batch():
         rows = conn.execute("""
             SELECT id, listing_url, year, make, model, trim, dealer, vin
             FROM   listings
-            WHERE  html_path IS NULL
+            WHERE  (
+                html_path IS NULL
+                OR (html_path = 'FAILED' AND listing_url LIKE '%carsandbids.com%')
+            )
               AND  listing_url IS NOT NULL
               AND  listing_url != ''
               AND  listing_url != 'FAILED'

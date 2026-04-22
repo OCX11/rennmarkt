@@ -357,12 +357,15 @@ def generate() -> str:
                float(r[1]) < float(fmv_by_id[r[0]]["fmv"]) * 0.90
         )
 
-        # Recently ended auctions (sold in last 48 hours)
+        # Recently ended auctions (sold in last 48 hours, end time must be in the past)
+        # Guard: auction_ends_at <= now prevents incorrectly-marked-sold active auctions
+        # from appearing here (e.g. listings wiped by scraper bug with future end dates)
         ended_rows = conn.execute(
             """SELECT * FROM listings
                WHERE source_category='AUCTION' AND status='sold'
                AND auction_ends_at IS NOT NULL
                AND auction_ends_at >= datetime('now', '-48 hours')
+               AND auction_ends_at <= datetime('now')
                ORDER BY auction_ends_at DESC"""
         ).fetchall()
         ended_cars = [dict(r) for r in ended_rows]

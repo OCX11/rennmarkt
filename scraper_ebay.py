@@ -210,6 +210,11 @@ _VARIANT_TO_MODEL = [
 # so they don't get misclassified via variant inference (e.g. Cayenne Turbo → "911").
 _TITLE_BLOCKED = frozenset({"cayenne", "macan", "panamera", "taycan"})
 
+# Non-Porsche makes that slip through eBay's category Make=Porsche filter.
+# If the title lacks "porsche" AND contains one of these, it's a mislisted BMW/etc.
+_NON_PORSCHE_MAKES = frozenset({"bmw", "mercedes", "audi", "ferrari", "lamborghini",
+                                 "maserati", "bentley", "rolls-royce", "jaguar"})
+
 
 def _extract_model(title):
     """Return base model (911/Cayman/Boxster/718/718 Cayman/718 Boxster) from title.
@@ -322,6 +327,14 @@ def _parse_item(item):
     Returns dict or None if a fatal field is missing.
     """
     title = item.get("title", "")
+    title_lower = title.lower()
+
+    # Reject non-Porsche makes that slip through eBay's server-side Make=Porsche filter.
+    # Only flag when "porsche" is absent AND a competing make name is present.
+    if "porsche" not in title_lower and any(m in title_lower for m in _NON_PORSCHE_MAKES):
+        log.debug("eBay: rejecting non-Porsche title: %s", title[:80])
+        return None
+
     aspects = item.get("localizedAspects")
 
     buying_options = item.get("buyingOptions") or []
@@ -672,15 +685,32 @@ def scrape_ebay(max_pages=None):
         log.info("eBay page 0: fetched %d items (API total: %d)", len(items), total)
 
         new_count = 0
-        # Merge new/updated listings into cache by URL
+        # Merge new/updated listings into cache by URL.
+        # Secondary VIN index catches the same car relisted under a new eBay item ID.
         cached_by_url = {l["url"]: l for l in cached_listings if l.get("url")}
+        cached_by_vin = {l["vin"]: l["url"] for l in cached_listings if l.get("vin")}
+
         for item in items:
             try:
                 car = _parse_item(item)
-                if car and car.get("url") and _local_valid(car):
-                    if car["url"] not in cached_by_url:
-                        new_count += 1
-                    cached_by_url[car["url"]] = car
+                if not (car and car.get("url") and _local_valid(car)):
+                    continue
+                vin = car.get("vin")
+                # If this VIN is already in cache under a different URL, it's the same
+                # car relisted — update the existing entry instead of adding a duplicate.
+                if vin and vin in cached_by_vin:
+                    old_url = cached_by_vin[vin]
+                    if old_url in cached_by_url and old_url != car["url"]:
+                        log.info("eBay: VIN dedup — %s relisted, merging into %s", vin, old_url[:60])
+                        cached_by_url[old_url].update(
+                            {k: v for k, v in car.items() if v is not None}
+                        )
+                        continue
+                if car["url"] not in cached_by_url:
+                    new_count += 1
+                cached_by_url[car["url"]] = car
+                if vin:
+                    cached_by_vin[vin] = car["url"]
             except Exception as e:
                 log.warning("eBay: parse error (%s): %s", item.get("itemId", "?"), e)
 
@@ -689,8 +719,16 @@ def scrape_ebay(max_pages=None):
             seller_listings = _search_seller(token, seller)
             s_added = 0
             for sl in seller_listings:
-                if sl.get("url") and sl["url"] not in cached_by_url:
-                    cached_by_url[sl["url"]] = sl
+                vin = sl.get("vin")
+                url = sl.get("url")
+                if not url:
+                    continue
+                if vin and vin in cached_by_vin:
+                    continue  # already in cache under another URL
+                if url not in cached_by_url:
+                    cached_by_url[url] = sl
+                    if vin:
+                        cached_by_vin[vin] = url
                     s_added += 1
                     new_count += 1
             if s_added:

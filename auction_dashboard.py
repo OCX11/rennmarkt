@@ -42,6 +42,13 @@ def _m(v) -> str:
 def _h(s) -> str:
     return _html.escape(str(s or ""))
 
+def _dedup_model_trim(model: str, trim: str) -> str:
+    m = (model or "").strip()
+    t = (trim or "").strip()
+    if t and m and t.lower().startswith(m.lower()):
+        t = t[len(m):].lstrip()
+    return (m + (" " + t if t else "")).strip()
+
 _BADGE_CFG = {
     "bring a trailer": ("#0D1F35", "#60a5fa", "BaT"),
     "bat":             ("#0D1F35", "#60a5fa", "BaT"),
@@ -243,7 +250,7 @@ def _auction_card(car: dict, fmv_score: dict, urgent: bool = False) -> str:
         f'</div>\n'
         f'      {timer_html}\n'
         f'    </div>\n'
-        f'    <div class="auc-title">{year} Porsche {_h(model)}{(" " + _h(trim)) if trim else ""}</div>\n'
+        f'    <div class="auc-title">{year} Porsche {_h(_dedup_model_trim(model, trim))}</div>\n'
         f'    {tier_html}\n'
         f'    <div class="auc-bid-row">\n'
         f'      <span class="bid-label">Current Bid</span>\n'
@@ -258,14 +265,17 @@ def _auction_card(car: dict, fmv_score: dict, urgent: bool = False) -> str:
 
 # ── Section builder ───────────────────────────────────────────────────────────
 
-def _section(title, subtitle, cards_html, icon, count, sec_cls="") -> str:
+def _section(title, subtitle, cards_html, icon, count, sec_cls="", hide_if_empty=False) -> str:
     if not cards_html:
+        if hide_if_empty:
+            return ""
         cards_html = ('<div class="empty">'
                       '<div class="empty-icon">&#x1F50D;</div>'
                       '<div class="empty-text">No auctions in this window</div>'
                       '</div>')
+    cls = "section" + (" " + sec_cls if sec_cls else "")
     return (
-        f'<div class="section {sec_cls}">\n'
+        f'<div class="{cls}">\n'
         f'  <div class="section-hdr">\n'
         f'    <div style="display:flex;align-items:center;gap:10px">\n'
         f'      <span class="section-icon">{icon}</span>\n'
@@ -369,7 +379,7 @@ def generate() -> str:
     def _cards(lst, urgent=False):
         return "\n".join(_auction_card(c, c["_fmv"], urgent=urgent) for c in lst)
 
-    s_ending = _section("Ending Soon", "Under 3 hours",             _cards(ending_soon, urgent=True), "&#x1F525;", len(ending_soon), "ending-soon")
+    s_ending = _section("Ending Soon", "Under 3 hours",             _cards(ending_soon, urgent=True), "&#x1F525;", len(ending_soon), "ending-soon", hide_if_empty=True)
     s_today  = _section("Later Today", "3 &ndash; 24 hours",        _cards(later_today),               "&#x23F0;",  len(later_today))
     s_coming = _section("Coming Up",   "Beyond 24 hours",           _cards(coming_up),                 "&#x1F4C5;", len(coming_up))
     s_noend  = _section("No End Time", "Buy-now / end time unknown", _cards(no_end_time),               "&#x1F3F7;", len(no_end_time))

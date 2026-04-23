@@ -598,6 +598,10 @@ def generate() -> str:
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script>
+// Apply saved theme before CSS renders — prevents flash of unstyled content
+(function(){{var t=localStorage.getItem('ptox_theme');if(t)document.documentElement.dataset.theme=t;}})();
+</script>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PTOX">
 <meta name="theme-color" content="#0A0A0C">
@@ -618,6 +622,11 @@ def generate() -> str:
   --green:  #4ade80;
   --yellow: #EAB308;
 }}
+[data-theme="racing"] {{ --red:#e53e3e; --bg:#0c0809; --bg2:#160d0e; --bg3:#1e1213; --border:#2e1a1a; --text:#ede8e3; --muted:#7a6a6a; }}
+[data-theme="gulf"]   {{ --red:#2563eb; --bg:#08100c; --bg2:#0e1810; --bg3:#142016; --border:#1a3020; --text:#e2ede8; --muted:#5a7a6a; }}
+[data-theme="olive"]  {{ --red:#65a30d; --bg:#0a0c08; --bg2:#12140e; --bg3:#1a1c14; --border:#252a1a; --text:#e4e8de; --muted:#6a7258; }}
+[data-theme="purple"] {{ --red:#7c3aed; --bg:#09080d; --bg2:#100e16; --bg3:#17141e; --border:#221e2e; --text:#e6e2ee; --muted:#6a5a7a; }}
+[data-theme="light"]  {{ --red:#c0392b; --bg:#f5f4f2; --bg2:#edebe8; --bg3:#e2dfdb; --border:#ccc9c4; --text:#1a1814; --muted:#7a756e; }}
 
 *,*::before,*::after {{ box-sizing:border-box; margin:0; padding:0; }}
 html,body {{ height:100%; background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.5; }}
@@ -656,6 +665,12 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 .dropdown-overlay {{ display:none; }}
 .dropdown-overlay.show {{ display:block; }}
 .dropdown {{ position:fixed; right:14px; top:54px; background:#222; border:1px solid #333; border-radius:12px; padding:6px; min-width:180px; box-shadow:0 8px 32px rgba(0,0,0,0.5); z-index:200; }}
+.dd-theme-row {{ padding:8px 12px 6px; }}
+.dd-theme-label {{ font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#666; display:block; margin-bottom:8px; }}
+.dd-swatches {{ display:flex; gap:8px; align-items:center; }}
+.swatch {{ width:22px; height:22px; border-radius:50%; cursor:pointer; padding:0; transition:transform 0.15s, box-shadow 0.15s; }}
+.swatch:hover {{ transform:scale(1.2); box-shadow:0 0 0 3px rgba(255,255,255,0.2); }}
+.swatch.active {{ transform:scale(1.15); box-shadow:0 0 0 3px rgba(255,255,255,0.5); }}
 .dd-item {{ padding:10px 14px; font-size:14px; color:#ccc; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:10px; }}
 .dd-item:hover {{ background:#2a2a2a; }}
 .dd-icon {{ font-size:15px; width:20px; text-align:center; }}
@@ -1032,7 +1047,17 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
     <a class="dd-item" href="market_report.html"><span class="dd-icon">&#x1F4CA;</span> Market Reports</a>
     <a class="dd-item" href="notify.html"><span class="dd-icon">&#x1F514;</span> Notifications</a>
     <div class="dd-divider"></div>
-    <div class="dd-item"><span class="dd-icon">&#x1F3A8;</span> Theme</div>
+    <div class="dd-theme-row">
+      <span class="dd-theme-label">Theme</span>
+      <div class="dd-swatches">
+        <button class="swatch" data-theme=""      title="Default (Dark)"  style="background:#0d0d0d;border:2px solid #c0392b"></button>
+        <button class="swatch" data-theme="racing" title="Racing Red"      style="background:#0c0809;border:2px solid #e53e3e"></button>
+        <button class="swatch" data-theme="gulf"   title="Gulf Blue"       style="background:#08100c;border:2px solid #2563eb"></button>
+        <button class="swatch" data-theme="olive"  title="Olive Drab"      style="background:#0a0c08;border:2px solid #65a30d"></button>
+        <button class="swatch" data-theme="purple" title="Midnight Purple" style="background:#09080d;border:2px solid #7c3aed"></button>
+        <button class="swatch" data-theme="light"  title="Light"           style="background:#f5f4f2;border:2px solid #c0392b"></button>
+      </div>
+    </div>
     <div class="dd-item"><span class="dd-icon">&#x2699;&#xFE0F;</span> Settings</div>
   </div>
 </div>
@@ -1590,7 +1615,22 @@ function filterDeals() {{
 }}
 function toggleDropdown() {{
   document.getElementById('dd-overlay').classList.toggle('show');
+  _syncSwatches();
 }}
+function _syncSwatches() {{
+  var cur = localStorage.getItem('ptox_theme') || '';
+  document.querySelectorAll('.swatch').forEach(function(s) {{
+    s.classList.toggle('active', s.dataset.theme === cur);
+  }});
+}}
+function setTheme(t) {{
+  if (t) {{ document.documentElement.dataset.theme = t; localStorage.setItem('ptox_theme', t); }}
+  else   {{ delete document.documentElement.dataset.theme; localStorage.removeItem('ptox_theme'); }}
+  _syncSwatches();
+}}
+document.querySelectorAll('.swatch').forEach(function(s) {{
+  s.addEventListener('click', function() {{ setTheme(s.dataset.theme); }});
+}});
 function closeDropdown() {{
   document.getElementById('dd-overlay').classList.remove('show');
 }}

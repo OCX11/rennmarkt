@@ -1436,7 +1436,7 @@ function renderCard(d) {{
     + ' data-price="' + (d.pr||0) + '"'
     + ' data-src-label="' + d.src + '"'
     + ' data-source-type="' + (isAuc?'auction':'retail') + '"'
-    + ' onclick="openListing(\'' + d.url + '\')">'
+    + ' onclick="openListing(this.dataset.url)" data-url="' + d.url + '">'
     + imgHtml
     + '<div class="card-body">'
     + '<div class="card-top-row">' + badgeHtml + ageHtml + '</div>'

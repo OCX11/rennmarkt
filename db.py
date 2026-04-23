@@ -283,6 +283,21 @@ def init_db():
         if "auction_ends_at" not in cols:
             conn.execute("ALTER TABLE listings ADD COLUMN auction_ends_at TEXT")
 
+        # FMV columns — persisted after each scrape cycle, read by dashboard
+        # Eliminates recomputing FMV on every dashboard build (~2min) and
+        # enables search page FMV, deal alerts, and FMV history tracking.
+        for fmv_col, fmv_def in (
+            ("fmv_value",      "INTEGER"),
+            ("fmv_confidence", "TEXT"),
+            ("fmv_comp_count", "INTEGER"),
+            ("fmv_low",        "INTEGER"),
+            ("fmv_high",       "INTEGER"),
+            ("fmv_pct",        "INTEGER"),
+            ("fmv_updated_at", "TEXT"),
+        ):
+            if fmv_col not in cols:
+                conn.execute(f"ALTER TABLE listings ADD COLUMN {fmv_col} {fmv_def}")
+
         if "image_url_cdn" not in cols:
             conn.execute("ALTER TABLE listings ADD COLUMN image_url_cdn TEXT")
 

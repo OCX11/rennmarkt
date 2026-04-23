@@ -1051,6 +1051,54 @@ def score_active_listings(
 
 # ── CLI test ──────────────────────────────────────────────────────────────────
 
+def score_and_persist(conn) -> int:
+    """
+    Run FMV for every active listing and write results back to the DB.
+    Called once per scrape cycle in main.py (replaces dashboard-time recompute).
+
+    Returns count of listings updated.
+    """
+    from datetime import datetime as _dt
+    now_str = _dt.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    listings = conn.execute(
+        """SELECT id, year, model, trim, price
+           FROM listings
+           WHERE status='active' AND price IS NOT NULL AND price > 0"""
+    ).fetchall()
+
+    fmv_cache: dict = {}
+    updates = []
+
+    for lid, year, model, trim, price in listings:
+        cache_key = (model, year, normalize_trim(trim))
+        if cache_key not in fmv_cache:
+            fmv_cache[cache_key] = get_fmv(conn, year=year, model=model, trim=trim)
+        r = fmv_cache[cache_key]
+
+        fmv_val  = r.weighted_median
+        conf     = r.confidence
+        cc       = r.comp_count
+        fmv_lo   = r.price_low
+        fmv_hi   = r.price_high
+        pct      = None
+        if fmv_val and price and conf != "NONE":
+            pct = int(round((float(price) - float(fmv_val)) / float(fmv_val) * 100))
+
+        updates.append((fmv_val, conf, cc, fmv_lo, fmv_hi, pct, now_str, lid))
+
+    conn.executemany(
+        """UPDATE listings
+           SET fmv_value=?, fmv_confidence=?, fmv_comp_count=?,
+               fmv_low=?, fmv_high=?, fmv_pct=?, fmv_updated_at=?
+           WHERE id=?""",
+        updates
+    )
+    conn.commit()
+    log.info("score_and_persist: updated FMV for %d listings", len(updates))
+    return len(updates)
+
+
 if __name__ == "__main__":
     import sys
     sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent))

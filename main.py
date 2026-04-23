@@ -422,6 +422,16 @@ def main():
     except Exception as e:
         log.warning("Auction comp promotion failed: %s", e)
 
+    # Persist FMV scores to DB — runs once per scrape cycle so dashboard
+    # reads pre-computed values instead of recomputing 2,500 FMVs at build time.
+    try:
+        import fmv as fmv_engine
+        with database.get_conn() as conn:
+            n_fmv = fmv_engine.score_and_persist(conn)
+            log.info("FMV persist: scored %d listings", n_fmv)
+    except Exception as e:
+        log.warning("FMV persist failed: %s", e)
+
     # Regenerate dashboards
     path = dash.generate()
     log.info("Dashboard: file://%s", path)

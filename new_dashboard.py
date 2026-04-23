@@ -439,21 +439,47 @@ def generate() -> str:
     init_db()
     with get_conn() as conn:
         d = get_dashboard_data(conn)
-        fmv_scored_list = fmv_engine.score_active_listings(conn)
+
+        # Read pre-computed FMV values from DB (written by fmv.score_and_persist()
+        # each scrape cycle). Falls back to live recompute if columns are empty.
+        fmv_rows = conn.execute(
+            """SELECT id, fmv_value, fmv_confidence, fmv_comp_count,
+                      fmv_low, fmv_high, fmv_pct
+               FROM listings WHERE status='active'"""
+        ).fetchall()
 
         fmv_by_id = {}
-        for row in fmv_scored_list:
-            fmv_obj = row.get("fmv")
-            if fmv_obj:
-                fmv_by_id[row["id"]] = {
-                    "fmv":        getattr(fmv_obj, "weighted_median", None),
-                    "confidence": getattr(fmv_obj, "confidence", "NONE"),
-                    "comp_count": getattr(fmv_obj, "comp_count", 0),
-                    "price_low":  getattr(fmv_obj, "price_low", None),
-                    "price_high": getattr(fmv_obj, "price_high", None),
+        needs_recompute = []
+        for row in fmv_rows:
+            lid, fv, fc, fcc, fl, fh, fp = row
+            if fv is not None and fc and fc != "NONE":
+                fmv_by_id[lid] = {
+                    "fmv":        fv,
+                    "confidence": fc,
+                    "comp_count": fcc or 0,
+                    "price_low":  fl,
+                    "price_high": fh,
                 }
             else:
-                fmv_by_id[row["id"]] = {"fmv": None, "confidence": "NONE", "comp_count": 0, "price_low": None, "price_high": None}
+                needs_recompute.append(lid)
+                fmv_by_id[lid] = {"fmv": None, "confidence": "NONE", "comp_count": 0, "price_low": None, "price_high": None}
+
+        # If more than 10% of listings have no FMV yet (e.g. fresh install),
+        # fall back to live compute for this build only.
+        if len(needs_recompute) > len(fmv_rows) * 0.10:
+            log.info("FMV fallback: %d/%d listings missing DB FMV — recomputing live",
+                     len(needs_recompute), len(fmv_rows))
+            fmv_scored_list = fmv_engine.score_active_listings(conn)
+            for row in fmv_scored_list:
+                fmv_obj = row.get("fmv")
+                if fmv_obj:
+                    fmv_by_id[row["id"]] = {
+                        "fmv":        getattr(fmv_obj, "weighted_median", None),
+                        "confidence": getattr(fmv_obj, "confidence", "NONE"),
+                        "comp_count": getattr(fmv_obj, "comp_count", 0),
+                        "price_low":  getattr(fmv_obj, "price_low", None),
+                        "price_high": getattr(fmv_obj, "price_high", None),
+                    }
 
         active = d["active"]
         def _keep(c):

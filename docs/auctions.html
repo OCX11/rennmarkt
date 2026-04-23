@@ -65,6 +65,14 @@ a { color:inherit; text-decoration:none; }
 .dd-divider { height:1px; background:#333; margin:4px 10px; }
 .dd-backdrop { position:fixed; inset:0; z-index:199; }
 .topbar-right { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); display:flex; align-items:center; gap:16px; }
+.filter-bar { background:var(--bg2); border-bottom:1px solid var(--border); padding:10px 16px; display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.filter-bar-group { display:flex; flex-wrap:wrap; gap:6px; align-items:center; flex:1; }
+.auc-chip { padding:4px 10px; border-radius:12px; border:1px solid var(--border); background:var(--bg3); color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; font-weight:600; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.auc-chip:hover { color:var(--text); border-color:#555; }
+.auc-chip.active { background:#1A0810; border-color:var(--red); color:var(--red); }
+.sort-select { padding:4px 8px; border:1px solid var(--border); border-radius:6px; background:var(--bg3); color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; cursor:pointer; outline:none; }
+.sort-select:focus { border-color:var(--red); }
+.filter-count { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-left:auto; white-space:nowrap; }
 .live-dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--green); margin-right:5px; animation:pulse 1.5s infinite; }
 @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
 
@@ -172,11 +180,11 @@ a { color:inherit; text-decoration:none; }
 </header>
 <div class="stats-bar">
   <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
-    <div class="stat-number">2,645</div>
+    <div class="stat-number">2,649</div>
     <div class="stat-label">Active</div>
   </a>
   <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
-    <div class="stat-number">7</div>
+    <div class="stat-number">10</div>
     <div class="stat-label">New Today</div>
   </a>
   <div class="stat-cell active">
@@ -188,7 +196,7 @@ a { color:inherit; text-decoration:none; }
     <div class="stat-label">Comps</div>
   </a>
   <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
-    <div class="stat-number green">424</div>
+    <div class="stat-number green">425</div>
     <div class="stat-label">Deals</div>
   </a>
 </div>
@@ -207,7 +215,24 @@ a { color:inherit; text-decoration:none; }
   </div>
 </div>
 
-<div class="page-body">
+<div class="filter-bar">
+  <div class="filter-bar-group" id="gen-chips">
+    <button class="auc-chip" data-val="718" data-filter="gen" onclick="toggleAucChip(this)">718</button><button class="auc-chip" data-val="964" data-filter="gen" onclick="toggleAucChip(this)">964</button><button class="auc-chip" data-val="981" data-filter="gen" onclick="toggleAucChip(this)">981</button><button class="auc-chip" data-val="986" data-filter="gen" onclick="toggleAucChip(this)">986</button><button class="auc-chip" data-val="987" data-filter="gen" onclick="toggleAucChip(this)">987</button><button class="auc-chip" data-val="991.1" data-filter="gen" onclick="toggleAucChip(this)">991.1</button><button class="auc-chip" data-val="991.2" data-filter="gen" onclick="toggleAucChip(this)">991.2</button><button class="auc-chip" data-val="992" data-filter="gen" onclick="toggleAucChip(this)">992</button><button class="auc-chip" data-val="993" data-filter="gen" onclick="toggleAucChip(this)">993</button><button class="auc-chip" data-val="996" data-filter="gen" onclick="toggleAucChip(this)">996</button><button class="auc-chip" data-val="997.1" data-filter="gen" onclick="toggleAucChip(this)">997.1</button><button class="auc-chip" data-val="997.2" data-filter="gen" onclick="toggleAucChip(this)">997.2</button><button class="auc-chip" data-val="G-Series" data-filter="gen" onclick="toggleAucChip(this)">G-Series</button>
+  </div>
+  <div class="filter-bar-group" id="src-chips">
+    <button class="auc-chip" data-val="BaT" data-filter="src" onclick="toggleAucChip(this)">BaT</button><button class="auc-chip" data-val="C&amp;B" data-filter="src" onclick="toggleAucChip(this)">C&amp;B</button><button class="auc-chip" data-val="pcarmarket" data-filter="src" onclick="toggleAucChip(this)">pcarmarket</button>
+  </div>
+  <select class="sort-select" id="auc-sort" onchange="applyAucFilters()">
+    <option value="ends_asc">Ending Soonest</option>
+    <option value="ends_desc">Ending Latest</option>
+    <option value="price_asc">Price Low→High</option>
+    <option value="price_desc">Price High→Low</option>
+    <option value="new_first">Newest Listed</option>
+  </select>
+  <span class="filter-count" id="auc-filter-count"></span>
+</div>
+
+<div class="page-body" id="page-body">
   <div class="section ending-soon">
   <div class="section-hdr">
     <div style="display:flex;align-items:center;gap:10px">
@@ -219,7 +244,7 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div>
   <div class="cards-grid">
-    <div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/1994-porsche-911-turbo-3-6-32/')">
+    <div class="auc-card urgent" data-gen="964" data-src="BaT" data-tier="TIER1" data-price="450000" data-ends="2026-04-23T17:00:00Z" onclick="openListing('https://bringatrailer.com/listing/1994-porsche-911-turbo-3-6-32/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/1994_porsche_911-turbo-3.6_dsc08779-16262.jpg" alt="1994 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -237,7 +262,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/1990-porsche-911-carrera-4-coupe-38/')">
+<div class="auc-card urgent" data-gen="964" data-src="BaT" data-tier="TIER1" data-price="70911" data-ends="2026-04-23T17:15:00Z" onclick="openListing('https://bringatrailer.com/listing/1990-porsche-911-carrera-4-coupe-38/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/1990_porsche_911-carrera-4-coupe_136a5886-89054.jpg" alt="1990 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -255,7 +280,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">222 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/2006-porsche-911-carrera-s-coupe-103/')">
+<div class="auc-card urgent" data-gen="997.1" data-src="BaT" data-tier="TIER2" data-price="16500" data-ends="2026-04-23T17:18:00Z" onclick="openListing('https://bringatrailer.com/listing/2006-porsche-911-carrera-s-coupe-103/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2006_porsche_911-carrera-s-coupe_porsche-911-racing-002-54320.jpg" alt="2006 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -273,7 +298,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">5,200 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/2016-porsche-911-carrera-gts-rennsport-reunion-edition-7/')">
+<div class="auc-card urgent" data-gen="991.1" data-src="BaT" data-tier="TIER2" data-price="166000" data-ends="2026-04-23T17:22:00Z" onclick="openListing('https://bringatrailer.com/listing/2016-porsche-911-carrera-gts-rennsport-reunion-edition-7/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2016_porsche_911-carrera-gts-rennsport-reunion-edition_20260401_102442-97835.jpg" alt="2016 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -291,7 +316,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/2007-porsche-911-turbo-coupe-203/')">
+<div class="auc-card urgent" data-gen="997.1" data-src="BaT" data-tier="TIER2" data-price="65911" data-ends="2026-04-23T17:29:00Z" onclick="openListing('https://bringatrailer.com/listing/2007-porsche-911-turbo-coupe-203/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2007_porsche_911-turbo-coupe_2007_porsche_911-turbo-coupe_1faada83-215c-4419-ac3b-e8dc789643e8-kmandc-29137-79605.jpg" alt="2007 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -309,12 +334,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">43,000 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://carsandbids.com/auctions/3RZmgRPx/2003-porsche-boxster-s')">
+<div class="auc-card urgent" data-gen="986" data-src="C&amp;B" data-tier="TIER2" data-price="19000" data-ends="2026-04-23T17:30:00Z" onclick="openListing('https://carsandbids.com/auctions/3RZmgRPx/2003-porsche-boxster-s')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/c7387fa5557775cb743f87fc02d6cb831afb20b2/photos/rEqpm60k-jxFSaTtkRh/edit/Qi2GT.jpg?t=177613834504" alt="2003 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#1F0D03;color:#fb923c">C&amp;B</span><span class="gen-label">986</span></div>
-      <span class="countdown-timer" data-ends="2026-04-23T17:29:59Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-23T17:30:00Z">…</span>
     </div>
     <div class="auc-title">2003 Porsche Boxster S</div>
     
@@ -327,7 +352,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">93,500 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/1995-porsche-911-carrera-cabriolet-186/')">
+<div class="auc-card urgent" data-gen="993" data-src="BaT" data-tier="TIER1" data-price="35993" data-ends="2026-04-23T17:35:00Z" onclick="openListing('https://bringatrailer.com/listing/1995-porsche-911-carrera-cabriolet-186/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/1995_porsche_911-carrera-cabriolet_1995_porsche_911-carrera-cabriolet_5c5b1ee8-a3a2-4de3-a0b8-1787d145870b-gjJHb4-45125-45125-scaled.jpg" alt="1995 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -345,7 +370,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">500 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/1999-porsche-911-carrera-cabriolet-161/')">
+<div class="auc-card urgent" data-gen="996" data-src="BaT" data-tier="TIER2" data-price="14000" data-ends="2026-04-23T17:42:00Z" onclick="openListing('https://bringatrailer.com/listing/1999-porsche-911-carrera-cabriolet-161/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/1999_porsche_911-carrera-cabriolet_dsc_3461-85657.jpg" alt="1999 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -363,7 +388,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">29,000 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/2002-porsche-911-turbo-coupe-97/')">
+<div class="auc-card urgent" data-gen="996" data-src="BaT" data-tier="TIER2" data-price="102000" data-ends="2026-04-23T17:44:00Z" onclick="openListing('https://bringatrailer.com/listing/2002-porsche-911-turbo-coupe-97/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2002_porsche_911-turbo-coupe_2002_porsche_911-turbo-coupe_4fdb0806-8863-4655-94c4-d7bc1e501d37-pbajt1-27942-63333.jpg" alt="2002 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -381,12 +406,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://carsandbids.com/auctions/30xEvbbL/2014-porsche-911-carrera-cabriolet')">
+<div class="auc-card urgent" data-gen="991.1" data-src="C&amp;B" data-tier="TIER2" data-price="46000" data-ends="2026-04-23T18:10:00Z" onclick="openListing('https://carsandbids.com/auctions/30xEvbbL/2014-porsche-911-carrera-cabriolet')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/9004500a220bf3a3d455d15ee052cf8c332606f8/photos/Porsche911201420260404002/edit/btqne.jpg?t=177561913350" alt="2014 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#1F0D03;color:#fb923c">C&amp;B</span><span class="gen-label">991.1</span></div>
-      <span class="countdown-timer" data-ends="2026-04-23T18:09:59Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-23T18:10:00Z">…</span>
     </div>
     <div class="auc-title">2014 Porsche 911 Carrera Cabriolet</div>
     
@@ -399,7 +424,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">74,600 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/2019-porsche-911-gt3-touring-45/')">
+<div class="auc-card urgent" data-gen="991.2" data-src="BaT" data-tier="TIER1" data-price="220000" data-ends="2026-04-23T18:15:00Z" onclick="openListing('https://bringatrailer.com/listing/2019-porsche-911-gt3-touring-45/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2019_porsche_911-gt3-touring_2019_porsche_911-gt3-touring_4e0306ae-08e1-4243-bee3-4190ce536e29-cvgfec-84845-15001.jpg" alt="2019 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -417,7 +442,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">17,000 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/2011-porsche-911-carrera-gts-58/')">
+<div class="auc-card urgent" data-gen="997.2" data-src="BaT" data-tier="TIER2" data-price="45500" data-ends="2026-04-23T18:18:00Z" onclick="openListing('https://bringatrailer.com/listing/2011-porsche-911-carrera-gts-58/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2011_porsche_911-carrera-gts_img_2698-74026.jpeg" alt="2011 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -435,7 +460,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">27,911 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://carsandbids.com/auctions/3vQW8M1N/2014-porsche-boxster')">
+<div class="auc-card urgent" data-gen="981" data-src="C&amp;B" data-tier="TIER2" data-price="19250" data-ends="2026-04-23T18:30:00Z" onclick="openListing('https://carsandbids.com/auctions/3vQW8M1N/2014-porsche-boxster')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/9004500a220bf3a3d455d15ee052cf8c332606f8/photos/application/s-sX41VP3/edit/hLr68.jpg?t=177579969627" alt="2014 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -453,7 +478,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">95,400 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/2017-porsche-911-carrera-4s-coupe-25/')">
+<div class="auc-card urgent" data-gen="991.2" data-src="BaT" data-tier="TIER2" data-price="77500" data-ends="2026-04-23T18:30:00Z" onclick="openListing('https://bringatrailer.com/listing/2017-porsche-911-carrera-4s-coupe-25/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2017_porsche_911-carrera-4s-coupe_2017_porsche_911-carrera-4s-coupe_3a503a15-163f-40ef-988f-e3cae54852ff-3rxvvq-06667-26084.jpg" alt="2017 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -471,7 +496,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">11,000 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/2006-porsche-911-carrera-s-coupe-105/')">
+<div class="auc-card urgent" data-gen="997.1" data-src="BaT" data-tier="TIER2" data-price="31000" data-ends="2026-04-23T18:46:00Z" onclick="openListing('https://bringatrailer.com/listing/2006-porsche-911-carrera-s-coupe-105/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2006_porsche_911-carrera-s-coupe_l1013180-87945.jpeg" alt="2006 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -489,12 +514,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">196 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://www.pcarmarket.com/auction/2003-porsche-911-carrera-4s-17')">
+<div class="auc-card urgent" data-gen="996" data-src="pcarmarket" data-tier="TIER2" data-price="52500" data-ends="2026-04-23T19:19:34Z" onclick="openListing('https://www.pcarmarket.com/auction/2003-porsche-911-carrera-4s-17')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY1MTk2IC0gMjAwMyBQb3JzY2hlIDkxMSBDYXJyZXJhIDRTIiwic2x1ZyI6IjY1MTk2LTIwMDMtcG9yc2NoZS05MTEtY2FycmVyYS00cy0zM2I0NjIwNiJ9/.thumbnails/1bb74160-6e3b-49c2-9245-7698559f2fa3.webp/1bb74160-6e3b-49c2-9245-7698559f2fa3-tiny-380x0.webp" alt="2003 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#0A1F14;color:#4ade80">pcarmarket</span><span class="gen-label">996</span></div>
-      <span class="countdown-timer" data-ends="2026-04-23T19:19:40Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-23T19:19:34Z">…</span>
     </div>
     <div class="auc-title">2003 Porsche 911 Carrera 4S Coupe 6-Speed</div>
     
@@ -507,7 +532,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">19,340 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://bringatrailer.com/listing/2012-porsche-911-turbo-coupe-17/')">
+<div class="auc-card urgent" data-gen="997.2" data-src="BaT" data-tier="TIER2" data-price="180000" data-ends="2026-04-23T19:21:00Z" onclick="openListing('https://bringatrailer.com/listing/2012-porsche-911-turbo-coupe-17/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/turbo20gray-256-99194-scaled.jpg" alt="2012 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -525,12 +550,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">26,000 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://carsandbids.com/auctions/rJYx1PX2/2014-porsche-911-carrera-4s-coupe')">
+<div class="auc-card urgent" data-gen="991.1" data-src="C&amp;B" data-tier="TIER2" data-price="65911" data-ends="2026-04-24T04:58:23Z" onclick="openListing('https://carsandbids.com/auctions/rJYx1PX2/2014-porsche-911-carrera-4s-coupe')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/7a0a3c6148108c9c64425dd85e0181fa3cccb652/photos/exterior/9QZadvdn-THZzoQq/edit/wZKZK.jpg?t=177617921108" alt="2014 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#1F0D03;color:#fb923c">C&amp;B</span><span class="gen-label">991.1</span></div>
-      <span class="countdown-timer" data-ends="2026-04-24T04:38:26Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-24T04:58:23Z">…</span>
     </div>
     <div class="auc-title">2014 Porsche 911 Carrera 4S Coupe</div>
     
@@ -543,12 +568,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">10,900 mi</div>
   </div>
 </div>
-<div class="auc-card urgent" onclick="openListing('https://carsandbids.com/auctions/rbPGMJOl/2007-porsche-boxster')">
+<div class="auc-card urgent" data-gen="987" data-src="C&amp;B" data-tier="TIER2" data-price="15500" data-ends="2026-04-24T04:58:23Z" onclick="openListing('https://carsandbids.com/auctions/rbPGMJOl/2007-porsche-boxster')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/c90d8216a8bf103048db7cf88cd07946ede17b22/photos/PorscheBoxster200720250410002/edit/OWZNd.jpg?t=177612761762" alt="2007 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"><div class="urgency-bar"></div></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#1F0D03;color:#fb923c">C&amp;B</span><span class="gen-label">987</span></div>
-      <span class="countdown-timer" data-ends="2026-04-24T04:38:26Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-24T04:58:23Z">…</span>
     </div>
     <div class="auc-title">2007 Porsche Boxster</div>
     
@@ -574,7 +599,7 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div>
   <div class="cards-grid">
-    <div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2018-porsche-911-carrera-cabriolet-11/')">
+    <div class="auc-card" data-gen="991.2" data-src="BaT" data-tier="TIER2" data-price="56500" data-ends="2026-04-24T17:29:00Z" onclick="openListing('https://bringatrailer.com/listing/2018-porsche-911-carrera-cabriolet-11/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2018_porsche_911-carrera-cabriolet_2018_porsche_911-carrera-cabriolet_a8b3873b-36ca-4bb4-a40b-0644dbf211cd-xxjlys-49946-88008.jpg" alt="2018 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -592,7 +617,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">3,800 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2003-porsche-911-turbo-coupe-107/')">
+<div class="auc-card" data-gen="996" data-src="BaT" data-tier="TIER2" data-price="25000" data-ends="2026-04-24T17:36:00Z" onclick="openListing('https://bringatrailer.com/listing/2003-porsche-911-turbo-coupe-107/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2003_porsche_911-turbo-coupe_2003-porsche-911-turbo-003-dsc04366-10675.jpg" alt="2003 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -610,7 +635,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">1,800 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2014-porsche-boxster-s-34/')">
+<div class="auc-card" data-gen="981" data-src="BaT" data-tier="TIER2" data-price="25000" data-ends="2026-04-24T17:50:00Z" onclick="openListing('https://bringatrailer.com/listing/2014-porsche-boxster-s-34/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2014_porsche_boxster-s_img_4461-43819.jpeg" alt="2014 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -628,7 +653,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">42,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2008-porsche-911-turbo-cabriolet-178/')">
+<div class="auc-card" data-gen="997.1" data-src="BaT" data-tier="TIER2" data-price="85911" data-ends="2026-04-24T17:56:00Z" onclick="openListing('https://bringatrailer.com/listing/2008-porsche-911-turbo-cabriolet-178/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2008_porsche_911-turbo-cabriolet_1_dsc3293-33542.jpg" alt="2008 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -646,7 +671,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">18,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2004-porsche-boxster-34/')">
+<div class="auc-card" data-gen="986" data-src="BaT" data-tier="TIER2" data-price="13000" data-ends="2026-04-24T17:58:00Z" onclick="openListing('https://bringatrailer.com/listing/2004-porsche-boxster-34/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2004_porsche_boxster_2004_porsche_boxster_481e5306-f58a-4497-b87e-9aca54813ce3-s5xo5R-79987-79988-scaled.jpg" alt="2004 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -664,7 +689,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">6,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1991-porsche-911-carrera-4-coupe-16/')">
+<div class="auc-card" data-gen="964" data-src="BaT" data-tier="TIER1" data-price="35550" data-ends="2026-04-24T18:37:00Z" onclick="openListing('https://bringatrailer.com/listing/1991-porsche-911-carrera-4-coupe-16/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/1991_porsche_911-carrera-4-coupe_dsc00629-52214.jpg" alt="1991 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -682,7 +707,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-96/')">
+<div class="auc-card" data-gen="993" data-src="BaT" data-tier="TIER1" data-price="173500" data-ends="2026-04-24T18:41:00Z" onclick="openListing('https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-96/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/DSC01121-87896-scaled.jpg" alt="1998 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -700,7 +725,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">38,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2009-porsche-cayman-46/')">
+<div class="auc-card" data-gen="987" data-src="BaT" data-tier="TIER2" data-price="31500" data-ends="2026-04-24T18:52:00Z" onclick="openListing('https://bringatrailer.com/listing/2009-porsche-cayman-46/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2009_porsche_cayman_dscf0029-73298.jpg" alt="2009 Cayman" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -718,7 +743,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2023-porsche-911-gt3-touring-49/')">
+<div class="auc-card" data-gen="992" data-src="BaT" data-tier="TIER1" data-price="221000" data-ends="2026-04-24T19:02:00Z" onclick="openListing('https://bringatrailer.com/listing/2023-porsche-911-gt3-touring-49/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2023_porsche_911-gt3-touring_2023_porsche_911-gt3-touring_929ed2e7-0e3d-49b2-961f-b32d094c99f5-7eay94-96532-99002.jpg" alt="2023 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -736,12 +761,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">356 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/2002-porsche-911-carrera-4s-12')">
+<div class="auc-card" data-gen="996" data-src="pcarmarket" data-tier="TIER2" data-price="10000" data-ends="2026-04-24T19:19:34Z" onclick="openListing('https://www.pcarmarket.com/auction/2002-porsche-911-carrera-4s-12')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY1MjE2IC0gMjAwMiBQb3JzY2hlIDkxMSBDYXJyZXJhIDRTIiwic2x1ZyI6IjY1MjE2LTIwMDItcG9yc2NoZS05MTEtY2FycmVyYS00cy1hMzZlYWU2MyJ9/.thumbnails/5acdd72b-8bfc-4964-9798-290c273bccb4.webp/5acdd72b-8bfc-4964-9798-290c273bccb4-tiny-380x0.webp" alt="2002 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#0A1F14;color:#4ade80">pcarmarket</span><span class="gen-label">996</span></div>
-      <span class="countdown-timer" data-ends="2026-04-24T19:19:40Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-24T19:19:34Z">…</span>
     </div>
     <div class="auc-title">2002 Porsche 911 Carrera 4S Coupe 6-Speed</div>
     
@@ -754,12 +779,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">125,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/2007-porsche-911-carrera-4s-2')">
+<div class="auc-card" data-gen="997.1" data-src="pcarmarket" data-tier="TIER2" data-price="20000" data-ends="2026-04-24T19:39:34Z" onclick="openListing('https://www.pcarmarket.com/auction/2007-porsche-911-carrera-4s-2')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY1MTUzIC0gMjBrLU1pbGUgMjAwNyBQb3JzY2hlIDkxMSBDYXJyZXJhIDRTIENvdXBlIFg1MSA2LVNwZWVkIFZHVCIsInNsdWciOiI2NTE1My0yMGstbWlsZS0yMDA3LXBvcnNjaGUtOTExLWNhcnJlcmEtNHMtY291cGUteDUxLTYtc3BlZWQtdmd0LTA2OTY5MzQ5In0/.thumbnails/c2da241d-6ec0-44d2-ae24-d7c0a1e73350.webp/c2da241d-6ec0-44d2-ae24-d7c0a1e73350-tiny-380x0.webp" alt="2007 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#0A1F14;color:#4ade80">pcarmarket</span><span class="gen-label">997.1</span></div>
-      <span class="countdown-timer" data-ends="2026-04-24T19:39:40Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-24T19:39:34Z">…</span>
     </div>
     <div class="auc-title">2007 Porsche 911 Carrera 4S Coupe X51 6-Speed</div>
     
@@ -772,7 +797,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">27,100 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2014-porsche-cayman-s-106-2/')">
+<div class="auc-card" data-gen="981" data-src="BaT" data-tier="TIER2" data-price="40000" data-ends="2026-04-24T19:47:00Z" onclick="openListing('https://bringatrailer.com/listing/2014-porsche-cayman-s-106-2/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2014_porsche_cayman-s_dsc9783-18028-scaled-zd0xp5-89718.jpg" alt="2014 Cayman" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -790,7 +815,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">36,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2004-porsche-911-gt3-126/')">
+<div class="auc-card" data-gen="996" data-src="BaT" data-tier="TIER1" data-price="99696" data-ends="2026-04-24T19:54:00Z" onclick="openListing('https://bringatrailer.com/listing/2004-porsche-911-gt3-126/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2004_porsche_911-gt3_dsc_0433-72159.jpg" alt="2004 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -808,7 +833,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">40,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2002-porsche-911-carrera-coupe-76/')">
+<div class="auc-card" data-gen="996" data-src="BaT" data-tier="TIER2" data-price="15996" data-ends="2026-04-25T17:26:00Z" onclick="openListing('https://bringatrailer.com/listing/2002-porsche-911-carrera-coupe-76/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2002_porsche_911-carrera-coupe_18650-19798.jpg" alt="2002 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -826,7 +851,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">158,522 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2022-porsche-911-turbo-s-coupe-74/')">
+<div class="auc-card" data-gen="992" data-src="BaT" data-tier="TIER1" data-price="155000" data-ends="2026-04-25T17:59:00Z" onclick="openListing('https://bringatrailer.com/listing/2022-porsche-911-turbo-s-coupe-74/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2022_porsche_911-turbo-s-coupe_img_0845-67554.jpeg" alt="2022 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -844,7 +869,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2001-porsche-911-turbo-coupe-127/')">
+<div class="auc-card" data-gen="996" data-src="BaT" data-tier="TIER2" data-price="56550" data-ends="2026-04-25T18:26:00Z" onclick="openListing('https://bringatrailer.com/listing/2001-porsche-911-turbo-coupe-127/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2001_porsche_911-turbo-coupe_2007_porsche_911-turbo-coupe_2007_porsche_911-turbo-coupe_b29b4d75-def6-44e2-8196-58e7d95fced6-peCQhO-12243-12243-scaled-87758.jpg" alt="2001 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -862,7 +887,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">31,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2015-porsche-911-turbo-s-cabriolet-32/')">
+<div class="auc-card" data-gen="991.1" data-src="BaT" data-tier="TIER1" data-price="95000" data-ends="2026-04-25T18:39:00Z" onclick="openListing('https://bringatrailer.com/listing/2015-porsche-911-turbo-s-cabriolet-32/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/02/2015_porsche_911-turbo-s-cabriolet_img_4069-65165.jpg" alt="2015 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -880,7 +905,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2011-porsche-boxster-spyder-86/')">
+<div class="auc-card" data-gen="987" data-src="BaT" data-tier="TIER1" data-price="35000" data-ends="2026-04-26T18:00:00Z" onclick="openListing('https://bringatrailer.com/listing/2011-porsche-boxster-spyder-86/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2011_porsche_boxster-spyder_2011_porsche_boxster-spyder_GUARDS20RED2098720BOXSTER20SPYDER20MT11ZKO20WEB20SPORTS20PURPOSE20C2A9JORDAN20BUTTERS-17-73072-scaled20copy-67063.jpg" alt="2011 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -898,7 +923,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">25,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2001-porsche-boxster-s-205/')">
+<div class="auc-card" data-gen="986" data-src="BaT" data-tier="TIER2" data-price="7000" data-ends="2026-04-26T19:46:00Z" onclick="openListing('https://bringatrailer.com/listing/2001-porsche-boxster-s-205/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2001_porsche_boxster-s_img_6433-41155.jpg" alt="2001 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -916,12 +941,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://carsandbids.com/auctions/98LZlzb0/2014-porsche-boxster')">
+<div class="auc-card" data-gen="981" data-src="C&amp;B" data-tier="TIER2" data-price="10105" data-ends="2026-04-27T04:58:23Z" onclick="openListing('https://carsandbids.com/auctions/98LZlzb0/2014-porsche-boxster')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/d9b636c2ec84ddc3bc7f2eb32861b39bdd5f9683/photos/3qqZQ4Pe-nIjIF9U/edit/jRYuy.jpg?t=177626941167" alt="2014 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#1F0D03;color:#fb923c">C&amp;B</span><span class="gen-label">981</span></div>
-      <span class="countdown-timer" data-ends="2026-04-27T04:38:26Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-27T04:58:23Z">…</span>
     </div>
     <div class="auc-title">2014 Porsche Boxster</div>
     
@@ -934,7 +959,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">29,300 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2012-porsche-cayman-r-78/')">
+<div class="auc-card" data-gen="987" data-src="BaT" data-tier="TIER1" data-price="11987" data-ends="2026-04-27T17:15:00Z" onclick="openListing('https://bringatrailer.com/listing/2012-porsche-cayman-r-78/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2012_porsche_cayman-r_2012_porsche_cayman-r_19e42a7f-1a72-44e1-bcb8-7cb77cd0fe00-hmp52w-62996-62997-scaled.jpg" alt="2012 Cayman" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -952,7 +977,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">381 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2021-porsche-911-carrera-s-coupe-30/')">
+<div class="auc-card" data-gen="992" data-src="BaT" data-tier="TIER2" data-price="99992" data-ends="2026-04-27T18:25:00Z" onclick="openListing('https://bringatrailer.com/listing/2021-porsche-911-carrera-s-coupe-30/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2021_porsche_911-carrera-s-coupe_img_1050-93744.jpeg" alt="2021 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -970,12 +995,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">7,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/1991-porsche-911-carrera-2-targa')">
+<div class="auc-card" data-gen="964" data-src="pcarmarket" data-tier="TIER1" data-price="40500" data-ends="2026-04-27T18:49:38Z" onclick="openListing('https://www.pcarmarket.com/auction/1991-porsche-911-carrera-2-targa')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/.thumbnails/326cdc20-29ff-4fc1-8bf6-573653ee5ae2-Screenshot-2026-04-20-at-8.59.22-PM.webp/326cdc20-29ff-4fc1-8bf6-573653ee5ae2-Screenshot-2026-04-20-at-8.59.22-PM-tiny-380x0.webp" alt="1991 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#0A1F14;color:#4ade80">pcarmarket</span><span class="gen-label">964</span></div>
-      <span class="countdown-timer" data-ends="2026-04-27T18:49:45Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-27T18:49:38Z">…</span>
     </div>
     <div class="auc-title">1991 Porsche 911 Carrera 2 Targa 3.8L 5-Speed by Red Square Design</div>
     <span class="tier-badge">GT / Collector</span>
@@ -988,12 +1013,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">1 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://carsandbids.com/auctions/rJyBgeAN/2008-porsche-911-turbo-cabriolet')">
+<div class="auc-card" data-gen="997.1" data-src="C&amp;B" data-tier="TIER2" data-price="50000" data-ends="2026-04-28T04:58:23Z" onclick="openListing('https://carsandbids.com/auctions/rJyBgeAN/2008-porsche-911-turbo-cabriolet')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/8e6341e27a680ffab7d98e42bef83b0dd1b0fb94/photos/Porsche911Turbo200820260414002/edit/TEFRV.jpg?t=177639439316" alt="2008 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#1F0D03;color:#fb923c">C&amp;B</span><span class="gen-label">997.1</span></div>
-      <span class="countdown-timer" data-ends="2026-04-28T04:38:26Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-28T04:58:23Z">…</span>
     </div>
     <div class="auc-title">2008 Porsche 911 Turbo Cabriolet</div>
     
@@ -1006,12 +1031,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">85,600 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://carsandbids.com/auctions/92bEkxM4/2014-porsche-cayman')">
+<div class="auc-card" data-gen="981" data-src="C&amp;B" data-tier="TIER2" data-price="7500" data-ends="2026-04-28T04:58:23Z" onclick="openListing('https://carsandbids.com/auctions/92bEkxM4/2014-porsche-cayman')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/438ad923cef6d8239e95d61e7d6849486bae11d9/photos/rwX2XVwa-zj8Qfq4(1)-CaxrxsULF7.jpeg?t=177611977421" alt="2014 Cayman" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#1F0D03;color:#fb923c">C&amp;B</span><span class="gen-label">981</span></div>
-      <span class="countdown-timer" data-ends="2026-04-28T04:38:26Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-28T04:58:23Z">…</span>
     </div>
     <div class="auc-title">2014 Porsche Cayman</div>
     
@@ -1024,7 +1049,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">93,600 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2013-porsche-911-carrera-4s-coupe-25-2/')">
+<div class="auc-card" data-gen="991.1" data-src="BaT" data-tier="TIER2" data-price="26500" data-ends="2026-04-28T17:38:00Z" onclick="openListing('https://bringatrailer.com/listing/2013-porsche-911-carrera-4s-coupe-25-2/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2013_porsche_911-carrera-4s-coupe_991-258-18506-scaled-qcersm-06665.jpg" alt="2013 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1042,7 +1067,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">24,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2014-porsche-911-gt3-cup-991-1/')">
+<div class="auc-card" data-gen="991.1" data-src="BaT" data-tier="TIER1" data-price="20000" data-ends="2026-04-28T17:43:00Z" onclick="openListing('https://bringatrailer.com/listing/2014-porsche-911-gt3-cup-991-1/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2014_porsche_911-gt3-cup-991.1_36a7508-67098.jpg" alt="2014 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1060,7 +1085,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">725 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2024-porsche-911-carrera-4-gts-coupe-4/')">
+<div class="auc-card" data-gen="992" data-src="BaT" data-tier="TIER2" data-price="50000" data-ends="2026-04-28T17:47:00Z" onclick="openListing('https://bringatrailer.com/listing/2024-porsche-911-carrera-4-gts-coupe-4/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2024_porsche_911-carrera-4-gts-coupe_dsc04354-80085.jpg" alt="2024 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1078,7 +1103,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">1,200 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2010-porsche-boxster-s-23/')">
+<div class="auc-card" data-gen="987" data-src="BaT" data-tier="TIER2" data-price="26000" data-ends="2026-04-28T18:39:00Z" onclick="openListing('https://bringatrailer.com/listing/2010-porsche-boxster-s-23/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2010_porsche_boxster-s_img_2346-39772.jpeg" alt="2010 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1096,7 +1121,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">17,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1987-porsche-911-carrera-cabriolet-145/')">
+<div class="auc-card" data-gen="G-Series" data-src="BaT" data-tier="TIER1" data-price="5000" data-ends="2026-04-28T19:09:00Z" onclick="openListing('https://bringatrailer.com/listing/1987-porsche-911-carrera-cabriolet-145/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/1987_porsche_911-carrera-cabriolet_1987_porsche_911-carrera-cabriolet_627ed5e4-03f3-49f7-ade8-c6c040a48eb5-v123a1-78278-46058.jpg" alt="1987 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1114,12 +1139,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">196 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/2011-porsche-911-carrera-gts-10')">
+<div class="auc-card" data-gen="997.2" data-src="pcarmarket" data-tier="TIER2" data-price="250" data-ends="2026-04-28T19:19:38Z" onclick="openListing('https://www.pcarmarket.com/auction/2011-porsche-911-carrera-gts-10')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY1MjcyIC0gMjAxMSBQb3JzY2hlIDkxMSBHVFMgQ291cGUiLCJzbHVnIjoiNjUyNzItMjAxMS1wb3JzY2hlLTkxMS1ndHMtY291cGUtOTA1MTk4NjQifQ/.thumbnails/fb5f333c-45a7-45fb-afdd-91fc12f8e8b6.webp/fb5f333c-45a7-45fb-afdd-91fc12f8e8b6-tiny-380x0.webp" alt="2011 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#0A1F14;color:#4ade80">pcarmarket</span><span class="gen-label">997.2</span></div>
-      <span class="countdown-timer" data-ends="2026-04-28T19:19:45Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-28T19:19:38Z">…</span>
     </div>
     <div class="auc-title">2011 Porsche 911 Carrera GTS Coupe</div>
     
@@ -1132,7 +1157,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">2,737 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1997-porsche-911-carrera-coupe-66/')">
+<div class="auc-card" data-gen="993" data-src="BaT" data-tier="TIER1" data-price="130000" data-ends="2026-04-28T20:05:00Z" onclick="openListing('https://bringatrailer.com/listing/1997-porsche-911-carrera-coupe-66/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/1997-Porsche-911-Carrera-1-45822.jpg" alt="1997 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1150,7 +1175,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">9,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1988-porsche-911-carrera-targa-106/')">
+<div class="auc-card" data-gen="G-Series" data-src="BaT" data-tier="TIER1" data-price="57000" data-ends="2026-04-28T20:11:00Z" onclick="openListing('https://bringatrailer.com/listing/1988-porsche-911-carrera-targa-106/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/1988_porsche_911-carrera-targa_136a0944-95760.jpg" alt="1988 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1168,12 +1193,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://carsandbids.com/auctions/rjq8VmXw/2021-porsche-718-cayman-gt4')">
+<div class="auc-card" data-gen="718" data-src="C&amp;B" data-tier="TIER1" data-price="100000" data-ends="2026-04-29T04:58:23Z" onclick="openListing('https://carsandbids.com/auctions/rjq8VmXw/2021-porsche-718-cayman-gt4')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/9004500a220bf3a3d455d15ee052cf8c332606f8/photos/rxXB57PV-hn-Lot_/edit/_uLNh.jpg?t=177648601948" alt="2021 718" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#1F0D03;color:#fb923c">C&amp;B</span><span class="gen-label">718</span></div>
-      <span class="countdown-timer" data-ends="2026-04-29T04:38:26Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-29T04:58:23Z">…</span>
     </div>
     <div class="auc-title">2021 Porsche 718 Cayman GT4</div>
     <span class="tier-badge">GT / Collector</span>
@@ -1186,12 +1211,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">13,400 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://carsandbids.com/auctions/r46MawvD/2005-porsche-911-carrera-s-coupe')">
+<div class="auc-card" data-gen="997.1" data-src="C&amp;B" data-tier="TIER2" data-price="10997" data-ends="2026-04-29T04:58:23Z" onclick="openListing('https://carsandbids.com/auctions/r46MawvD/2005-porsche-911-carrera-s-coupe')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/4822e9034b0b6b357b3f73fabdfc10e586c36f68/photos/other/3vV20GBM-4C1eVSA/edit/H6fdQ.jpg?t=177642778013" alt="2005 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#1F0D03;color:#fb923c">C&amp;B</span><span class="gen-label">997.1</span></div>
-      <span class="countdown-timer" data-ends="2026-04-29T04:38:26Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-29T04:58:23Z">…</span>
     </div>
     <div class="auc-title">2005 Porsche 911 Carrera S Coupe</div>
     
@@ -1204,7 +1229,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">72,800 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2007-porsche-cayman-97/')">
+<div class="auc-card" data-gen="987" data-src="BaT" data-tier="TIER2" data-price="0" data-ends="2026-04-29T17:56:00Z" onclick="openListing('https://bringatrailer.com/listing/2007-porsche-cayman-97/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2007_porsche_cayman_photo1-18658.jpg" alt="2007 Cayman" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1222,7 +1247,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">36,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2008-porsche-boxster-57/')">
+<div class="auc-card" data-gen="987" data-src="BaT" data-tier="TIER2" data-price="15000" data-ends="2026-04-29T18:24:00Z" onclick="openListing('https://bringatrailer.com/listing/2008-porsche-boxster-57/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2008_porsche_boxster_20260312_170612000_ios-96596.jpg" alt="2008 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1240,12 +1265,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">34,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/marketplace-2001-porsche-911-carrera-16')">
+<div class="auc-card" data-gen="996" data-src="pcarmarket" data-tier="TIER2" data-price="23000" data-ends="2026-04-29T18:59:38Z" onclick="openListing('https://www.pcarmarket.com/auction/marketplace-2001-porsche-911-carrera-16')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY0NzExIC0gMjAwMSBQb3JzY2hlIDkxMSBDYXJyZXJhIiwic2x1ZyI6IjY0NzExLTIwMDEtcG9yc2NoZS05MTEtY2FycmVyYS1kYTI0MDA3NCJ9/.thumbnails/6021fa27-4a0f-411a-a40c-8aa529c7e5c6.webp/6021fa27-4a0f-411a-a40c-8aa529c7e5c6-tiny-380x0.webp" alt="2001 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#0A1F14;color:#4ade80">pcarmarket</span><span class="gen-label">996</span></div>
-      <span class="countdown-timer" data-ends="2026-04-29T18:59:45Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-29T18:59:38Z">…</span>
     </div>
     <div class="auc-title">2001 Porsche 911 Carrera Coupe Aerokit 6-Speed</div>
     
@@ -1258,12 +1283,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/1987-porsche-911-targa-22')">
+<div class="auc-card" data-gen="G-Series" data-src="pcarmarket" data-tier="TIER1" data-price="1200" data-ends="2026-04-29T18:59:38Z" onclick="openListing('https://www.pcarmarket.com/auction/1987-porsche-911-targa-22')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY1MTYyIC0gMTk4NyBQb3JzY2hlIDkxMSBUYXJnYSIsInNsdWciOiI2NTE2Mi0xOTg3LXBvcnNjaGUtOTExLXRhcmdhLTNlOWM3MjViIn0/.thumbnails/28986654-2b84-4f4b-9114-f46d082b25b3.webp/28986654-2b84-4f4b-9114-f46d082b25b3-tiny-380x0.webp" alt="1987 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#0A1F14;color:#4ade80">pcarmarket</span><span class="gen-label">G-Series</span></div>
-      <span class="countdown-timer" data-ends="2026-04-29T18:59:45Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-29T18:59:38Z">…</span>
     </div>
     <div class="auc-title">1987 Porsche 911 Carrera Targa G50 5-Speed</div>
     <span class="tier-badge">GT / Collector</span>
@@ -1276,12 +1301,12 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">97,441 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/2021-porsche-718-spyder-14')">
+<div class="auc-card" data-gen="718" data-src="pcarmarket" data-tier="TIER1" data-price="0" data-ends="2026-04-29T18:59:38Z" onclick="openListing('https://www.pcarmarket.com/auction/2021-porsche-718-spyder-14')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY1MjA1IC0gMjAyMSBQb3JzY2hlIDcxOCBTcHlkZXIiLCJzbHVnIjoiNjUyMDUtMjAyMS1wb3JzY2hlLTcxOC1zcHlkZXItNGMxZjg3YjAifQ/.thumbnails/3cc95fa4-06d1-4545-91dd-ad385c282932.webp/3cc95fa4-06d1-4545-91dd-ad385c282932-tiny-380x0.webp" alt="2021 718" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
       <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#0A1F14;color:#4ade80">pcarmarket</span><span class="gen-label">718</span></div>
-      <span class="countdown-timer" data-ends="2026-04-29T18:59:45Z">…</span>
+      <span class="countdown-timer" data-ends="2026-04-29T18:59:38Z">…</span>
     </div>
     <div class="auc-title">2021 Porsche 718 Spyder 6-Speed</div>
     <span class="tier-badge">GT / Collector</span>
@@ -1294,7 +1319,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">10,200 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2024-porsche-718-cayman-gt4-rs-23/')">
+<div class="auc-card" data-gen="718" data-src="BaT" data-tier="TIER1" data-price="100761" data-ends="2026-04-29T19:24:00Z" onclick="openListing('https://bringatrailer.com/listing/2024-porsche-718-cayman-gt4-rs-23/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2024_porsche_718-cayman-gt4-rs_img_7409-18139.jpeg" alt="2024 718" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1312,7 +1337,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">177 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2005-porsche-911-carrera-s-cabriolet-25/')">
+<div class="auc-card" data-gen="997.1" data-src="BaT" data-tier="TIER2" data-price="25993" data-ends="2026-04-29T19:34:00Z" onclick="openListing('https://bringatrailer.com/listing/2005-porsche-911-carrera-s-cabriolet-25/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/8U1A1726-70014-scaled.jpg" alt="2005 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1330,7 +1355,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">42,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2013-porsche-boxster-26/')">
+<div class="auc-card" data-gen="981" data-src="BaT" data-tier="TIER2" data-price="16000" data-ends="2026-04-29T19:39:00Z" onclick="openListing('https://bringatrailer.com/listing/2013-porsche-boxster-26/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2013_porsche_boxster_img_6055-23356.jpg" alt="2013 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1348,7 +1373,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">40,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2010-porsche-911-targa-4s-3/')">
+<div class="auc-card" data-gen="997.2" data-src="BaT" data-tier="TIER2" data-price="67000" data-ends="2026-04-29T20:33:00Z" onclick="openListing('https://bringatrailer.com/listing/2010-porsche-911-targa-4s-3/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2010_porsche_911-targa-4s_d0a3405-08509.jpg" alt="2010 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1393,7 +1418,7 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div>
   <div class="cards-grid">
-    <div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/2001-porsche-911-carrera-16')">
+    <div class="auc-card" data-gen="996" data-src="pcarmarket" data-tier="TIER2" data-price="19750" data-ends="2026-04-22T19:09:29Z" onclick="openListing('https://www.pcarmarket.com/auction/2001-porsche-911-carrera-16')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY0NzExIC0gMjAwMSBQb3JzY2hlIDkxMSBDYXJyZXJhIiwic2x1ZyI6IjY0NzExLTIwMDEtcG9yc2NoZS05MTEtY2FycmVyYS1kYTI0MDA3NCJ9/.thumbnails/6021fa27-4a0f-411a-a40c-8aa529c7e5c6.webp/6021fa27-4a0f-411a-a40c-8aa529c7e5c6-tiny-380x0.webp" alt="2001 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1411,7 +1436,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">45,625 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://carsandbids.com/auctions/rM2Aw5gZ/2007-porsche-cayman')">
+<div class="auc-card" data-gen="987" data-src="C&amp;B" data-tier="TIER2" data-price="17500" data-ends="2026-04-22T19:26:00Z" onclick="openListing('https://carsandbids.com/auctions/rM2Aw5gZ/2007-porsche-cayman')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/da6e8a1d4896127a9d2adf83461993b45339474c/photos/exterior/KVzee0dx-UStC-wU/edit/CP_oy.jpg?t=177565073844" alt="2007 Cayman" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1429,7 +1454,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">75,100 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://carsandbids.com/auctions/3LGEl7w0/2023-porsche-911-carrera-t-coupe')">
+<div class="auc-card" data-gen="992" data-src="C&amp;B" data-tier="TIER2" data-price="123500" data-ends="2026-04-22T20:06:00Z" onclick="openListing('https://carsandbids.com/auctions/3LGEl7w0/2023-porsche-911-carrera-t-coupe')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/1477bbe21e8d6b5e719c7c3ccab577fd47dd8cc3/photos/9lEd7BAz-hyHKJgt/edit/OCm9a.jpg?t=177568179190" alt="2023 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1447,7 +1472,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">2,800 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2012-porsche-911-turbo-s-coupe-27/')">
+<div class="auc-card" data-gen="997.2" data-src="BaT" data-tier="TIER1" data-price="140000" data-ends="2026-04-22T19:33:00Z" onclick="openListing('https://bringatrailer.com/listing/2012-porsche-911-turbo-s-coupe-27/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2012_porsche_911-turbo-s-coupe_2012_porsche_911_turbo_s_white.black-1-of-180-16104.jpg" alt="2012 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1465,7 +1490,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">10,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2003-porsche-911-carrera-coupe-44/')">
+<div class="auc-card" data-gen="996" data-src="BaT" data-tier="TIER2" data-price="24000" data-ends="2026-04-22T19:52:55Z" onclick="openListing('https://bringatrailer.com/listing/2003-porsche-911-carrera-coupe-44/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2003_porsche_911-carrera-coupe_img_4366-49528.jpg" alt="2003 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1483,7 +1508,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2006-porsche-cayman-s-281/')">
+<div class="auc-card" data-gen="987" data-src="BaT" data-tier="TIER2" data-price="15500" data-ends="2026-04-22T18:14:41Z" onclick="openListing('https://bringatrailer.com/listing/2006-porsche-cayman-s-281/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2006_porsche_cayman-s_dsc_5579-04015.jpg" alt="2006 Cayman" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1501,7 +1526,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">196 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2017-porsche-911-targa-4-gts-15/')">
+<div class="auc-card" data-gen="991.2" data-src="BaT" data-tier="TIER2" data-price="156000" data-ends="2026-04-22T19:52:00Z" onclick="openListing('https://bringatrailer.com/listing/2017-porsche-911-targa-4-gts-15/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/Porsche-63-33991-scaled.jpg" alt="2017 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1519,7 +1544,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">9,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2021-porsche-718-cayman-gts-4-0-16/')">
+<div class="auc-card" data-gen="718" data-src="BaT" data-tier="TIER2" data-price="84000" data-ends="2026-04-22T18:34:00Z" onclick="openListing('https://bringatrailer.com/listing/2021-porsche-718-cayman-gts-4-0-16/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2021_porsche_718-cayman-gts-4.0_20260330_080552-84260.jpg" alt="2021 718" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1537,7 +1562,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">1,800 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-95/')">
+<div class="auc-card" data-gen="993" data-src="BaT" data-tier="TIER1" data-price="191000" data-ends="2026-04-22T17:41:23Z" onclick="openListing('https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-95/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/1998_porsche_911-carrera-s-coupe_porsche-911-carrera-s-993-119-62984.jpeg" alt="1998 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1555,7 +1580,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2013-porsche-boxster-25/')">
+<div class="auc-card" data-gen="981" data-src="BaT" data-tier="TIER2" data-price="38500" data-ends="2026-04-22T17:43:00Z" onclick="openListing('https://bringatrailer.com/listing/2013-porsche-boxster-25/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2013_porsche_boxster_1-2013-porsche-boxster-157-of-257-28-92389.jpg" alt="2013 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1573,7 +1598,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">16,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1996-porsche-911-turbo-208/')">
+<div class="auc-card" data-gen="993" data-src="BaT" data-tier="TIER1" data-price="268071" data-ends="2026-04-22T18:19:00Z" onclick="openListing('https://bringatrailer.com/listing/1996-porsche-911-turbo-208/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/1996_porsche_911-turbo_1996_porsche_911-turbo_4f29a461-6ece-496c-8a50-ff3091f6329d-01vqx2-18936-33927.jpg" alt="1996 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1591,7 +1616,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2021-porsche-718-spyder-32/')">
+<div class="auc-card" data-gen="718" data-src="BaT" data-tier="TIER1" data-price="127000" data-ends="2026-04-22T19:21:51Z" onclick="openListing('https://bringatrailer.com/listing/2021-porsche-718-spyder-32/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2021_porsche_718-spyder_2021_porsche_718-spyder_dfe4f488-f1cb-44f9-816f-37eeafcafe35-6IKi8D-18197-18198-scaled.jpg" alt="2021 718" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1609,7 +1634,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">6,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1989-porsche-911-carrera-targa-53/')">
+<div class="auc-card" data-gen="G-Series" data-src="BaT" data-tier="TIER1" data-price="48250" data-ends="2026-04-22T17:41:34Z" onclick="openListing('https://bringatrailer.com/listing/1989-porsche-911-carrera-targa-53/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/1989_porsche_911-carrera-targa_img_5716-47449.jpeg" alt="1989 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1627,7 +1652,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">124,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://carsandbids.com/auctions/rMYAB5M4/2014-porsche-911-carrera-4s-coupe')">
+<div class="auc-card" data-gen="991.1" data-src="C&amp;B" data-tier="TIER2" data-price="68500" data-ends="2026-04-22T17:34:00Z" onclick="openListing('https://carsandbids.com/auctions/rMYAB5M4/2014-porsche-911-carrera-4s-coupe')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/9004500a220bf3a3d455d15ee052cf8c332606f8/photos/application/s-Pgt15He/edit/DtynT.jpg?t=177578013389" alt="2014 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1645,7 +1670,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">59,500 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2019-porsche-911-gt2-rs-clubsport-22/')">
+<div class="auc-card" data-gen="991.2" data-src="BaT" data-tier="TIER1" data-price="341000" data-ends="2026-04-22T17:10:00Z" onclick="openListing('https://bringatrailer.com/listing/2019-porsche-911-gt2-rs-clubsport-22/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2019_porsche_911-gt2-rs-clubsport_2019_porsche_911-gt2-rs-clubsport_f153eb91-9f2d-4c14-9150-f7033657c2ba-2mf9n1-48283-84428.jpg" alt="2019 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1663,7 +1688,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">356 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2022-porsche-911-gt3-137/')">
+<div class="auc-card" data-gen="992" data-src="BaT" data-tier="TIER1" data-price="232500" data-ends="2026-04-22T17:36:00Z" onclick="openListing('https://bringatrailer.com/listing/2022-porsche-911-gt3-137/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2022_porsche_911-gt3_wide-high-44046.jpg" alt="2022 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1681,7 +1706,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">2,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1999-porsche-911-carrera-cabriolet-158/')">
+<div class="auc-card" data-gen="996" data-src="BaT" data-tier="TIER2" data-price="19000" data-ends="2026-04-22T17:33:00Z" onclick="openListing('https://bringatrailer.com/listing/1999-porsche-911-carrera-cabriolet-158/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/1999_porsche_911-carrera-cabriolet_img_1042-72674.jpeg" alt="1999 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1699,7 +1724,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">47,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2008-porsche-boxster-rs-60-spyder-47/')">
+<div class="auc-card" data-gen="987" data-src="BaT" data-tier="TIER1" data-price="41000" data-ends="2026-04-21T20:34:05Z" onclick="openListing('https://bringatrailer.com/listing/2008-porsche-boxster-rs-60-spyder-47/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2008_porsche_boxster-rs-60-spyder_36a2452-40548.jpg" alt="2008 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1717,7 +1742,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">25,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/marketplace-1989-porsche-911-carrera-8')">
+<div class="auc-card" data-gen="G-Series" data-src="pcarmarket" data-tier="TIER1" data-price="325000" data-ends="" onclick="openListing('https://www.pcarmarket.com/auction/marketplace-1989-porsche-911-carrera-8')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY0NDMwIC0gMTk4OSBQb3JzY2hlIDkzMC85MzQgXCJDb2RlIFJlZFwiIiwic2x1ZyI6IjY0NDMwLTE5ODktcG9yc2NoZS05MzAtOTM0LWNvZGUtcmVkLWY4ZmJiODQzIn0/.thumbnails/e18d69b1-bbc0-40ae-b8fb-71857aef4f93.webp/e18d69b1-bbc0-40ae-b8fb-71857aef4f93-tiny-380x0.webp" alt="1989 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1735,7 +1760,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">86,386 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/marketplace-2011-porsche-boxster-spyder-10')">
+<div class="auc-card" data-gen="987" data-src="pcarmarket" data-tier="TIER1" data-price="60000" data-ends="2026-04-20T18:50:11Z" onclick="openListing('https://www.pcarmarket.com/auction/marketplace-2011-porsche-boxster-spyder-10')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY1MTA3IC0gMjAxMSBQb3JzY2hlIEJveHN0ZXIgU3B5ZGVyIiwic2x1ZyI6IjY1MTA3LTIwMTEtcG9yc2NoZS1ib3hzdGVyLXNweWRlci1hZDlkZTdiZSJ9/.thumbnails/c2be1e63-1028-4e7d-9fb3-ebc167f8ad65.webp/c2be1e63-1028-4e7d-9fb3-ebc167f8ad65-tiny-380x0.webp" alt="2011 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1766,7 +1791,7 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div>
   <div class="cards-grid">
-    <div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/2001-porsche-911-carrera-16')">
+    <div class="auc-card" data-gen="996" data-src="pcarmarket" data-tier="TIER2" data-price="19750" data-ends="2026-04-22T19:09:29Z" onclick="openListing('https://www.pcarmarket.com/auction/2001-porsche-911-carrera-16')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY0NzExIC0gMjAwMSBQb3JzY2hlIDkxMSBDYXJyZXJhIiwic2x1ZyI6IjY0NzExLTIwMDEtcG9yc2NoZS05MTEtY2FycmVyYS1kYTI0MDA3NCJ9/.thumbnails/6021fa27-4a0f-411a-a40c-8aa529c7e5c6.webp/6021fa27-4a0f-411a-a40c-8aa529c7e5c6-tiny-380x0.webp" alt="2001 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1784,7 +1809,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">45,625 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://carsandbids.com/auctions/rM2Aw5gZ/2007-porsche-cayman')">
+<div class="auc-card" data-gen="987" data-src="C&amp;B" data-tier="TIER2" data-price="17500" data-ends="2026-04-22T19:26:00Z" onclick="openListing('https://carsandbids.com/auctions/rM2Aw5gZ/2007-porsche-cayman')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/da6e8a1d4896127a9d2adf83461993b45339474c/photos/exterior/KVzee0dx-UStC-wU/edit/CP_oy.jpg?t=177565073844" alt="2007 Cayman" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1802,7 +1827,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">75,100 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://carsandbids.com/auctions/3LGEl7w0/2023-porsche-911-carrera-t-coupe')">
+<div class="auc-card" data-gen="992" data-src="C&amp;B" data-tier="TIER2" data-price="123500" data-ends="2026-04-22T20:06:00Z" onclick="openListing('https://carsandbids.com/auctions/3LGEl7w0/2023-porsche-911-carrera-t-coupe')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/1477bbe21e8d6b5e719c7c3ccab577fd47dd8cc3/photos/9lEd7BAz-hyHKJgt/edit/OCm9a.jpg?t=177568179190" alt="2023 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1820,7 +1845,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">2,800 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2012-porsche-911-turbo-s-coupe-27/')">
+<div class="auc-card" data-gen="997.2" data-src="BaT" data-tier="TIER1" data-price="140000" data-ends="2026-04-22T19:33:00Z" onclick="openListing('https://bringatrailer.com/listing/2012-porsche-911-turbo-s-coupe-27/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2012_porsche_911-turbo-s-coupe_2012_porsche_911_turbo_s_white.black-1-of-180-16104.jpg" alt="2012 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1838,7 +1863,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">10,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2003-porsche-911-carrera-coupe-44/')">
+<div class="auc-card" data-gen="996" data-src="BaT" data-tier="TIER2" data-price="24000" data-ends="2026-04-22T19:52:55Z" onclick="openListing('https://bringatrailer.com/listing/2003-porsche-911-carrera-coupe-44/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2003_porsche_911-carrera-coupe_img_4366-49528.jpg" alt="2003 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1856,7 +1881,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2006-porsche-cayman-s-281/')">
+<div class="auc-card" data-gen="987" data-src="BaT" data-tier="TIER2" data-price="15500" data-ends="2026-04-22T18:14:41Z" onclick="openListing('https://bringatrailer.com/listing/2006-porsche-cayman-s-281/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2006_porsche_cayman-s_dsc_5579-04015.jpg" alt="2006 Cayman" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1874,7 +1899,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">196 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2017-porsche-911-targa-4-gts-15/')">
+<div class="auc-card" data-gen="991.2" data-src="BaT" data-tier="TIER2" data-price="156000" data-ends="2026-04-22T19:52:00Z" onclick="openListing('https://bringatrailer.com/listing/2017-porsche-911-targa-4-gts-15/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/Porsche-63-33991-scaled.jpg" alt="2017 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1892,7 +1917,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">9,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2021-porsche-718-cayman-gts-4-0-16/')">
+<div class="auc-card" data-gen="718" data-src="BaT" data-tier="TIER2" data-price="84000" data-ends="2026-04-22T18:34:00Z" onclick="openListing('https://bringatrailer.com/listing/2021-porsche-718-cayman-gts-4-0-16/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2021_porsche_718-cayman-gts-4.0_20260330_080552-84260.jpg" alt="2021 718" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1910,7 +1935,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">1,800 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-95/')">
+<div class="auc-card" data-gen="993" data-src="BaT" data-tier="TIER1" data-price="191000" data-ends="2026-04-22T17:41:23Z" onclick="openListing('https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-95/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/1998_porsche_911-carrera-s-coupe_porsche-911-carrera-s-993-119-62984.jpeg" alt="1998 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1928,7 +1953,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2013-porsche-boxster-25/')">
+<div class="auc-card" data-gen="981" data-src="BaT" data-tier="TIER2" data-price="38500" data-ends="2026-04-22T17:43:00Z" onclick="openListing('https://bringatrailer.com/listing/2013-porsche-boxster-25/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2013_porsche_boxster_1-2013-porsche-boxster-157-of-257-28-92389.jpg" alt="2013 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1946,7 +1971,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">16,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1996-porsche-911-turbo-208/')">
+<div class="auc-card" data-gen="993" data-src="BaT" data-tier="TIER1" data-price="268071" data-ends="2026-04-22T18:19:00Z" onclick="openListing('https://bringatrailer.com/listing/1996-porsche-911-turbo-208/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/1996_porsche_911-turbo_1996_porsche_911-turbo_4f29a461-6ece-496c-8a50-ff3091f6329d-01vqx2-18936-33927.jpg" alt="1996 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1964,7 +1989,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta"></div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2021-porsche-718-spyder-32/')">
+<div class="auc-card" data-gen="718" data-src="BaT" data-tier="TIER1" data-price="127000" data-ends="2026-04-22T19:21:51Z" onclick="openListing('https://bringatrailer.com/listing/2021-porsche-718-spyder-32/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2021_porsche_718-spyder_2021_porsche_718-spyder_dfe4f488-f1cb-44f9-816f-37eeafcafe35-6IKi8D-18197-18198-scaled.jpg" alt="2021 718" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -1982,7 +2007,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">6,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1989-porsche-911-carrera-targa-53/')">
+<div class="auc-card" data-gen="G-Series" data-src="BaT" data-tier="TIER1" data-price="48250" data-ends="2026-04-22T17:41:34Z" onclick="openListing('https://bringatrailer.com/listing/1989-porsche-911-carrera-targa-53/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/1989_porsche_911-carrera-targa_img_5716-47449.jpeg" alt="1989 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -2000,7 +2025,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">124,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://carsandbids.com/auctions/rMYAB5M4/2014-porsche-911-carrera-4s-coupe')">
+<div class="auc-card" data-gen="991.1" data-src="C&amp;B" data-tier="TIER2" data-price="68500" data-ends="2026-04-22T17:34:00Z" onclick="openListing('https://carsandbids.com/auctions/rMYAB5M4/2014-porsche-911-carrera-4s-coupe')">
   <div class="img-col"><img src="https://media.carsandbids.com/cdn-cgi/image/width=768,quality=70/9004500a220bf3a3d455d15ee052cf8c332606f8/photos/application/s-Pgt15He/edit/DtynT.jpg?t=177578013389" alt="2014 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -2018,7 +2043,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">59,500 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2019-porsche-911-gt2-rs-clubsport-22/')">
+<div class="auc-card" data-gen="991.2" data-src="BaT" data-tier="TIER1" data-price="341000" data-ends="2026-04-22T17:10:00Z" onclick="openListing('https://bringatrailer.com/listing/2019-porsche-911-gt2-rs-clubsport-22/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/04/2019_porsche_911-gt2-rs-clubsport_2019_porsche_911-gt2-rs-clubsport_f153eb91-9f2d-4c14-9150-f7033657c2ba-2mf9n1-48283-84428.jpg" alt="2019 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -2036,7 +2061,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">356 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2022-porsche-911-gt3-137/')">
+<div class="auc-card" data-gen="992" data-src="BaT" data-tier="TIER1" data-price="232500" data-ends="2026-04-22T17:36:00Z" onclick="openListing('https://bringatrailer.com/listing/2022-porsche-911-gt3-137/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2022_porsche_911-gt3_wide-high-44046.jpg" alt="2022 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -2054,7 +2079,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">2,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/1999-porsche-911-carrera-cabriolet-158/')">
+<div class="auc-card" data-gen="996" data-src="BaT" data-tier="TIER2" data-price="19000" data-ends="2026-04-22T17:33:00Z" onclick="openListing('https://bringatrailer.com/listing/1999-porsche-911-carrera-cabriolet-158/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/1999_porsche_911-carrera-cabriolet_img_1042-72674.jpeg" alt="1999 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -2072,7 +2097,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">47,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://bringatrailer.com/listing/2008-porsche-boxster-rs-60-spyder-47/')">
+<div class="auc-card" data-gen="987" data-src="BaT" data-tier="TIER1" data-price="41000" data-ends="2026-04-21T20:34:05Z" onclick="openListing('https://bringatrailer.com/listing/2008-porsche-boxster-rs-60-spyder-47/')">
   <div class="img-col"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2008_porsche_boxster-rs-60-spyder_36a2452-40548.jpg" alt="2008 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -2090,7 +2115,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">25,000 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/marketplace-1989-porsche-911-carrera-8')">
+<div class="auc-card" data-gen="G-Series" data-src="pcarmarket" data-tier="TIER1" data-price="325000" data-ends="" onclick="openListing('https://www.pcarmarket.com/auction/marketplace-1989-porsche-911-carrera-8')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY0NDMwIC0gMTk4OSBQb3JzY2hlIDkzMC85MzQgXCJDb2RlIFJlZFwiIiwic2x1ZyI6IjY0NDMwLTE5ODktcG9yc2NoZS05MzAtOTM0LWNvZGUtcmVkLWY4ZmJiODQzIn0/.thumbnails/e18d69b1-bbc0-40ae-b8fb-71857aef4f93.webp/e18d69b1-bbc0-40ae-b8fb-71857aef4f93-tiny-380x0.webp" alt="1989 911" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -2108,7 +2133,7 @@ a { color:inherit; text-decoration:none; }
     <div class="auc-meta">86,386 mi</div>
   </div>
 </div>
-<div class="auc-card" onclick="openListing('https://www.pcarmarket.com/auction/marketplace-2011-porsche-boxster-spyder-10')">
+<div class="auc-card" data-gen="987" data-src="pcarmarket" data-tier="TIER1" data-price="60000" data-ends="2026-04-20T18:50:11Z" onclick="openListing('https://www.pcarmarket.com/auction/marketplace-2011-porsche-boxster-spyder-10')">
   <div class="img-col"><img src="https://d2niwqq19lf86s.cloudfront.net/htwritable/media/prod/eyJ0aXRsZSI6IjY1MTA3IC0gMjAxMSBQb3JzY2hlIEJveHN0ZXIgU3B5ZGVyIiwic2x1ZyI6IjY1MTA3LTIwMTEtcG9yc2NoZS1ib3hzdGVyLXNweWRlci1hZDlkZTdiZSJ9/.thumbnails/c2be1e63-1028-4e7d-9fb3-ebc167f8ad65.webp/c2be1e63-1028-4e7d-9fb3-ebc167f8ad65-tiny-380x0.webp" alt="2011 Boxster" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
   <div class="auc-body">
     <div class="auc-top-row">
@@ -2184,6 +2209,60 @@ function toggleDropdown() {
 }
 function closeDropdown() {
   document.getElementById('dd-overlay').classList.remove('show');
+}
+
+// ── Auction filter + sort ────────────────────────────────────────────────────
+var _aucActiveGens = [];
+var _aucActiveSrcs = [];
+
+function toggleAucChip(btn) {
+  var filter = btn.dataset.filter;
+  var val    = btn.dataset.val;
+  btn.classList.toggle('active');
+  if (filter === 'gen') {
+    if (_aucActiveGens.includes(val)) _aucActiveGens = _aucActiveGens.filter(function(x){ return x !== val; });
+    else _aucActiveGens.push(val);
+  } else {
+    if (_aucActiveSrcs.includes(val)) _aucActiveSrcs = _aucActiveSrcs.filter(function(x){ return x !== val; });
+    else _aucActiveSrcs.push(val);
+  }
+  applyAucFilters();
+}
+
+function applyAucFilters() {
+  var cards = Array.from(document.querySelectorAll('.auc-card'));
+  var sortVal = (document.getElementById('auc-sort') || {}).value || 'ends_asc';
+  var visible = 0;
+
+  cards.forEach(function(card) {
+    var gen   = card.dataset.gen   || '';
+    var src   = card.dataset.src   || '';
+    var genOk = _aucActiveGens.length === 0 || _aucActiveGens.includes(gen);
+    var srcOk = _aucActiveSrcs.length === 0 || _aucActiveSrcs.includes(src);
+    var show  = genOk && srcOk;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+
+  // Sort within each section grid
+  document.querySelectorAll('.cards-grid').forEach(function(grid) {
+    var visCards = Array.from(grid.querySelectorAll('.auc-card')).filter(function(c){ return c.style.display !== 'none'; });
+    visCards.sort(function(a, b) {
+      if (sortVal === 'ends_asc')   return (a.dataset.ends || 'z') < (b.dataset.ends || 'z') ? -1 : 1;
+      if (sortVal === 'ends_desc')  return (a.dataset.ends || '') > (b.dataset.ends || '') ? -1 : 1;
+      if (sortVal === 'price_asc')  return parseInt(a.dataset.price||0) - parseInt(b.dataset.price||0);
+      if (sortVal === 'price_desc') return parseInt(b.dataset.price||0) - parseInt(a.dataset.price||0);
+      return 0;
+    });
+    visCards.forEach(function(c){ grid.appendChild(c); });
+  });
+
+  var countEl = document.getElementById('auc-filter-count');
+  if (countEl && (_aucActiveGens.length > 0 || _aucActiveSrcs.length > 0)) {
+    countEl.textContent = visible + ' shown';
+  } else if (countEl) {
+    countEl.textContent = '';
+  }
 }
 </script>
 </body>

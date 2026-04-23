@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<script>(function(){var t=localStorage.getItem('ptox_theme');if(t)document.documentElement.dataset.theme=t;})()</script>
 <meta http-equiv="refresh" content="120">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -23,6 +24,11 @@
   --green:  #4ade80;
   --yellow: #EAB308;
 }
+[data-theme="racing"] { --red:#e53e3e; --bg:#0c0809; --bg2:#160d0e; --bg3:#1e1213; --border:#2e1a1a; --text:#ede8e3; --muted:#7a6a6a; }
+[data-theme="gulf"]   { --red:#2563eb; --bg:#08100c; --bg2:#0e1810; --bg3:#142016; --border:#1a3020; --text:#e2ede8; --muted:#5a7a6a; }
+[data-theme="olive"]  { --red:#65a30d; --bg:#0a0c08; --bg2:#12140e; --bg3:#1a1c14; --border:#252a1a; --text:#e4e8de; --muted:#6a7258; }
+[data-theme="purple"] { --red:#7c3aed; --bg:#09080d; --bg2:#100e16; --bg3:#17141e; --border:#221e2e; --text:#e6e2ee; --muted:#6a5a7a; }
+[data-theme="light"]  { --red:#c0392b; --bg:#f5f4f2; --bg2:#edebe8; --bg3:#e2dfdb; --border:#ccc9c4; --text:#1a1814; --muted:#7a756e; }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 html,body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.5; }

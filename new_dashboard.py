@@ -188,7 +188,7 @@ def _fmv_bar_block(price, fmv_val, conf, comp_count, price_low=None, price_high=
     pct = _fmv_pct(price, fmv_val)
     fmv_str = _p_short(fmv_val)
     comp_str = f"{comp_count} comp{'s' if comp_count != 1 else ''}"
-    if conf in ("HIGH", "MEDIUM") and price_low and price_high:
+    if conf in ("HIGH", "MEDIUM") and price_low and price_high and comp_count >= 6:
         right_str = f"{_p_short(price_low)}&ndash;{_p_short(price_high)} &middot; {comp_str}"
     else:
         right_str = comp_str

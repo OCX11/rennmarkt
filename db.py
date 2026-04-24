@@ -603,22 +603,66 @@ def insert_bat_reserve_not_met(conn, title, year, model, high_bid, auction_date,
         pass
 
 
+def _infer_sold_comp_generation(year, model, trim):
+    """Infer generation from year + model for sold comps. Returns string or None."""
+    if not year:
+        return None
+    try:
+        y = int(year)
+    except (TypeError, ValueError):
+        return None
+    m = (model or "").lower()
+    t = (trim or "").lower()
+    is_turbo = "turbo" in t or "turbo" in m
+
+    if "911" in m or m in ("911", "carrera", "911sc", "911s"):
+        if y <= 1973:   return "Classic"
+        if y <= 1977:   return "930" if is_turbo else "G-Series"
+        if y <= 1989:   return "930" if is_turbo else "G-Series"
+        if y <= 1994:   return "964"
+        if y <= 1998:   return "993"
+        if y <= 2004:   return "996"
+        if y <= 2008:   return "997.1"
+        if y <= 2012:   return "997.2"
+        if y <= 2016:   return "991.1"
+        if y <= 2019:   return "991.2"
+        return "992"
+    if "boxster" in m or "986" in m:
+        if y <= 2004:   return "986"
+        if y <= 2011:   return "987"
+        if y <= 2016:   return "981"
+        return "718"
+    if "cayman" in m or "718" in m:
+        if y <= 2011:   return "987"
+        if y <= 2016:   return "981"
+        return "718"
+    if "930" in m:      return "930"
+    if "964" in m:      return "964"
+    if "993" in m:      return "993"
+    if "996" in m:      return "996"
+    if "997" in m:      return "997.1" if y <= 2008 else "997.2"
+    if "991" in m:      return "991.1" if y <= 2016 else "991.2"
+    if "992" in m:      return "992"
+    return None
+
+
 def upsert_sold_comp(conn, source, year, make, model, trim, mileage, sold_price,
                      sold_date, listing_url, image_url=None, title=None,
                      transmission=None, vin=None, color=None):
     """Insert a sold comp; ignore if URL already exists."""
     cat = source_category(source)
     tier = classify_tier(model, trim, year)
+    gen = _infer_sold_comp_generation(year, model, trim)
     try:
         conn.execute(
             """INSERT OR IGNORE INTO sold_comps
                (source, year, make, model, trim, mileage, sold_price, sold_date,
                 listing_url, image_url, title, source_category, tier,
-                transmission, vin, color)
-               VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                transmission, vin, color, generation)
+               VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (source, year, make, model, trim, mileage, sold_price, sold_date,
              listing_url, image_url, title, cat, tier,
-             transmission, vin, color)
+             transmission, vin, color, gen)
         )
     except Exception:
         pass

@@ -1551,7 +1551,7 @@ function renderCard(d) {{
     + ' data-price="' + (d.pr||0) + '"'
     + ' data-src-label="' + d.src + '"'
     + ' data-source-type="' + (isAuc?'auction':'retail') + '"'
-    + ' onclick="openListing(this.dataset.url)" data-url="' + d.url + '">'
+    + ' data-url="' + d.url + '">'
     + imgHtml
     + '<div class="card-body">'
     + '<div class="card-top-row">' + badgeHtml + ageHtml + '</div>'
@@ -1772,22 +1772,21 @@ function filterDeals() {{
   applyFilters(); updateFabState();
 }}
 // ── FMV comp drill-down modal ─────────────────────────────────────────────────
-// Intercept ALL clicks on fmv-wrap first — prevents card's onclick from firing
+// Delegated card click handler — handles navigation + fmv-wrap interception
 document.addEventListener('click', function(e) {{
+  // fmv-wrap clicks: handle comps/edit, never navigate
   var wrap = e.target.closest('.fmv-wrap');
-  if (wrap) e.stopPropagation();  // always block bubble to card onclick
-  var link = e.target.closest('.fmv-comps-link');
-  if (link) {{
-    var w = link.closest('.fmv-wrap');
-    if (w) showFmvComps(w);
-    return;
+  if (wrap) {{
+    var link = e.target.closest('.fmv-comps-link');
+    if (link) {{ showFmvComps(wrap); }}
+    var editTrigger = e.target.closest('.fmv-val-edit');
+    if (editTrigger) {{ openFmvInput(e, wrap); }}
+    return;  // stop — never navigate when clicking fmv-wrap
   }}
-  // FMV value text click → open edit input
-  var editTrigger = e.target.closest('.fmv-val-edit');
-  if (editTrigger) {{
-    var wrap2 = editTrigger.closest('.fmv-wrap');
-    if (wrap2) openFmvInput(e, wrap2);
-    return;
+  // Card click → navigate to listing
+  var card = e.target.closest('.card');
+  if (card && card.dataset.url) {{
+    openListing(card.dataset.url);
   }}
 }});
 

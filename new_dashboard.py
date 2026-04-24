@@ -559,8 +559,9 @@ def generate() -> str:
                 "model": c.get("model") or "",
                 "trim":  c.get("trim") or "",
                 "dlr":  c.get("dealer") or "",
-                "badge_label": badge_cfg[0] or "",
-                "badge_color": badge_cfg[1] or "",
+                "badge_label": badge_cfg[2] or "",
+                "badge_bg":    badge_cfg[0] or "",
+                "badge_fg":    badge_cfg[1] or "",
                 "created": c.get("created_at") or c.get("date_first_seen") or "",
                 "loc":   c.get("location") or "",
                 "trans": c.get("transmission") or "",
@@ -1492,7 +1493,8 @@ function renderCard(d) {{
 
   var badgeHtml = '';
   if (d.badge_label) {{
-    badgeHtml = '<span class="source-badge badge-' + d.badge_color + '">' + d.badge_label + '</span>';
+    var bStyle = d.badge_bg ? 'background:' + d.badge_bg + ';color:' + (d.badge_fg||'#9898B0') + ';' : '';
+    badgeHtml = '<span class="source-badge" style="' + bStyle + '">' + d.badge_label + '</span>';
     if (d.gen) badgeHtml += '<span class="gen-badge">' + d.gen + '</span>';
   }}
 

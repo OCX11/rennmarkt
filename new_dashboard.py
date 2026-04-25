@@ -1576,6 +1576,30 @@ if (location.hash === '#unlock=gt3rs') {{
 }}
 var IS_PUBLIC = (location.hostname === 'dashboard.rennmarkt.net')
   && (localStorage.getItem('ptox_unlock') !== 'gt3rs');
+// Triple-tap header to unlock FMV editing
+(function() {{
+  var taps = 0, timer;
+  document.addEventListener('click', function(e) {{
+    if (!e.target.closest('nav, .nav, header, .header, #nav, #header, .brand, .logo')) return;
+    taps++;
+    clearTimeout(timer);
+    if (taps >= 3) {{
+      taps = 0;
+      if (localStorage.getItem('ptox_unlock') === 'gt3rs') {{
+        localStorage.removeItem('ptox_unlock');
+        alert('FMV editing locked');
+        location.reload();
+      }} else {{
+        var pw = prompt('Passphrase:');
+        if (pw === 'gt3rs') {{
+          localStorage.setItem('ptox_unlock', 'gt3rs');
+          location.reload();
+        }}
+      }}
+    }}
+    timer = setTimeout(function() {{ taps = 0; }}, 600);
+  }});
+}})();
 var PUSH_SERVER = 'https://ptox11-push.openclawx1.workers.dev';
 
 function fmvKeydown(e, input) {{

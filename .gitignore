@@ -13,3 +13,4 @@ distill_poller_state.json
 .github_token
 .claude/
 archive/
+.cf_token

@@ -1712,11 +1712,16 @@ function updateCardFmvDisplay(wrap, fmv) {{
   var pctStr = pct !== null ? (pct > 0 ? '+' : '') + pct + '%' : '';
   var barEl = wrap.querySelector('.fmv-bar-block, .fmv-none');
   if (barEl) {{
+    // Preserve existing comps link before replacing content
+    var existingCompsLink = barEl.querySelector('.fmv-comps-link');
+    var compsLinkHtml = existingCompsLink ? existingCompsLink.outerHTML : '';
     barEl.className = 'fmv-bar-block';
-    barEl.innerHTML = '<div class="fmv-user-label">Your FMV</div>'
-      + '<div class="fmv-label-row">'
-      + '<span class="fmv-label">FMV ' + fmtPrice(fmv) + '</span>'
-      + (pctStr ? '<span class="fmv-conf ' + cls + '">' + pctStr + '</span>' : '')
+    barEl.innerHTML = '<div class="fmv-label-row">'
+      + '<span class="fmv-val-edit" data-edit-fmv="1" title="Click to update your FMV">FMV ' + fmtPrice(fmv) + ' <span class="fmv-user-label">✓</span></span>'
+      + '<span class="fmv-conf ' + cls + '">'
+      + (pctStr ? pctStr + (compsLinkHtml ? ' &middot; ' : '') : '')
+      + compsLinkHtml
+      + '</span>'
       + '</div>';
   }}
 }}

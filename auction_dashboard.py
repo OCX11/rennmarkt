@@ -208,9 +208,7 @@ def _auction_card(car: dict, fmv_score: dict, urgent: bool = False) -> str:
         fmv_html = _fmv_line(price, fmv_val, conf, comp_count, price_low, price_high)
 
     # Tier badge
-    tier_html = ""
-    if tier == "TIER1":
-        tier_html = '<span class="tier-badge">GT / Collector</span>'
+    tier_html = ""  # GT/Collector badge removed
 
     # Image
     is_pca = "mart.pca.org" in img
@@ -392,11 +390,13 @@ def generate() -> str:
         c["_fmv"] = fmv_by_id.get(c["id"], {"fmv": None, "confidence": "NONE", "comp_count": 0})
         c["_ends_dt"] = _parse_ends(c.get("auction_ends_at"))
 
-    ending_soon = []
+    ending_critical = []  # < 3 hours
+    ending_soon  = []    # 3–24 hours
     live_auction = []
     no_end_time  = []
 
-    one_day = now_utc + timedelta(hours=24)
+    three_hours = now_utc + timedelta(hours=3)
+    one_day     = now_utc + timedelta(hours=24)
 
     for c in cars:
         ends_dt = _parse_ends(c.get("auction_ends_at"))
@@ -405,6 +405,8 @@ def generate() -> str:
         c["_src"] = _badge_label(c.get("dealer", ""))
         if ends_dt is None or ends_dt <= now_utc:
             no_end_time.append(c)
+        elif ends_dt <= three_hours:
+            ending_critical.append(c)
         elif ends_dt <= one_day:
             ending_soon.append(c)
         else:
@@ -426,21 +428,23 @@ def generate() -> str:
         d = c.get("_ends_dt")
         return d if d else datetime(9999, 12, 31, tzinfo=timezone.utc)
 
+    ending_critical.sort(key=_sort_key)
     ending_soon.sort(key=_sort_key)
     live_auction.sort(key=_sort_key)
 
     def _cards(lst, urgent=False):
         return "\n".join(_auction_card(c, c["_fmv"], urgent=urgent) for c in lst)
 
-    s_ending = _section("Ending Soon",   "Less than 24 hours",         _cards(ending_soon, urgent=True), "&#x1F525;", len(ending_soon),  "ending-soon", hide_if_empty=True)
-    s_live   = _section("Live Auctions", "Ending beyond 24 hours",     _cards(live_auction),             "&#x1F7E2;", len(live_auction))
-    s_noend  = _section("No End Time",   "Buy-now / end time unknown",  _cards(no_end_time),              "&#x1F3F7;", len(no_end_time))
-    s_ended  = _section("Recently Completed", "Last 48 hours &mdash; final prices", _cards(ended_cars),  "&#x1F3C1;", len(ended_cars), "ended")
+    s_critical = _section("Ending Now",    "Less than 3 hours &mdash; act fast", _cards(ending_critical, urgent=True), "&#x1F6A8;", len(ending_critical), "ending-critical", hide_if_empty=True)
+    s_ending   = _section("Ending Soon",   "3&ndash;24 hours",                   _cards(ending_soon, urgent=True),     "&#x1F525;", len(ending_soon),     "ending-soon",     hide_if_empty=True)
+    s_live     = _section("Live Auctions", "Ending beyond 24 hours",             _cards(live_auction),                  "&#x1F7E2;", len(live_auction))
+    s_noend    = _section("No End Time",   "Buy-now / end time unknown",          _cards(no_end_time),                  "&#x1F3F7;", len(no_end_time))
+    s_ended    = _section("Ended Today",   "Final hammer prices",                 _cards(ended_cars),                   "&#x1F3C1;", len(ended_cars), "ended")
 
     total   = len(cars)
     now_str = now_utc.strftime("%b %d, %Y %H:%M UTC")
 
-    html = _build_html(s_ending, s_live, s_noend, s_ended, total, len(ending_soon), len(live_auction), len(ended_cars), now_str, n_listings_total, n_comps_total, n_new_today, n_deals, gen_chips_html, src_chips_html)
+    html = _build_html(s_critical, s_ending, s_live, s_noend, s_ended, total, len(ending_critical), len(ending_soon), len(live_auction), len(ended_cars), now_str, n_listings_total, n_comps_total, n_new_today, n_deals, gen_chips_html, src_chips_html)
     OUT_PATH.write_text(html, encoding="utf-8")
     print(f"[auction_dashboard] wrote {OUT_PATH} ({total} auctions)")
     return html
@@ -448,7 +452,7 @@ def generate() -> str:
 
 # ── HTML template ─────────────────────────────────────────────────────────────
 
-def _build_html(s_ending, s_live, s_noend, s_ended, total, n_ending, n_live, n_ended, now_str, n_listings_total=0, n_comps_total=0, n_new_today=0, n_deals=0, gen_chips_html="", src_chips_html="") -> str:
+def _build_html(s_critical, s_ending, s_live, s_noend, s_ended, total, n_critical, n_ending, n_live, n_ended, now_str, n_listings_total=0, n_comps_total=0, n_new_today=0, n_deals=0, gen_chips_html="", src_chips_html="") -> str:
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -685,11 +689,11 @@ a {{ color:inherit; text-decoration:none; }}
 </div>
 
 <div class="page-body" id="page-body">
+  {s_critical}
   {s_ending}
   {s_live}
   {s_noend}
-{s_ended}
-{s_ended}
+  {s_ended}
 </div>
 
 <script>

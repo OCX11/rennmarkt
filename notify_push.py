@@ -14,6 +14,7 @@ Dedup: data/seen_alerts_push.json — same structure as seen_alerts_imessage.jso
 """
 import json
 import logging
+from pathlib import Path
 import sys
 import urllib.request
 import urllib.error
@@ -368,3 +369,129 @@ def notify_dom_alert(conn):
             log.info("DOM alert sent: %s (%d days)", title, dom_days)
 
     log.info("Days-on-market push alerts: %d sent", sent)
+
+
+# ── Watchlist alerts ──────────────────────────────────────────────────────────
+
+_WATCHLIST_PATH = Path(__file__).parent / "data" / "watchlist.json"
+_SEEN_WATCH_PATH = Path(__file__).parent / "data" / "seen_alerts_watch.json"
+
+def _load_watchlist() -> list:
+    try:
+        return json.loads(_WATCHLIST_PATH.read_text())
+    except Exception:
+        return []
+
+def _load_seen_watch() -> dict:
+    try:
+        return json.loads(_SEEN_WATCH_PATH.read_text())
+    except Exception:
+        return {}
+
+def _save_seen_watch(seen: dict):
+    _SEEN_WATCH_PATH.write_text(json.dumps(seen, indent=2))
+
+def _matches_watch(listing: dict, watch: dict) -> bool:
+    """Return True if listing satisfies all non-empty watch criteria."""
+    gen   = (listing.get("generation") or "").strip()
+    model = (listing.get("model") or "").strip().lower()
+    trim  = (listing.get("trim") or "").strip().lower()
+    trans = (listing.get("transmission") or "").strip().lower()
+    price = listing.get("price")
+    mi    = listing.get("mileage")
+
+    # Generation filter
+    gens = watch.get("gens") or []
+    if gens and gen not in gens:
+        return False
+
+    # Model filter
+    models = [m.lower() for m in (watch.get("models") or [])]
+    if models and model not in models:
+        return False
+
+    # Trim filter (any trim keyword substring match)
+    trims = [t.lower() for t in (watch.get("trims") or [])]
+    if trims and not any(t in trim for t in trims):
+        return False
+
+    # Transmission filter
+    watch_trans = (watch.get("transmission") or "").lower()
+    if watch_trans and watch_trans not in trans:
+        return False
+
+    # Price ceiling
+    max_price = watch.get("max_price")
+    if max_price and price and float(price) > float(max_price):
+        return False
+
+    # Mileage ceiling
+    max_mi = watch.get("max_mileage")
+    if max_mi and mi and float(mi) > float(max_mi):
+        return False
+
+    return True
+
+
+def notify_watchlist(conn, new_listing_ids):
+    """Match new listings against watchlist specs and push an alert for each hit."""
+    if not NOTIFICATIONS_ENABLED:
+        return
+    if not new_listing_ids:
+        return
+
+    watches = _load_watchlist()
+    if not watches:
+        return
+
+    placeholders = ",".join("?" * len(new_listing_ids))
+    rows = conn.execute(
+        f"""SELECT id, year, make, model, trim, price, mileage, dealer,
+                   listing_url, generation, transmission, image_url, tier
+            FROM listings WHERE id IN ({placeholders})""",
+        new_listing_ids
+    ).fetchall()
+
+    seen = _load_seen_watch()
+    sent = 0
+
+    for row in rows:
+        s = dict(row)
+        url = s.get("listing_url") or ""
+
+        for watch in watches:
+            if not _matches_watch(s, watch):
+                continue
+
+            seen_key = f"watch:{watch['name']}:{url}"
+            if seen_key in seen:
+                continue
+
+            year  = s.get("year") or "?"
+            model = s.get("model") or "911"
+            trim  = s.get("trim") or ""
+            price = s.get("price")
+            mi    = s.get("mileage")
+            dealer = s.get("dealer") or ""
+
+            price_str = f"${int(price):,}" if price else "No price"
+            mi_str    = f"{int(mi):,} mi" if mi else ""
+            body_parts = [price_str]
+            if mi_str: body_parts.append(mi_str)
+            if dealer:  body_parts.append(dealer)
+
+            payload = {
+                "title": f"🎯 Watch Hit: {watch['name']}",
+                "body":  f"{year} {model} {trim} · {' · '.join(body_parts)}",
+                "url":   _clean_url(url),
+                "icon":  "/icons/icon-192.png",
+            }
+            ok = _send_push(payload)
+            if ok:
+                seen[seen_key] = {"alerted_at": datetime.now().isoformat()}
+                _save_seen_watch(seen)
+                sent += 1
+                log.info("WATCHLIST HIT: %s → %s %s %s", watch["name"], year, model, trim)
+
+    if sent:
+        log.info("Watchlist push alerts: %d sent", sent)

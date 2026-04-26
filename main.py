@@ -527,8 +527,10 @@ def main():
                     log.info("Alert filter: %d new IDs, %d within 20min window — alerting only fresh",
                              len(new_ids), len(fresh_ids))
                 notify_push.notify_new_listings(conn, fresh_ids)
+                notify_push.notify_watchlist(conn, fresh_ids)
             else:
                 notify_push.notify_new_listings(conn, new_ids)
+                notify_push.notify_watchlist(conn, new_ids)
     except Exception as e:
         log.warning("Push new-listing alerts failed: %s", e)
 

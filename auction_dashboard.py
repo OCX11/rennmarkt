@@ -268,6 +268,7 @@ def _auction_card(car: dict, fmv_score: dict, urgent: bool = False) -> str:
         f' data-tier="{_h(tier)}"'
         f' data-price="{price or 0}"'
         f' data-ends="{_h(ends_at)}"'
+        f' data-deal="{"1" if (pct is not None and pct <= -5 and not _fmv_hidden) else "0"}"'
         f' onclick="openListing(\'{_h(url)}\')">\n'
         f'  {img_html}\n'
         f'  <div class="auc-body">\n'
@@ -685,6 +686,7 @@ a {{ color:inherit; text-decoration:none; }}
     <option value="price_desc">Price High→Low</option>
     <option value="new_first">Newest Listed</option>
   </select>
+  <button class="auc-chip" id="auc-deals-chip" onclick="toggleAucDeals(this)" style="white-space:nowrap">&#x2193; Deals only</button>
   <span class="filter-count" id="auc-filter-count"></span>
 </div>
 
@@ -820,6 +822,7 @@ function closeDropdown() {{
 // ── Auction filter + sort ────────────────────────────────────────────────────
 var _aucActiveGens = [];
 var _aucActiveSrcs = [];
+var _aucDealsOnly = false;
 
 function toggleAucChip(btn) {{
   var filter = btn.dataset.filter;
@@ -835,6 +838,12 @@ function toggleAucChip(btn) {{
   applyAucFilters();
 }}
 
+function toggleAucDeals(btn) {{
+  _aucDealsOnly = !_aucDealsOnly;
+  btn.classList.toggle('active', _aucDealsOnly);
+  applyAucFilters();
+}}
+
 function applyAucFilters() {{
   var cards = Array.from(document.querySelectorAll('.auc-card'));
   var sortVal = (document.getElementById('auc-sort') || {{}}).value || 'ends_asc';
@@ -843,9 +852,10 @@ function applyAucFilters() {{
   cards.forEach(function(card) {{
     var gen   = card.dataset.gen   || '';
     var src   = card.dataset.src   || '';
-    var genOk = _aucActiveGens.length === 0 || _aucActiveGens.includes(gen);
-    var srcOk = _aucActiveSrcs.length === 0 || _aucActiveSrcs.includes(src);
-    var show  = genOk && srcOk;
+    var genOk  = _aucActiveGens.length === 0 || _aucActiveGens.includes(gen);
+    var srcOk  = _aucActiveSrcs.length === 0 || _aucActiveSrcs.includes(src);
+    var dealOk = !_aucDealsOnly || card.dataset.deal === '1';
+    var show   = genOk && srcOk && dealOk;
     card.style.display = show ? '' : 'none';
     if (show) visible++;
   }});
@@ -864,7 +874,7 @@ function applyAucFilters() {{
   }});
 
   var countEl = document.getElementById('auc-filter-count');
-  if (countEl && (_aucActiveGens.length > 0 || _aucActiveSrcs.length > 0)) {{
+  if (countEl && (_aucActiveGens.length > 0 || _aucActiveSrcs.length > 0 || _aucDealsOnly)) {{
     countEl.textContent = visible + ' shown';
   }} else if (countEl) {{
     countEl.textContent = '';

@@ -645,9 +645,9 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
   padding:0 24px; gap:16px; z-index:50;
 }}
 .logo {{
-  font-family:'Syne',sans-serif; font-size:14px; font-weight:800;
-  color:#fff; letter-spacing:6px; white-space:nowrap; flex-shrink:0; text-decoration:none;
+  display:flex; align-items:center; flex-shrink:0; text-decoration:none; line-height:0;
 }}
+.logo svg {{ height:28px; width:auto; }}
 .logo span {{ color:#c0392b; }}
 .stats-bar {{ display:flex; gap:1px; margin:0 12px 8px; background:#2a2a2a; border-radius:14px; overflow:hidden; border:1px solid #2a2a2a; }}
 .stat-cell {{ flex:1; padding:12px 8px 10px; text-align:center; background:#141414; cursor:pointer; transition:background 0.15s; position:relative; }}
@@ -1058,7 +1058,7 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 
 <!-- ── Nav ── -->
 <header class="topbar">
-  <a class="logo" href="index.html">Renn<span>Markt</span></a>
+  <a class="logo" href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64"><g transform="translate(8,6)"><circle cx="26" cy="26" r="22" fill="none" stroke="#242424" stroke-width="2.5"/><path d="M6,38 A22,22 0 0,1 43.5,8.5" fill="none" stroke="#D85A30" stroke-width="2.5" stroke-linecap="round"/><g stroke="#333" stroke-width="1.2" stroke-linecap="round"><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-80,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-55,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-30,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-5,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(20,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(45,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(70,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(95,26,26)"/></g><line x1="26" y1="26" x2="43.5" y2="8.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><circle cx="26" cy="26" r="4" fill="#D85A30"/><circle cx="26" cy="26" r="1.6" fill="#0d0d0d"/><text x="62" y="34" font-family="'Helvetica Neue',Arial,sans-serif" font-size="32" letter-spacing="-0.5"><tspan font-weight="800" fill="white">Renn</tspan><tspan font-weight="300" fill="#D85A30">Markt</tspan></text></g></svg></a>
   <button class="more-btn" onclick="toggleDropdown()">More &#x25BE;</button>
 </header>
 <div class="stats-bar">

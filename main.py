@@ -432,6 +432,14 @@ def main():
     except Exception as e:
         log.warning("FMV persist failed: %s", e)
 
+    # VIN decode — update generation, body_style, drive_type from VIN positions
+    # Fast local decode only (~1ms per VIN), no API calls. Idempotent.
+    try:
+        import vin_decoder
+        vin_decoder.main(use_nhtsa=False)
+    except Exception as e:
+        log.warning("VIN decode failed: %s", e)
+
     # Regenerate dashboards
     path = dash.generate()
     log.info("Dashboard: file://%s", path)

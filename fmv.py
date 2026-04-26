@@ -34,8 +34,22 @@ log = logging.getLogger(__name__)
 # Maps year ranges to Porsche generation codes so we don't compare
 # a 996 GT3 price with a 991.2 GT3 price.
 
-def get_generation(year: Optional[int], model: str, trim: str = "") -> str:
-    """Return a generation bucket string for grouping comps."""
+def get_generation(year: Optional[int], model: str, trim: str = "", vin: str = "") -> str:
+    """Return a generation bucket string for grouping comps.
+    
+    Uses VIN pos 10 for authoritative model year when VIN is provided,
+    resolving the 997.1/997.2/991.1/991.2 overlap ambiguity.
+    """
+    # Use VIN-based generation when VIN is available
+    if vin:
+        try:
+            from vin_decoder import decode_generation_from_vin
+            gen = decode_generation_from_vin(vin, db_year=year)
+            if gen:
+                return gen
+        except Exception:
+            pass  # fall through to year-based logic
+
     if not year:
         return "unknown"
 
@@ -682,6 +696,7 @@ def get_fmv(
     year: Optional[int],
     model: str,
     trim: Optional[str] = None,
+    vin: Optional[str] = None,
     months_back: int = 24,
     min_comps: int = 1,
     since_date: Optional[str] = None,
@@ -689,23 +704,9 @@ def get_fmv(
 ) -> FMVResult:
     """
     Calculate FMV for a given Porsche.
-
-    Matching strategy (in order):
-    1. Exact generation + exact trim — best comps
-    2. Exact generation + trim family — broader comps
-    3. Exact generation, any trim — generation baseline
-    4. Adjacent generation — last resort
-
-    Returns FMVResult with weighted_median as the primary FMV estimate.
-
-    Args:
-        since_date: Optional ISO date string 'YYYY-MM-DD'. When provided,
-                    overrides months_back as the lower bound for comp dates.
-        until_date: Optional ISO date string 'YYYY-MM-DD'. When provided,
-                    restricts comps to on or before this date (useful for
-                    point-in-time / historical FMV queries).
+    Pass vin= for authoritative generation bucketing.
     """
-    target_gen   = get_generation(year, model, trim or "")
+    target_gen   = get_generation(year, model, trim or "", vin or "")
     norm_trim    = normalize_trim(trim)
     today        = date.today()
 
@@ -1002,7 +1003,7 @@ def score_active_listings(
     listings = conn.execute(
         """SELECT id, dealer, year, model, trim, price, tier, mileage, listing_url,
                   date_first_seen, source_category, image_url, image_url_cdn,
-                  created_at, auction_ends_at
+                  created_at, auction_ends_at, vin
            FROM listings WHERE status='active' AND price IS NOT NULL AND price > 0
            ORDER BY tier, year DESC"""
     ).fetchall()
@@ -1011,12 +1012,12 @@ def score_active_listings(
     fmv_cache = {}
 
     for row in listings:
-        lid, dealer, year, model, trim, price, tier, mileage, url, first_seen, src_cat, image_url, image_url_cdn, created_at, auction_ends_at = row
+        lid, dealer, year, model, trim, price, tier, mileage, url, first_seen, src_cat, image_url, image_url_cdn, created_at, auction_ends_at, vin = row
 
-        cache_key = (model, year, normalize_trim(trim))
+        cache_key = (model, year, normalize_trim(trim), vin or "")
         if cache_key not in fmv_cache:
             fmv_cache[cache_key] = get_fmv(
-                conn, year=year, model=model, trim=trim,
+                conn, year=year, model=model, trim=trim, vin=vin,
                 since_date=since_date, until_date=until_date,
             )
         fmv = fmv_cache[cache_key]

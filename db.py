@@ -649,7 +649,14 @@ def _infer_sold_comp_generation(year, model, trim):
 def upsert_sold_comp(conn, source, year, make, model, trim, mileage, sold_price,
                      sold_date, listing_url, image_url=None, title=None,
                      transmission=None, vin=None, color=None):
-    """Insert a sold comp; ignore if URL already exists."""
+    """Insert a sold comp; ignore if URL already exists. Rejects future-dated comps."""
+    # Guard: auction bids scrape with tomorrow/future sold_date until they actually close.
+    if sold_date:
+        try:
+            if sold_date[:10] > date.today().isoformat():
+                return  # future-dated — skip silently
+        except Exception:
+            pass
     cat = source_category(source)
     tier = classify_tier(model, trim, year)
     gen = _infer_sold_comp_generation(year, model, trim)

@@ -750,6 +750,7 @@ def get_fmv(
                FROM sold_comps
                WHERE LOWER(model) = LOWER(?)
                  AND sold_date >= ?
+                 AND sold_date <= date('now')
                ORDER BY sold_date DESC""",
             (comp_model, cutoff_date),
         ).fetchall()

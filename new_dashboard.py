@@ -639,7 +639,7 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 
 /* ── Topbar / Nav ── */
 .topbar {{
-  height:52px; min-height:52px;
+  height:68px; min-height:68px;
   background:#141414; border-bottom:1px solid var(--border);
   display:flex; align-items:center; justify-content:space-between;
   padding:0 24px; gap:16px; z-index:50;
@@ -647,7 +647,7 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 .logo {{
   display:flex; align-items:center; flex-shrink:0; text-decoration:none; line-height:0;
 }}
-.logo svg {{ height:28px; width:auto; }}
+.logo svg {{ height:56px; width:auto; }}
 .logo span {{ color:#c0392b; }}
 .stats-bar {{ display:flex; gap:1px; margin:0 12px 8px; background:#2a2a2a; border-radius:14px; overflow:hidden; border:1px solid #2a2a2a; }}
 .stat-cell {{ flex:1; padding:12px 8px 10px; text-align:center; background:#141414; cursor:pointer; transition:background 0.15s; position:relative; }}

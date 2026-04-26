@@ -854,10 +854,10 @@ def get_fmv(
     # When we have enough exact-trim comps, restrict use_comps to those.
     # This prevents a large pool of lower-priced family comps (e.g. 450 base
     # Carrera comps) from diluting the FMV of a rarer trim (e.g. Carrera GTS).
-    # The threshold matches the HIGH-confidence cutoff so we only tighten when
-    # the exact-trim signal is strong enough to stand alone.
+    # Threshold 0.9 includes body-style variants (Carrera Coupe, Carrera Cabriolet)
+    # as near-exact — ensures base Carrera doesn't pull Carrera S/GTS comps.
     exact_trim_comps = [(c, s) for c, s in use_comps
-                        if _trim_match_score(norm_trim, c.trim_normalized) >= 1.0]
+                        if _trim_match_score(norm_trim, c.trim_normalized) >= 0.9]
     if len(exact_trim_comps) >= 4:
         use_comps = exact_trim_comps
 

@@ -509,6 +509,24 @@ def generate() -> str:
                                key=lambda c: c.get("created_at") or c.get("date_first_seen") or "",
                                reverse=True)
 
+        # ── VIN lifecycle: find active listings whose VIN also appears in sold_comps ──
+        relisted_by_vin = {}
+        try:
+            relist_rows = conn.execute("""
+                SELECT l.vin, sc.sold_price, sc.sold_date, sc.source
+                FROM listings l
+                JOIN sold_comps sc ON UPPER(l.vin) = UPPER(sc.vin)
+                WHERE l.status='active' AND l.vin IS NOT NULL AND l.vin != ''
+                  AND sc.sold_price IS NOT NULL AND sc.sold_price > 0
+                ORDER BY sc.sold_date DESC
+            """).fetchall()
+            for vin, sold_price, sold_date, source in relist_rows:
+                key = (vin or "").upper()
+                if key not in relisted_by_vin:
+                    relisted_by_vin[key] = {"sold_price": sold_price, "sold_date": sold_date, "source": source}
+        except Exception as _e:
+            log.warning("Relisted VIN query failed: %s", _e)
+
         cutoff = (date.today() - timedelta(days=730)).isoformat()
         comp_rows = conn.execute(
             "SELECT * FROM sold_comps WHERE sold_date >= ? AND sold_price IS NOT NULL ORDER BY sold_date DESC",
@@ -581,6 +599,9 @@ def generate() -> str:
                 "fmv_lo": int(fmv_s.get("price_low") or 0),
                 "fmv_hi": int(fmv_s.get("price_high") or 0),
                 "fmv_pct": int(pct) if pct is not None else None,
+                "relisted": (c.get("vin") or "").upper() in relisted_by_vin,
+                "sold_prev": relisted_by_vin.get((c.get("vin") or "").upper(), {}).get("sold_price"),
+                "sold_date": relisted_by_vin.get((c.get("vin") or "").upper(), {}).get("sold_date", "")[:10],
             })
         card_data_json = _json.dumps(card_items, ensure_ascii=False)
         comp_rows_html = "\n".join(_comp_row(c) for c in comps)
@@ -938,6 +959,7 @@ button {{ cursor:pointer; border:none; background:none; font:inherit; color:inhe
 .countdown {{ color:var(--red); font-weight:500; }}
 .card-meta {{ font-family:'DM Mono',monospace; font-size:10px; color:#8A8A9E; }}
 .star-btn {{ background:none; border:none; cursor:pointer; font-size:14px; padding:0 0 0 4px; color:#444; line-height:1; flex-shrink:0; transition:color 0.15s; }}
+.relisted-badge {{ display:inline-block; font-family:'DM Mono',monospace; font-size:8px; font-weight:600; background:#1a0a1a; color:#c084fc; padding:2px 6px; border-radius:3px; border:1px solid #3a1a3a; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:4px; }}
 .star-btn:hover {{ color:#f59e0b; }}
 .star-btn.starred {{ color:#f59e0b; }}
 .days-stale {{ color:#F87171; font-weight:500; }}
@@ -1570,6 +1592,11 @@ function renderCard(d) {{
   var ageHtml = '<span class="card-age" data-created="' + (d.created||'') + '">' + ageLabel(d.created) + '</span>';
 
   var tierHtml = '';  // GT/Collector badge removed
+  var relistHtml = '';
+  if (d.relisted && d.sold_prev) {{
+    var prevStr = '$' + Math.round(d.sold_prev/1000) + 'K';
+    relistHtml = '<div class="relisted-badge">&#x21BA; Relisted &middot; prev ' + prevStr + (d.sold_date ? ' on ' + d.sold_date.slice(0,7) : '') + '</div>';
+  }}
 
   var titleStr = d.trim ? d.model + ' ' + d.trim : d.model;
   titleStr = titleStr.replace(new RegExp('^' + d.model + '\\s+' + d.model + '\\s*', 'i'), d.model + ' ');
@@ -1631,6 +1658,7 @@ function renderCard(d) {{
   + '</div>'
     + titleHtml
     + tierHtml
+    + relistHtml
     + '<div class="card-price-row"><span class="price-lbl">' + priceLbl + '</span>'
     + '<span class="' + priceCls + '">' + fmtPrice(d.pr) + '</span></div>'
     + '<div class="fmv-wrap" data-url="' + d.url + '" data-year="' + d.yr + '" data-model="' + (d.model||'').replace(/"/g,'&quot;') + '" data-trim="' + (d.trim||'').replace(/"/g,'&quot;') + '" data-price="' + (d.pr||0) + '">'

@@ -309,21 +309,48 @@ def _parse_html(html: str) -> list:
 # ---------------------------------------------------------------------------
 def scrape_rennlist() -> list:
     """
-    Scrape page 1 of Rennlist vehicle classifieds (USA only, for-sale, active,
-    newest first) via Playwright + DataImpulse proxy.
+    Scrape multiple pages of Rennlist vehicle classifieds (USA only, for-sale,
+    active, newest first) via curl_cffi Chrome fingerprint.
+
+    Paginates until all Porsche listings are captured or a page yields no new
+    listings (dedup by URL). Stops after MAX_PAGES as a safety cap.
 
     Returns list of {year, make, model, trim, mileage, price, vin, url, image_url}.
-    No state file — fetch and return every run.
     """
-    log.info("Rennlist: fetching page 1")
-    html = _fetch_page(_SEARCH_URL)
-    if not html:
-        log.warning("Rennlist: failed to fetch page — returning []")
-        return []
+    MAX_PAGES = 10
+    all_listings = []
+    seen_urls: set = set()
 
-    listings = _parse_html(html)
-    log.info("Rennlist scrape complete: %d listings", len(listings))
-    return listings
+    for page in range(1, MAX_PAGES + 1):
+        url = _SEARCH_URL if page == 1 else _SEARCH_URL + f"&page={page}"
+        log.info("Rennlist: fetching page %d", page)
+        html = _fetch_page(url)
+        if not html:
+            log.warning("Rennlist: failed to fetch page %d — stopping", page)
+            break
+
+        page_listings = _parse_html(html)
+        if not page_listings:
+            log.info("Rennlist: page %d empty — done", page)
+            break
+
+        new = [l for l in page_listings if l.get("listing_url") not in seen_urls]
+        if not new:
+            log.info("Rennlist: page %d all dupes — done", page)
+            break
+
+        for l in new:
+            seen_urls.add(l.get("listing_url"))
+        all_listings.extend(new)
+        log.info("Rennlist: page %d → %d new listings (total %d)", page, len(new), len(all_listings))
+
+        # If page returned fewer than 8 listings, likely near the end
+        if len(page_listings) < 8:
+            log.info("Rennlist: short page (%d items) — done", len(page_listings))
+            break
+
+    log.info("Rennlist scrape complete: %d total listings", len(all_listings))
+    return all_listings
 
 
 # ---------------------------------------------------------------------------

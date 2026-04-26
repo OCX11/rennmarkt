@@ -1551,7 +1551,7 @@ def scrape_pcamart():
             cached_count = 0
             for car in cars:
                 img = car.get("image_url")
-                if not img or not img.startswith("http") or "/static/img_cache/" in img:
+                if not img or not img.startswith("http") or "/img_cache/" in img:
                     continue
                 try:
                     ext = img.rsplit(".", 1)[-1].split("?")[0].lower()
@@ -1572,7 +1572,7 @@ def scrape_pcamart():
                             log.debug("PCA img cached %s (%d bytes)", fname, len(body))
                     if fpath.exists():
                         car["image_url_cdn"] = img  # preserve original CDN URL
-                        car["image_url"] = f"/static/img_cache/{fname}"
+                        car["image_url"] = f"/img_cache/{fname}"
                         cached_count += 1
                 except Exception as _ie:
                     log.warning("PCA image cache error %s: %s", img, _ie)
@@ -2561,13 +2561,14 @@ def scrape_carsdotcom_apify() -> list:
 
 
 # ---------------------------------------------------------------------------
-# Image cache — download hotlink-protected images to static/img_cache/
+# Image cache — download hotlink-protected images to docs/img_cache/
+# (served directly by GitHub Pages at /img_cache/<fname>)
 # ---------------------------------------------------------------------------
-_IMG_CACHE_DIR = Path(__file__).parent / "static" / "img_cache"
+_IMG_CACHE_DIR = Path(__file__).parent / "docs" / "img_cache"
 
 
 def _cache_image(remote_url: str, referer: str = "") -> str:
-    """Download an image to static/img_cache/ and return its local web path.
+    """Download an image to docs/img_cache/ and return its local web path.
     Used for sources with hotlink protection (e.g. PCA Mart).
     Returns the original URL unchanged on failure."""
     if not remote_url:
@@ -2582,12 +2583,12 @@ def _cache_image(remote_url: str, referer: str = "") -> str:
         fname = hashlib.md5(remote_url.encode()).hexdigest() + "." + ext
         fpath = _IMG_CACHE_DIR / fname
         if fpath.exists():
-            return f"/static/img_cache/{fname}"
+            return f"/img_cache/{fname}"
         headers = {"Referer": referer} if referer else {}
         r = requests.get(remote_url, headers=headers, timeout=15, proxies={})
         if r.status_code == 200 and len(r.content) > 1000:
             fpath.write_bytes(r.content)
-            return f"/static/img_cache/{fname}"
+            return f"/img_cache/{fname}"
     except Exception as e:
         log.debug("Image cache miss %s: %s", remote_url, e)
     return remote_url

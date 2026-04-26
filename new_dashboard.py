@@ -331,8 +331,6 @@ def _card(car: dict, fmv_score: dict) -> str:
 
     # Tier badge
     tier_html = ""
-    if tier == "TIER1":
-        tier_html = '<span class="tier-badge">GT / Collector</span>'
 
     # Placeholder SVG — single quotes encoded as %27 so the string is safe inside onerror="this.src='...'"
     placeholder_svg = ("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27165%27%3E"
@@ -1561,7 +1559,7 @@ function renderCard(d) {{
 
   var ageHtml = '<span class="card-age" data-created="' + (d.created||'') + '">' + ageLabel(d.created) + '</span>';
 
-  var tierHtml = d.tier === 'TIER1' ? '<span class="tier-badge">GT / Collector</span>' : '';
+  var tierHtml = '';  // GT/Collector badge removed
 
   var titleStr = d.trim ? d.model + ' ' + d.trim : d.model;
   titleStr = titleStr.replace(new RegExp('^' + d.model + '\\s+' + d.model + '\\s*', 'i'), d.model + ' ');

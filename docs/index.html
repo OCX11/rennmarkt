@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>RennMarkt — Launching Soon</title>
+<script>
+if(localStorage.getItem('rm_public_access')||localStorage.getItem('ptox_unlock')==='gt3rs'){
+  window.location.replace('/dashboard.html');
+}
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
@@ -221,7 +226,7 @@ document.getElementById('signup-email').addEventListener('keydown',function(e){
     var pw=input.value.trim();
     if(pw==='rennmarkt911'){
       localStorage.setItem('rm_public_access','1');
-      window.location.href='/dashboard.html';
+      window.location.href='https://www.rennmarkt.net/dashboard.html';
     } else {
       errEl.style.display='block';
       input.value='';

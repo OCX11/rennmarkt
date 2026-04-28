@@ -53,6 +53,8 @@ git add docs/dashboard.html docs/auctions.html docs/search_data.json \
         docs/calculator_data.json \
         docs/daily_report.html docs/market_report.html \
         docs/weekly_report.html docs/monthly_report.html 2>> "$LOG"
+# NEVER add docs/index.html — it is the permanent splash page
+git restore --staged docs/index.html 2>/dev/null || true
 
 if git diff --cached --quiet; then
     git remote set-url origin https://github.com/OCX11/rennmarkt.git

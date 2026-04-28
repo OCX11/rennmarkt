@@ -1,7 +1,7 @@
 #!/bin/bash
 # update_tunnel_url.sh — on reboot, reads new cloudflared tunnel URL and
 # redeploys Cloudflare Worker so the permanent URL keeps working.
-# Permanent push URL: https://ptox11-push.openclawx1.workers.dev
+# Permanent push URL: https://rennmarkt-push.openclawx1.workers.dev
 
 PROJ="/Users/claw/porsche-tracker"
 LOG="$PROJ/logs/cloudflared.log"

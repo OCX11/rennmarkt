@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RennMarkt — Push Notifications</title>
-<link rel="manifest" href="/PTOX11/manifest.json">
+<link rel="manifest" href="/manifest.json">
 <style>
   :root {
     --bg: #0f1117;
@@ -113,13 +113,11 @@
   <div id="status" class="status"></div>
 
   <hr class="divider">
-  <a href="/PTOX11/" class="back">← Back to dashboard</a>
+  <a href="/dashboard.html" class="back">← Back to dashboard</a>
 </div>
 
 <script>
-// The push server URL — will be set to your Cloudflare Tunnel URL
-// This value is patched by setup_push.sh after tunnel creation
-const PUSH_SERVER = 'https://ptox11-push.openclawx1.workers.dev';
+const PUSH_SERVER = 'https://rennmarkt-push.openclawx1.workers.dev';
 
 function showStatus(msg, type = 'ok') {
   const el = document.getElementById('status');
@@ -166,7 +164,7 @@ async function handleSubscribe() {
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') throw new Error('Notification permission denied');
 
-    const reg = await navigator.serviceWorker.register('/PTOX11/sw.js', { scope: '/PTOX11/' });
+    const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
     await navigator.serviceWorker.ready;
 
     const publicKey = await getPublicKey();

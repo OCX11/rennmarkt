@@ -23,7 +23,7 @@ from db import get_conn, get_dashboard_data, init_db, source_category
 import fmv as fmv_engine
 
 BASE_DIR  = Path(__file__).parent
-OUT_PATH  = BASE_DIR / "docs" / "index.html"
+OUT_PATH  = BASE_DIR / "docs" / "dashboard.html"
 LOG_DIR   = BASE_DIR / "logs"
 
 # ── Source health ─────────────────────────────────────────────────────────────

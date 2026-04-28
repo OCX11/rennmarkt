@@ -8,7 +8,7 @@ cd "$SCRIPT_DIR"
 # ── Guard: validate docs/index.html JS before pushing ────────────────────────
 # Extracts the main <script> block and runs node --check on it.
 # If syntax is broken, aborts push and logs the error — never ships a blank page.
-DASHBOARD="$SCRIPT_DIR/docs/index.html"
+DASHBOARD="$SCRIPT_DIR/docs/dashboard.html"
 if [ -f "$DASHBOARD" ]; then
   GUARD_TMP="/tmp/rennmarkt_guard_$$.js"
   # Stub out browser globals so node --check sees valid references
@@ -49,7 +49,7 @@ if [ -n "$TOKEN" ]; then
     git remote set-url origin "https://$TOKEN@github.com/OCX11/rennmarkt.git"
 fi
 
-git add docs/index.html docs/auctions.html docs/search_data.json \
+git add docs/dashboard.html docs/auctions.html docs/search_data.json \
         docs/calculator_data.json \
         docs/daily_report.html docs/market_report.html \
         docs/weekly_report.html docs/monthly_report.html 2>> "$LOG"

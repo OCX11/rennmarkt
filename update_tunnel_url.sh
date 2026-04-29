@@ -44,4 +44,13 @@ curl -s "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/workers/scrip
   -F "worker.js=@$PROJ/worker.js;type=application/javascript+module" \
   | python3 -c "import sys,json; d=json.load(sys.stdin); print('[update_tunnel_url] worker redeploy:', 'OK' if d.get('success') else d.get('errors'))"
 
+# Ensure workers.dev subdomain is enabled (doesn't survive worker rename)
+curl -s "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/workers/scripts/$WORKER_NAME/subdomain" \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -H "X-Auth-Email: $CF_EMAIL" \
+  -H "X-Auth-Key: $CF_KEY" \
+  -d '{"enabled": true}' \
+  | python3 -c "import sys,json; d=json.load(sys.stdin); print('[update_tunnel_url] subdomain enable:', 'OK' if d.get('result',{}).get('enabled') else d)"
+
 echo "[update_tunnel_url] done at $(date)"

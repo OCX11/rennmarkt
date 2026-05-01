@@ -504,6 +504,7 @@ class Comp:
     source_weight: float
     is_rnm: bool                  # reserve not met = floor signal only
     listing_url: Optional[str]
+    image_url: Optional[str] = None
 
 
 @dataclass
@@ -736,7 +737,7 @@ def get_fmv(
     # ── Pull all comps for this model ────────────────────────────────────────
     if until_date:
         rows = conn.execute(
-            """SELECT id, year, model, trim, sold_price, sold_date, mileage, source, listing_url
+            """SELECT id, year, model, trim, sold_price, sold_date, mileage, source, listing_url, image_url
                FROM sold_comps
                WHERE LOWER(model) = LOWER(?)
                  AND sold_date >= ?
@@ -746,7 +747,7 @@ def get_fmv(
         ).fetchall()
     else:
         rows = conn.execute(
-            """SELECT id, year, model, trim, sold_price, sold_date, mileage, source, listing_url
+            """SELECT id, year, model, trim, sold_price, sold_date, mileage, source, listing_url, image_url
                FROM sold_comps
                WHERE LOWER(model) = LOWER(?)
                  AND sold_date >= ?
@@ -768,7 +769,7 @@ def get_fmv(
             generation=row_gen,
             sold_price=row[4], sold_date=row[5], mileage=row[6],
             source=row[7], source_weight=src_w, is_rnm=is_rnm,
-            listing_url=row[8],
+            listing_url=row[8], image_url=row[9],
         ))
 
     # ── Separate sold vs RNM ────────────────────────────────────────────────

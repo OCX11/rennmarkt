@@ -501,7 +501,7 @@ def generate() -> str:
                         for c in getattr(fmv_obj, "comps", [])
                         if getattr(c, "sold_price", None) and int(c.sold_price) > 0
                            and getattr(c, "sold_date", None)
-                    ][:60],
+                    ][:80],
                 }
             else:
                 fmv_by_id[row["id"]] = {"fmv": None, "confidence": "NONE", "comp_count": 0}
@@ -792,8 +792,8 @@ a {{ color:inherit; text-decoration:none; }}
 .go-link:hover {{ color:var(--red); border-color:var(--red); }}
 
 /* ── Expand panel ── */
-.expand-panel {{ max-height:0; overflow:hidden; transition:max-height 0.32s cubic-bezier(0.4,0,0.2,1); border-top:0px solid var(--border); background:#0f0f0f; }}
-.auc-card:hover .expand-panel {{ max-height:260px; border-top-width:1px; }}
+.expand-panel {{ max-height:0; overflow:hidden; transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1); border-top:0px solid var(--border); background:#0f0f0f; }}
+.auc-card:hover .expand-panel {{ max-height:360px; border-top-width:1px; }}
 .expand-inner {{ padding:14px 18px 16px; display:flex; flex-direction:column; gap:12px; }}
 .stat-row {{ display:flex; gap:0; }}
 .estat {{ flex:1; padding:0 14px; border-right:1px solid #1e1e1e; }}
@@ -804,7 +804,7 @@ a {{ color:inherit; text-decoration:none; }}
 .graph-wrap {{ width:100%; }}
 .graph-label {{ font-family:'DM Mono',monospace; font-size:9px; color:#4a4a4a; letter-spacing:.8px; text-transform:uppercase; margin-bottom:6px; display:flex; justify-content:space-between; }}
 .graph-sub {{ color:#333; letter-spacing:0; text-transform:none; }}
-.graph-svg {{ width:100%; height:80px; display:block; }}
+.graph-svg {{ width:100%; height:160px; display:block; }}
 .expand-footer {{ display:flex; align-items:center; justify-content:space-between; }}
 .etag-row {{ display:flex; gap:5px; flex-wrap:wrap; }}
 .etag {{ font-family:'DM Mono',monospace; font-size:9px; color:#4a4a4a; background:#1a1a1a; border:1px solid #242424; padding:2px 7px; border-radius:3px; }}
@@ -1217,7 +1217,7 @@ function drawDotGraph(svg, card) {{
   if (!dots.length && !fmv) return;
 
   var W = svg.parentElement.getBoundingClientRect().width || 700;
-  var H = 80;
+  var H = 160;
   svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
   svg.setAttribute('width', W);
   svg.setAttribute('height', H);
@@ -1238,7 +1238,7 @@ function drawDotGraph(svg, card) {{
   if (bid) prices.push(bid);
   if (fmv) prices.push(fmv);
 
-  var PAD_L = 38, PAD_R = 12, PAD_T = 14, PAD_B = 18;
+  var PAD_L = 42, PAD_R = 16, PAD_T = 18, PAD_B = 22;
   var plotW = W - PAD_L - PAD_R;
   var plotH = H - PAD_T - PAD_B;
 
@@ -1262,8 +1262,8 @@ function drawDotGraph(svg, card) {{
   // Y axis labels (3 ticks)
   [minPrice, (minPrice+maxPrice)/2, maxPrice].forEach(function(p, i) {{
     var y = scaleY(p);
-    mk('line', {{x1:PAD_L-3, y1:y, x2:PAD_L, y2:y, stroke:'#333', 'stroke-width':1}});
-    var t = mk('text', {{x:PAD_L-5, y:y+3, 'text-anchor':'end', fill:'#444', 'font-family':'DM Mono,monospace', 'font-size':'7'}});
+    mk('line', {{x1:PAD_L-4, y1:y, x2:PAD_L, y2:y, stroke:'#333', 'stroke-width':1}});
+    var t = mk('text', {{x:PAD_L-6, y:y+3, 'text-anchor':'end', fill:'#555', 'font-family':'DM Mono,monospace', 'font-size':'9'}});
     t.textContent = '$' + Math.round(p/1000) + 'K';
   }});
 
@@ -1276,7 +1276,7 @@ function drawDotGraph(svg, card) {{
     [[minDate, 'start'], [maxDate, 'end']].forEach(function(pair) {{
       var tx = scaleX(pair[0]);
       var anchor = pair[1] === 'start' ? 'start' : 'end';
-      var t = mk('text', {{x:tx, y:H-2, 'text-anchor':anchor, fill:'#333', 'font-family':'DM Mono,monospace', 'font-size':'7'}});
+      var t = mk('text', {{x:tx, y:H-3, 'text-anchor':anchor, fill:'#444', 'font-family':'DM Mono,monospace', 'font-size':'9'}});
       t.textContent = fmtD(pair[0]);
     }});
   }}
@@ -1284,8 +1284,8 @@ function drawDotGraph(svg, card) {{
   // ── FMV horizontal line ──
   if (fmv) {{
     var fy = scaleY(fmv);
-    mk('line', {{x1:PAD_L, y1:fy, x2:W-PAD_R, y2:fy, stroke:'#3a3a3a', 'stroke-width':1, 'stroke-dasharray':'5,3'}});
-    var ft = mk('text', {{x:W-PAD_R-2, y:fy-3, 'text-anchor':'end', fill:'#555', 'font-family':'DM Mono,monospace', 'font-size':'7'}});
+    mk('line', {{x1:PAD_L, y1:fy, x2:W-PAD_R, y2:fy, stroke:'#3a3a3a', 'stroke-width':1, 'stroke-dasharray':'6,4'}});
+    var ft = mk('text', {{x:W-PAD_R-4, y:fy-4, 'text-anchor':'end', fill:'#555', 'font-family':'DM Mono,monospace', 'font-size':'9'}});
     ft.textContent = 'FMV $' + Math.round(fmv/1000) + 'K';
   }}
 
@@ -1294,20 +1294,19 @@ function drawDotGraph(svg, card) {{
     if (!dot.date) return;
     var ts = new Date(dot.date).getTime();
     var cx = scaleX(ts), cy = scaleY(dot.price);
-    var c = mk('circle', {{cx:cx, cy:cy, r:4, fill:'#1e3a1e', stroke:'#3a6a3a', 'stroke-width':1, opacity:0.85, style:'cursor:pointer'}});
-    c.addEventListener('mouseenter', function(e) {{ _showTooltip(dot, e); c.setAttribute('fill','#4ade80'); c.setAttribute('r','5.5'); }});
+    var c = mk('circle', {{cx:cx, cy:cy, r:5.5, fill:'#1e3a1e', stroke:'#3a6a3a', 'stroke-width':1, opacity:0.85, style:'cursor:pointer'}});
+    c.addEventListener('mouseenter', function(e) {{ _showTooltip(dot, e); c.setAttribute('fill','#4ade80'); c.setAttribute('r','7'); }});
     c.addEventListener('mousemove',  function(e) {{ _posTooltip(e); }});
-    c.addEventListener('mouseleave', function()  {{ _hideTooltip(); c.setAttribute('fill','#1e3a1e'); c.setAttribute('r','4'); }});
+    c.addEventListener('mouseleave', function()  {{ _hideTooltip(); c.setAttribute('fill','#1e3a1e'); c.setAttribute('r','5.5'); }});
     if (dot.url) c.addEventListener('click', function(e) {{ e.stopPropagation(); window.open(dot.url,'_blank'); }});
   }});
 
   // ── Current bid dot ──
   if (bid && fmv) {{
-    // Place bid at rightmost position (today)
     var bx = scaleX(maxDate), by = scaleY(bid);
     mk('line', {{x1:bx, y1:PAD_T, x2:bx, y2:PAD_T+plotH, stroke:'#c0392b', 'stroke-width':1, 'stroke-dasharray':'3,2', opacity:0.5}});
-    mk('circle', {{cx:bx, cy:by, r:6, fill:'#c0392b', stroke:'#ff6b6b', 'stroke-width':1}});
-    var bt = mk('text', {{x:bx-8, y:by-9, 'text-anchor':'end', fill:'#c0392b', 'font-family':'DM Mono,monospace', 'font-size':'8', 'font-weight':'500'}});
+    mk('circle', {{cx:bx, cy:by, r:7, fill:'#c0392b', stroke:'#ff6b6b', 'stroke-width':1.5}});
+    var bt = mk('text', {{x:bx-10, y:by-11, 'text-anchor':'end', fill:'#c0392b', 'font-family':'DM Mono,monospace', 'font-size':'9', 'font-weight':'500'}});
     bt.textContent = 'Bid $' + Math.round(bid/1000) + 'K';
   }}
 

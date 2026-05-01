@@ -320,7 +320,19 @@ def _auction_card(car: dict, fmv_score: dict, is_hero: bool = False) -> str:
           <div class="fmv-row">{fmv_html}</div>
         </div>
         <div class="meta-block">{meta_html}</div>
-        <a class="go-link" href="{_h(url)}" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="{_h(url)}" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="{_h(url)}" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -778,16 +790,31 @@ a {{ color:inherit; text-decoration:none; }}
 .card-title {{ font-family:'DM Sans',sans-serif; font-size:16px; font-weight:500; color:#f0ece6; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:0; }}
 .card-bottom {{ display:flex; align-items:center; gap:16px; }}
 .bid-block, .fmv-block {{ flex-shrink:0; }}
-.val-label {{ font-family:'DM Mono',monospace; font-size:10px; color:#7a7570; letter-spacing:0.5px; margin-bottom:2px; }}
+.val-label {{ font-family:'DM Mono',monospace; font-size:11px; color:#888; letter-spacing:0.5px; margin-bottom:2px; }}
 .bid-val {{ font-family:'DM Mono',monospace; font-size:22px; font-weight:500; color:#fff; letter-spacing:-0.5px; line-height:1.1; transition:color 0.2s ease, transform 0.2s ease; display:inline-block; }}
 .auc-card:hover .bid-val {{ color:var(--red); transform:scale(1.04); }}
 .fmv-row {{ display:flex; align-items:center; gap:5px; }}
 .fmv-est {{ font-family:'DM Mono',monospace; font-size:17px; color:#9a958f; letter-spacing:-0.3px; }}
-.fmv-meta {{ font-family:'DM Mono',monospace; font-size:10px; color:#555; display:flex; align-items:center; gap:3px; }}
-.fmv-none {{ font-family:'DM Mono',monospace; font-size:11px; color:#444; }}
+.fmv-meta {{ font-family:'DM Mono',monospace; font-size:11px; color:#666; display:flex; align-items:center; gap:3px; }}
+.fmv-none {{ font-family:'DM Mono',monospace; font-size:12px; color:#555; }}
 .divider-vert {{ width:1px; height:32px; background:var(--border2); flex-shrink:0; }}
-.meta-block {{ font-family:'DM Mono',monospace; font-size:10px; color:#5a5652; margin-left:auto; text-align:right; line-height:1.7; }}
-.dot {{ color:#3a3a3a; }}
+.meta-block {{ font-family:'DM Mono',monospace; font-size:11px; color:#6a6560; margin-left:auto; text-align:right; line-height:1.7; }}
+.dot {{ color:#444; }}
+/* card-actions: stacks save + go-to vertically, right-aligned */
+.card-actions {{ display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex-shrink:0; }}
+.save-btn {{
+  display:inline-flex; align-items:center; gap:5px;
+  background:transparent; border:1px solid #2a2a2a; border-radius:4px;
+  padding:3px 9px; cursor:pointer; white-space:nowrap;
+  font-family:'DM Mono',monospace; font-size:10px; color:#666;
+  transition:all 0.15s;
+}}
+.save-btn:hover {{ color:var(--red); border-color:var(--red); }}
+.save-btn.active {{ color:var(--red); border-color:var(--red); background:rgba(192,57,43,0.08); }}
+.save-btn svg {{ width:12px; height:12px; flex-shrink:0; transition:fill 0.15s, stroke 0.15s; }}
+.save-btn:not(.active) svg {{ fill:none; stroke:currentColor; stroke-width:1.5; }}
+.save-btn.active svg {{ fill:var(--red); stroke:var(--red); stroke-width:1; }}
+.save-lbl {{ font-size:10px; }}
 .go-link {{ font-family:'DM Mono',monospace; font-size:10px; color:#555; border:1px solid #2a2a2a; border-radius:4px; padding:3px 9px; white-space:nowrap; text-decoration:none; transition:all 0.15s; flex-shrink:0; }}
 .go-link:hover {{ color:var(--red); border-color:var(--red); }}
 
@@ -799,15 +826,15 @@ a {{ color:inherit; text-decoration:none; }}
 .estat {{ flex:1; padding:0 14px; border-right:1px solid #1e1e1e; }}
 .estat:first-child {{ padding-left:0; }}
 .estat:last-child {{ border-right:none; }}
-.estat-label {{ font-family:'DM Mono',monospace; font-size:9px; color:#4a4a4a; letter-spacing:.8px; text-transform:uppercase; margin-bottom:3px; }}
+.estat-label {{ font-family:'DM Mono',monospace; font-size:10px; color:#5a5a5a; letter-spacing:.6px; text-transform:uppercase; margin-bottom:3px; }}
 .estat-val {{ font-family:'DM Mono',monospace; font-size:13px; color:#c8c4be; font-weight:500; }}
 .graph-wrap {{ width:100%; }}
-.graph-label {{ font-family:'DM Mono',monospace; font-size:9px; color:#4a4a4a; letter-spacing:.8px; text-transform:uppercase; margin-bottom:6px; display:flex; justify-content:space-between; }}
-.graph-sub {{ color:#333; letter-spacing:0; text-transform:none; }}
+.graph-label {{ font-family:'DM Mono',monospace; font-size:10px; color:#5a5a5a; letter-spacing:.6px; text-transform:uppercase; margin-bottom:6px; display:flex; justify-content:space-between; }}
+.graph-sub {{ color:#555; letter-spacing:0; text-transform:none; }}
 .graph-svg {{ width:100%; height:160px; display:block; }}
 .expand-footer {{ display:flex; align-items:center; justify-content:space-between; }}
 .etag-row {{ display:flex; gap:5px; flex-wrap:wrap; }}
-.etag {{ font-family:'DM Mono',monospace; font-size:9px; color:#4a4a4a; background:#1a1a1a; border:1px solid #242424; padding:2px 7px; border-radius:3px; }}
+.etag {{ font-family:'DM Mono',monospace; font-size:10px; color:#555; background:#1a1a1a; border:1px solid #242424; padding:2px 7px; border-radius:3px; }}
 .expand-actions {{ display:flex; align-items:center; gap:10px; }}
 .deal-badge {{ font-family:'DM Mono',monospace; font-size:10px; color:#4ade80; background:rgba(74,222,128,.08); border:1px solid rgba(74,222,128,.2); padding:3px 10px; border-radius:4px; }}
 .above-badge {{ font-family:'DM Mono',monospace; font-size:10px; color:#F87171; background:rgba(248,113,113,.08); border:1px solid rgba(248,113,113,.2); padding:3px 10px; border-radius:4px; }}
@@ -816,7 +843,7 @@ a {{ color:inherit; text-decoration:none; }}
 
 /* ── Badges + tags ── */
 .src-badge {{ font-family:'DM Mono',monospace; font-size:10px; font-weight:500; padding:2px 7px; border-radius:3px; }}
-.gen-tag {{ font-family:'DM Mono',monospace; font-size:10px; color:#4a4a4a; }}
+.gen-tag {{ font-family:'DM Mono',monospace; font-size:10px; color:#585450; }}
 .urg-tag {{ font-family:'DM Mono',monospace; font-size:9px; font-weight:700; letter-spacing:1px; padding:1px 5px; border-radius:2px; }}
 .urg-critical {{ color:var(--red); background:rgba(192,57,43,0.12); }}
 .urg-soon {{ color:var(--amber); background:rgba(234,179,8,0.1); }}
@@ -1082,18 +1109,6 @@ function _setFavs(arr) {{
   try {{ localStorage.setItem(_FAV_KEY, JSON.stringify(arr)); }} catch(e) {{}}
 }}
 
-function toggleFav(evt, btn) {{
-  evt.stopPropagation();
-  var url = btn.dataset.url;
-  var favs = _getFavs();
-  var idx = favs.indexOf(url);
-  if (idx >= 0) {{ favs.splice(idx, 1); btn.classList.remove('active'); }}
-  else          {{ favs.push(url);       btn.classList.add('active'); }}
-  _setFavs(favs);
-  _updateFavCount();
-  if (_curView === 'favs') applyFilters();
-}}
-
 function _updateFavCount() {{
   var n = _getFavs().length;
   var el = document.getElementById('tab-count-favs');
@@ -1103,10 +1118,29 @@ function _updateFavCount() {{
 function initFavs() {{
   var favs = _getFavs();
   favs.forEach(function(url) {{
-    var btns = document.querySelectorAll('.fav-btn[data-url="' + CSS.escape(url) + '"]');
-    btns.forEach(function(b){{ b.classList.add('active'); }});
+    document.querySelectorAll('.fav-btn[data-url], .save-btn[data-url]').forEach(function(b) {{
+      if (b.dataset.url === url) b.classList.add('active');
+    }});
   }});
   _updateFavCount();
+}}
+
+function toggleFav(evt, btn) {{
+  evt.stopPropagation();
+  var url = btn.dataset.url;
+  var favs = _getFavs();
+  var idx = favs.indexOf(url);
+  var adding = idx < 0;
+  if (adding) favs.push(url); else favs.splice(idx, 1);
+  _setFavs(favs);
+  // sync all buttons for this url (fav-btn + save-btn)
+  document.querySelectorAll('[data-url]').forEach(function(b) {{
+    if (b.dataset.url === url && (b.classList.contains('fav-btn') || b.classList.contains('save-btn'))) {{
+      b.classList.toggle('active', adding);
+    }}
+  }});
+  _updateFavCount();
+  if (_curView === 'favs') applyFilters();
 }}
 
 function cardClick(evt, url) {{

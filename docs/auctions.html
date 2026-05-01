@@ -146,16 +146,31 @@ a { color:inherit; text-decoration:none; }
 .card-title { font-family:'DM Sans',sans-serif; font-size:16px; font-weight:500; color:#f0ece6; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:0; }
 .card-bottom { display:flex; align-items:center; gap:16px; }
 .bid-block, .fmv-block { flex-shrink:0; }
-.val-label { font-family:'DM Mono',monospace; font-size:10px; color:#7a7570; letter-spacing:0.5px; margin-bottom:2px; }
+.val-label { font-family:'DM Mono',monospace; font-size:11px; color:#888; letter-spacing:0.5px; margin-bottom:2px; }
 .bid-val { font-family:'DM Mono',monospace; font-size:22px; font-weight:500; color:#fff; letter-spacing:-0.5px; line-height:1.1; transition:color 0.2s ease, transform 0.2s ease; display:inline-block; }
 .auc-card:hover .bid-val { color:var(--red); transform:scale(1.04); }
 .fmv-row { display:flex; align-items:center; gap:5px; }
 .fmv-est { font-family:'DM Mono',monospace; font-size:17px; color:#9a958f; letter-spacing:-0.3px; }
-.fmv-meta { font-family:'DM Mono',monospace; font-size:10px; color:#555; display:flex; align-items:center; gap:3px; }
-.fmv-none { font-family:'DM Mono',monospace; font-size:11px; color:#444; }
+.fmv-meta { font-family:'DM Mono',monospace; font-size:11px; color:#666; display:flex; align-items:center; gap:3px; }
+.fmv-none { font-family:'DM Mono',monospace; font-size:12px; color:#555; }
 .divider-vert { width:1px; height:32px; background:var(--border2); flex-shrink:0; }
-.meta-block { font-family:'DM Mono',monospace; font-size:10px; color:#5a5652; margin-left:auto; text-align:right; line-height:1.7; }
-.dot { color:#3a3a3a; }
+.meta-block { font-family:'DM Mono',monospace; font-size:11px; color:#6a6560; margin-left:auto; text-align:right; line-height:1.7; }
+.dot { color:#444; }
+/* card-actions: stacks save + go-to vertically, right-aligned */
+.card-actions { display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex-shrink:0; }
+.save-btn {
+  display:inline-flex; align-items:center; gap:5px;
+  background:transparent; border:1px solid #2a2a2a; border-radius:4px;
+  padding:3px 9px; cursor:pointer; white-space:nowrap;
+  font-family:'DM Mono',monospace; font-size:10px; color:#666;
+  transition:all 0.15s;
+}
+.save-btn:hover { color:var(--red); border-color:var(--red); }
+.save-btn.active { color:var(--red); border-color:var(--red); background:rgba(192,57,43,0.08); }
+.save-btn svg { width:12px; height:12px; flex-shrink:0; transition:fill 0.15s, stroke 0.15s; }
+.save-btn:not(.active) svg { fill:none; stroke:currentColor; stroke-width:1.5; }
+.save-btn.active svg { fill:var(--red); stroke:var(--red); stroke-width:1; }
+.save-lbl { font-size:10px; }
 .go-link { font-family:'DM Mono',monospace; font-size:10px; color:#555; border:1px solid #2a2a2a; border-radius:4px; padding:3px 9px; white-space:nowrap; text-decoration:none; transition:all 0.15s; flex-shrink:0; }
 .go-link:hover { color:var(--red); border-color:var(--red); }
 
@@ -167,15 +182,15 @@ a { color:inherit; text-decoration:none; }
 .estat { flex:1; padding:0 14px; border-right:1px solid #1e1e1e; }
 .estat:first-child { padding-left:0; }
 .estat:last-child { border-right:none; }
-.estat-label { font-family:'DM Mono',monospace; font-size:9px; color:#4a4a4a; letter-spacing:.8px; text-transform:uppercase; margin-bottom:3px; }
+.estat-label { font-family:'DM Mono',monospace; font-size:10px; color:#5a5a5a; letter-spacing:.6px; text-transform:uppercase; margin-bottom:3px; }
 .estat-val { font-family:'DM Mono',monospace; font-size:13px; color:#c8c4be; font-weight:500; }
 .graph-wrap { width:100%; }
-.graph-label { font-family:'DM Mono',monospace; font-size:9px; color:#4a4a4a; letter-spacing:.8px; text-transform:uppercase; margin-bottom:6px; display:flex; justify-content:space-between; }
-.graph-sub { color:#333; letter-spacing:0; text-transform:none; }
+.graph-label { font-family:'DM Mono',monospace; font-size:10px; color:#5a5a5a; letter-spacing:.6px; text-transform:uppercase; margin-bottom:6px; display:flex; justify-content:space-between; }
+.graph-sub { color:#555; letter-spacing:0; text-transform:none; }
 .graph-svg { width:100%; height:160px; display:block; }
 .expand-footer { display:flex; align-items:center; justify-content:space-between; }
 .etag-row { display:flex; gap:5px; flex-wrap:wrap; }
-.etag { font-family:'DM Mono',monospace; font-size:9px; color:#4a4a4a; background:#1a1a1a; border:1px solid #242424; padding:2px 7px; border-radius:3px; }
+.etag { font-family:'DM Mono',monospace; font-size:10px; color:#555; background:#1a1a1a; border:1px solid #242424; padding:2px 7px; border-radius:3px; }
 .expand-actions { display:flex; align-items:center; gap:10px; }
 .deal-badge { font-family:'DM Mono',monospace; font-size:10px; color:#4ade80; background:rgba(74,222,128,.08); border:1px solid rgba(74,222,128,.2); padding:3px 10px; border-radius:4px; }
 .above-badge { font-family:'DM Mono',monospace; font-size:10px; color:#F87171; background:rgba(248,113,113,.08); border:1px solid rgba(248,113,113,.2); padding:3px 10px; border-radius:4px; }
@@ -184,7 +199,7 @@ a { color:inherit; text-decoration:none; }
 
 /* ── Badges + tags ── */
 .src-badge { font-family:'DM Mono',monospace; font-size:10px; font-weight:500; padding:2px 7px; border-radius:3px; }
-.gen-tag { font-family:'DM Mono',monospace; font-size:10px; color:#4a4a4a; }
+.gen-tag { font-family:'DM Mono',monospace; font-size:10px; color:#585450; }
 .urg-tag { font-family:'DM Mono',monospace; font-size:9px; font-weight:700; letter-spacing:1px; padding:1px 5px; border-radius:2px; }
 .urg-critical { color:var(--red); background:rgba(192,57,43,0.12); }
 .urg-soon { color:var(--amber); background:rgba(234,179,8,0.1); }
@@ -257,7 +272,7 @@ a { color:inherit; text-decoration:none; }
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64"><g transform="translate(8,6)"><circle cx="26" cy="26" r="22" fill="none" stroke="#242424" stroke-width="2.5"/><path d="M6,38 A22,22 0 0,1 43.5,8.5" fill="none" stroke="#D85A30" stroke-width="2.5" stroke-linecap="round"/><g stroke="#333" stroke-width="1.2" stroke-linecap="round"><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-80,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-55,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-30,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-5,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(20,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(45,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(70,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(95,26,26)"/></g><line x1="26" y1="26" x2="43.5" y2="8.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><circle cx="26" cy="26" r="4" fill="#D85A30"/><circle cx="26" cy="26" r="1.6" fill="#0d0d0d"/><text x="62" y="34" font-family="'Helvetica Neue',Arial,sans-serif" font-size="32" letter-spacing="-0.5"><tspan font-weight="800" fill="white">Renn</tspan><tspan font-weight="300" fill="#D85A30">Markt</tspan></text></g></svg>
   </a>
   <div class="topbar-right">
-    <span class="topbar-time"><span class="live-dot"></span>May 01 15:21 UTC</span>
+    <span class="topbar-time"><span class="live-dot"></span>May 01 15:32 UTC</span>
     <button class="more-btn" onclick="toggleDD()">More &#x25BE;</button>
   </div>
 </header>
@@ -335,7 +350,7 @@ a { color:inherit; text-decoration:none; }
     <div class="section-hdr-left">
       <span class="section-icon">&#x25CF;</span>
       <span class="section-title">Ending Now</span>
-      <span class="section-count">6</span>
+      <span class="section-count">8</span>
     </div>
     <div class="section-sub">< 3 hours</div>
   </div>
@@ -375,7 +390,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$42K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>68c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 20,000 mi <span class="dot">&middot;</span> Seal Grey Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2005-porsche-911-carrera-cabriolet-23/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2005-porsche-911-carrera-cabriolet-23/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2005-porsche-911-carrera-cabriolet-23/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -435,7 +462,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$65K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>143c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 38,000 mi <span class="dot">&middot;</span> Arctic Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2004-porsche-911-turbo-cabriolet-221/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2004-porsche-911-turbo-cabriolet-221/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2004-porsche-911-turbo-cabriolet-221/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -495,7 +534,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$112K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>5c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 9,000 mi <span class="dot">&middot;</span> GT Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2018-porsche-911-carrera-t-22/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2018-porsche-911-carrera-t-22/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2018-porsche-911-carrera-t-22/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -555,7 +606,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 28,000 mi <span class="dot">&middot;</span> GT Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2016-porsche-cayman-gt4-241/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2016-porsche-cayman-gt4-241/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2016-porsche-cayman-gt4-241/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -615,7 +678,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$281K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>67c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 1,300 mi <span class="dot">&middot;</span> GT Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2023-porsche-911-gt3-touring-50/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2023-porsche-911-gt3-touring-50/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2023-porsche-911-gt3-touring-50/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -675,7 +750,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$94K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>92c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 1,100 mi <span class="dot">&middot;</span> Venetian Blue Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1988-porsche-911-carrera-coupe-89/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1988-porsche-911-carrera-coupe-89/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1988-porsche-911-carrera-coupe-89/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -700,19 +787,7 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div>
 </div>
-  </div>
-</div>
-  <div class="auc-section sec-soon">
-  <div class="section-hdr">
-    <div class="section-hdr-left">
-      <span class="section-icon">&#x25CF;</span>
-      <span class="section-title">Ending Today</span>
-      <span class="section-count">11</span>
-    </div>
-    <div class="section-sub">3 &ndash; 24 hours</div>
-  </div>
-  <div class="cards-list">
-    <div class="auc-card auc-urg-critical"
+<div class="auc-card auc-urg-critical"
  data-gen="997.1" data-src="BaT" data-tier="TIER2"
  data-price="40250" data-fmv="54000"
  data-mileage="14000"
@@ -747,7 +822,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$54K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>79c</span></div>
         </div>
         <div class="meta-block">Automatic <span class="dot">&middot;</span> 14,000 mi <span class="dot">&middot;</span> Midnight Blue Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2008-porsche-911-carrera-4s-coupe-43/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2008-porsche-911-carrera-4s-coupe-43/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2008-porsche-911-carrera-4s-coupe-43/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -772,7 +859,7 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div>
 </div>
-<div class="auc-card auc-urg-soon"
+<div class="auc-card auc-urg-critical"
  data-gen="997.2" data-src="BaT" data-tier="TIER2"
  data-price="33750" data-fmv="75500"
  data-mileage="508"
@@ -781,7 +868,7 @@ a { color:inherit; text-decoration:none; }
     <div class="img-wrap" onclick="window.open('https://bringatrailer.com/listing/2012-porsche-911-991-carrera-s-cabriolet-16/','_blank')"><img src="https://bringatrailer.com/wp-content/uploads/2026/03/2012_porsche_911-991-carrera-s-cabriolet_porsche_6-60729.jpg" alt="" class="auc-img" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='220'%3E%3Crect width='400' height='220' fill='%2318181F'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E'"></div>
     <div class="card-body" onclick="cardClick(event,'https://bringatrailer.com/listing/2012-porsche-911-991-carrera-s-cabriolet-16/')">
       <div class="card-top">
-        <div class="card-subtitle"><span class="src-badge" style="background:#0D1F35;color:#60a5fa">BaT</span> <span class="gen-tag">997.2</span> <span class="urg-tag urg-soon">ENDING TODAY</span></div>
+        <div class="card-subtitle"><span class="src-badge" style="background:#0D1F35;color:#60a5fa">BaT</span> <span class="gen-tag">997.2</span> <span class="urg-tag urg-critical">ENDING NOW</span></div>
         <div class="card-top-right">
           <button class="fav-btn" data-url="https://bringatrailer.com/listing/2012-porsche-911-991-carrera-s-cabriolet-16/" onclick="toggleFav(event,this)" title="Watch">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -792,7 +879,7 @@ a { color:inherit; text-decoration:none; }
               <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
             </svg>
           </button>
-          <div class="card-timer"><span class="countdown-timer timer-amber" data-ends="2026-05-01T18:32:00Z">…</span></div>
+          <div class="card-timer"><span class="countdown-timer timer-red" data-ends="2026-05-01T18:32:00Z">…</span></div>
         </div>
       </div>
       <div class="card-title">2012 Porsche 911 Carrera S Cabriolet</div>
@@ -807,7 +894,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$76K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>21c</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 508 mi <span class="dot">&middot;</span> Carrara White</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2012-porsche-911-991-carrera-s-cabriolet-16/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2012-porsche-911-991-carrera-s-cabriolet-16/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2012-porsche-911-991-carrera-s-cabriolet-16/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -832,7 +931,19 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div>
 </div>
-<div class="auc-card auc-urg-soon"
+  </div>
+</div>
+  <div class="auc-section sec-soon">
+  <div class="section-hdr">
+    <div class="section-hdr-left">
+      <span class="section-icon">&#x25CF;</span>
+      <span class="section-title">Ending Today</span>
+      <span class="section-count">9</span>
+    </div>
+    <div class="section-sub">3 &ndash; 24 hours</div>
+  </div>
+  <div class="cards-list">
+    <div class="auc-card auc-urg-soon"
  data-gen="987" data-src="pcarmarket" data-tier="TIER2"
  data-price="40250" data-fmv="0"
  data-mileage="18602"
@@ -867,7 +978,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">18,602 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/2010-porsche-cayman-s-5" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/2010-porsche-cayman-s-5" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/2010-porsche-cayman-s-5" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -927,7 +1050,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 12,000 mi <span class="dot">&middot;</span> Peridot Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2012-porsche-cayman-r-80/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2012-porsche-cayman-r-80/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2012-porsche-cayman-r-80/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -987,7 +1122,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$112K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>8c</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 13,000 mi <span class="dot">&middot;</span> Sapphire Blue Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2015-porsche-911-targa-4s-52/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2015-porsche-911-targa-4s-52/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2015-porsche-911-targa-4s-52/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1047,7 +1194,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$347K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>9c</span></div>
         </div>
         <div class="meta-block">Automatic <span class="dot">&middot;</span> 19,825 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/2021-porsche-911-turbo-1" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/2021-porsche-911-turbo-1" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/2021-porsche-911-turbo-1" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1107,7 +1266,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$65K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>143c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 46,000 mi <span class="dot">&middot;</span> Seal Grey Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2001-porsche-911-turbo-coupe-133/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2001-porsche-911-turbo-coupe-133/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2001-porsche-911-turbo-coupe-133/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1167,7 +1338,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$28K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>342c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 23,000 mi <span class="dot">&middot;</span> Basalt Black Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2002-porsche-911-carrera-cabriolet-94/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2002-porsche-911-carrera-cabriolet-94/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2002-porsche-911-carrera-cabriolet-94/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1227,7 +1410,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$40K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>101c</span></div>
         </div>
         <div class="meta-block">12,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2003-porsche-911-carrera-4s-coupe-62/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2003-porsche-911-carrera-4s-coupe-62/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2003-porsche-911-carrera-4s-coupe-62/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1287,7 +1482,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$87K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>161c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 23,000 mi <span class="dot">&middot;</span> Zenith Blue Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1997-porsche-911-carrera-coupe-68/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1997-porsche-911-carrera-coupe-68/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1997-porsche-911-carrera-coupe-68/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1347,7 +1554,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$268K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>33c</span></div>
         </div>
         <div class="meta-block">52,000 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/1997-porsche-911-turbo-16" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/1997-porsche-911-turbo-16" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/1997-porsche-911-turbo-16" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1419,7 +1638,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$204K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>17c</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 3,400 mi <span class="dot">&middot;</span> GT Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2024-porsche-911-targa-4-gts-21/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2024-porsche-911-targa-4-gts-21/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2024-porsche-911-targa-4-gts-21/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1479,7 +1710,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 12,000 mi <span class="dot">&middot;</span> Carmon Red Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2007-porsche-cayman-s-152/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2007-porsche-cayman-s-152/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2007-porsche-cayman-s-152/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1539,7 +1782,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$42K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>68c</span></div>
         </div>
         <div class="meta-block">12,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2007-porsche-911-carrera-coupe-38/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2007-porsche-911-carrera-coupe-38/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2007-porsche-911-carrera-coupe-38/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1599,7 +1854,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$28K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>342c</span></div>
         </div>
         <div class="meta-block">12,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1999-porsche-911-carrera-cabriolet-130-2/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1999-porsche-911-carrera-cabriolet-130-2/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1999-porsche-911-carrera-cabriolet-130-2/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1659,7 +1926,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$94K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>92c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 12,000 mi <span class="dot">&middot;</span> Marine Blue Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1990-porsche-911-carrera-2-coupe-72/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1990-porsche-911-carrera-2-coupe-72/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1990-porsche-911-carrera-2-coupe-72/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1719,7 +1998,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$121K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>29c</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 9,400 mi <span class="dot">&middot;</span> White</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2019-porsche-718-cayman-gt4-clubsport-2/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2019-porsche-718-cayman-gt4-clubsport-2/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2019-porsche-718-cayman-gt4-clubsport-2/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1779,7 +2070,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$28K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>342c</span></div>
         </div>
         <div class="meta-block">12,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2000-porsche-911-carrera-cabriolet-98/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2000-porsche-911-carrera-cabriolet-98/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2000-porsche-911-carrera-cabriolet-98/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1839,7 +2142,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$53K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>171c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 31,000 mi <span class="dot">&middot;</span> Slate Gray Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2006-porsche-911-carrera-s-coupe-107/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2006-porsche-911-carrera-s-coupe-107/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2006-porsche-911-carrera-s-coupe-107/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1899,7 +2214,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$156K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>10c</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 12,000 mi <span class="dot">&middot;</span> GT Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2019-porsche-911-targa-4-gts-43/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2019-porsche-911-targa-4-gts-43/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2019-porsche-911-targa-4-gts-43/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1959,7 +2286,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$54K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>79c</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/2006-porsche-911-carrera-4s-12" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/2006-porsche-911-carrera-4s-12" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/2006-porsche-911-carrera-4s-12" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2019,7 +2358,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$110K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>18c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 12,000 mi <span class="dot">&middot;</span> Basalt Black Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2009-porsche-911-turbo-coupe-38/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2009-porsche-911-turbo-coupe-38/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2009-porsche-911-turbo-coupe-38/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2079,7 +2430,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 42,000 mi <span class="dot">&middot;</span> Ocean Blue Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1999-porsche-boxster-269/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1999-porsche-boxster-269/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1999-porsche-boxster-269/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2139,7 +2502,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$238K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>48c</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/2024-porsche-911-turbo-s-7" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/2024-porsche-911-turbo-s-7" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/2024-porsche-911-turbo-s-7" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2199,7 +2574,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$73K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>20c</span></div>
         </div>
         <div class="meta-block">51,000 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/2005-porsche-911-turbo-s-cabriolet-11" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/2005-porsche-911-turbo-s-cabriolet-11" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/2005-porsche-911-turbo-s-cabriolet-11" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2259,7 +2646,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 15,000 mi <span class="dot">&middot;</span> White</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2014-porsche-boxster-43/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2014-porsche-boxster-43/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2014-porsche-boxster-43/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2319,7 +2718,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$94K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>92c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 2,400 mi <span class="dot">&middot;</span> Dom Pérignon</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1991-porsche-911-carrera-2-coupe-by-singer/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1991-porsche-911-carrera-2-coupe-by-singer/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1991-porsche-911-carrera-2-coupe-by-singer/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2379,7 +2790,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$72K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>22c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 12,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1994-porsche-911-100/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1994-porsche-911-100/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1994-porsche-911-100/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2439,7 +2862,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$73K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>274c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 12,000 mi <span class="dot">&middot;</span> Platinum Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1984-porsche-911-carrera-cabriolet-33/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1984-porsche-911-carrera-cabriolet-33/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1984-porsche-911-carrera-cabriolet-33/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2499,7 +2934,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$165K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>41c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 12,000 mi <span class="dot">&middot;</span> Polar Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1996-porsche-911-carrera-4s-142/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1996-porsche-911-carrera-4s-142/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1996-porsche-911-carrera-4s-142/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2559,7 +3006,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$110K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>18c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 37,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2010-porsche-911-turbo-coupe-30/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2010-porsche-911-turbo-coupe-30/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2010-porsche-911-turbo-coupe-30/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2619,7 +3078,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 37,000 mi <span class="dot">&middot;</span> Seal Gray Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2001-porsche-boxster-s-202/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2001-porsche-boxster-s-202/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2001-porsche-boxster-s-202/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2679,7 +3150,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 45,000 mi <span class="dot">&middot;</span> Black</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2014-porsche-cayman-62/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2014-porsche-cayman-62/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2014-porsche-cayman-62/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2739,7 +3222,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$79K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>18c</span></div>
         </div>
         <div class="meta-block">19,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2017-porsche-911-carrera-cabriolet-22/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2017-porsche-911-carrera-cabriolet-22/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2017-porsche-911-carrera-cabriolet-22/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2799,7 +3294,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$87K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>161c</span></div>
         </div>
         <div class="meta-block">12,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1995-porsche-911-carrera-coupe-142/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1995-porsche-911-carrera-coupe-142/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1995-porsche-911-carrera-coupe-142/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2859,7 +3366,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$600K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>6c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 304 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2016-porsche-911-r-39/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2016-porsche-911-r-39/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2016-porsche-911-r-39/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2919,7 +3438,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$72K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>30c</span></div>
         </div>
         <div class="meta-block">12,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2013-porsche-911-carrera-cabriolet-18/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2013-porsche-911-carrera-cabriolet-18/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2013-porsche-911-carrera-cabriolet-18/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2979,7 +3510,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">12,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1998-porsche-boxster-137/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1998-porsche-boxster-137/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1998-porsche-boxster-137/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3039,7 +3582,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/2007-porsche-911-carrera-s-cabriolet-7" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/2007-porsche-911-carrera-s-cabriolet-7" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/2007-porsche-911-carrera-s-cabriolet-7" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3099,7 +3654,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$165K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>41c</span></div>
         </div>
         <div class="meta-block">14,794 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/1996-porsche-911-carrera-4s-19" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/1996-porsche-911-carrera-4s-19" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/1996-porsche-911-carrera-4s-19" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3159,7 +3726,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">194 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/2024-porsche-718-spyder-rs-3" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/2024-porsche-718-spyder-rs-3" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/2024-porsche-718-spyder-rs-3" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3219,7 +3798,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$94K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>92c</span></div>
         </div>
         <div class="meta-block">12,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1986-porsche-911-carrera-coupe-80/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1986-porsche-911-carrera-coupe-80/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1986-porsche-911-carrera-coupe-80/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3279,7 +3870,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$73K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>274c</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1985-porsche-911-carrera-targa-98/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1985-porsche-911-carrera-targa-98/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1985-porsche-911-carrera-targa-98/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3351,7 +3954,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$72K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>30c</span></div>
         </div>
         <div class="meta-block">Automatic <span class="dot">&middot;</span> 74,600 mi <span class="dot">&middot;</span> Dark Blue Metallic</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/30xEvbbL/2014-porsche-911-carrera-cabriolet" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/30xEvbbL/2014-porsche-911-carrera-cabriolet" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/30xEvbbL/2014-porsche-911-carrera-cabriolet" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3411,7 +4026,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 93,500 mi <span class="dot">&middot;</span> Lapis Blue Metallic</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/3RZmgRPx/2003-porsche-boxster-s" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/3RZmgRPx/2003-porsche-boxster-s" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/3RZmgRPx/2003-porsche-boxster-s" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3471,7 +4098,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 95,400 mi <span class="dot">&middot;</span> Rhodium Silver Metallic</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/3vQW8M1N/2014-porsche-boxster" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/3vQW8M1N/2014-porsche-boxster" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/3vQW8M1N/2014-porsche-boxster" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3531,7 +4170,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$82K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>23c</span></div>
         </div>
         <div class="meta-block">Automatic <span class="dot">&middot;</span> 10,900 mi <span class="dot">&middot;</span> White</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/rJYx1PX2/2014-porsche-911-carrera-4s-coupe" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/rJYx1PX2/2014-porsche-911-carrera-4s-coupe" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/rJYx1PX2/2014-porsche-911-carrera-4s-coupe" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3591,7 +4242,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 65,000 mi <span class="dot">&middot;</span> Cobalt Blue Metallic</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/rbPGMJOl/2007-porsche-boxster" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/rbPGMJOl/2007-porsche-boxster" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/rbPGMJOl/2007-porsche-boxster" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3651,7 +4314,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Automatic <span class="dot">&middot;</span> 29,300 mi <span class="dot">&middot;</span> Mahogany Metallic</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/98LZlzb0/2014-porsche-boxster" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/98LZlzb0/2014-porsche-boxster" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/98LZlzb0/2014-porsche-boxster" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3711,7 +4386,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$96K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>121c</span></div>
         </div>
         <div class="meta-block">Automatic <span class="dot">&middot;</span> 85,600 mi <span class="dot">&middot;</span> Arcitc Silver Metallic</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/rJyBgeAN/2008-porsche-911-turbo-cabriolet" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/rJyBgeAN/2008-porsche-911-turbo-cabriolet" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/rJyBgeAN/2008-porsche-911-turbo-cabriolet" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3771,7 +4458,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Automatic <span class="dot">&middot;</span> 93,600 mi <span class="dot">&middot;</span> Guards Red</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/92bEkxM4/2014-porsche-cayman" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/92bEkxM4/2014-porsche-cayman" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/92bEkxM4/2014-porsche-cayman" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3831,7 +4530,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 13,400 mi <span class="dot">&middot;</span> Gentian Blue Metallic</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/rjq8VmXw/2021-porsche-718-cayman-gt4" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/rjq8VmXw/2021-porsche-718-cayman-gt4" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/rjq8VmXw/2021-porsche-718-cayman-gt4" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3891,7 +4602,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-est">~$53K</span><span class="fmv-meta"><span class="conf-pip conf-high"></span>171c</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 72,800 mi <span class="dot">&middot;</span> Arctic Silver Metallic</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/r46MawvD/2005-porsche-911-carrera-s-coupe" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/r46MawvD/2005-porsche-911-carrera-s-coupe" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/r46MawvD/2005-porsche-911-carrera-s-coupe" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3951,7 +4674,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 35,600 mi <span class="dot">&middot;</span> Basalt Black Metallic</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/rNYOb4Pk/2011-porsche-boxster" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/rNYOb4Pk/2011-porsche-boxster" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/rNYOb4Pk/2011-porsche-boxster" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4011,7 +4746,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 96,800 mi <span class="dot">&middot;</span> Black</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/9WoM1wgB/2000-porsche-boxster-s" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/9WoM1wgB/2000-porsche-boxster-s" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/9WoM1wgB/2000-porsche-boxster-s" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4071,7 +4818,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 31,700 mi <span class="dot">&middot;</span> Meteor Grey Metallic</div>
-        <a class="go-link" href="https://carsandbids.com/auctions/K1Aap6d2/2011-porsche-cayman-s" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://carsandbids.com/auctions/K1Aap6d2/2011-porsche-cayman-s" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://carsandbids.com/auctions/K1Aap6d2/2011-porsche-cayman-s" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4143,7 +4902,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 36,000 mi <span class="dot">&middot;</span> GT Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2008-porsche-cayman-63/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2008-porsche-cayman-63/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2008-porsche-cayman-63/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4203,7 +4974,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Tiptronic <span class="dot">&middot;</span> 45,000 mi <span class="dot">&middot;</span> Arctic Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2007-porsche-911-turbo-coupe-204/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2007-porsche-911-turbo-coupe-204/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2007-porsche-911-turbo-coupe-204/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4263,7 +5046,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 900 mi <span class="dot">&middot;</span> Biarritz White</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2000-porsche-911-carrera-coupe-66/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2000-porsche-911-carrera-coupe-66/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2000-porsche-911-carrera-coupe-66/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4323,7 +5118,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 49,000 mi <span class="dot">&middot;</span> Black</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2003-porsche-911-carrera-4-cabriolet-31/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2003-porsche-911-carrera-4-cabriolet-31/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2003-porsche-911-carrera-4-cabriolet-31/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4383,7 +5190,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 1,200 mi <span class="dot">&middot;</span> Black</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2022-porsche-911-gt3-136/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2022-porsche-911-gt3-136/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2022-porsche-911-gt3-136/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4443,7 +5262,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 3,200 mi <span class="dot">&middot;</span> Arctic Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1999-porsche-911-carrera-cabriolet-162/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1999-porsche-911-carrera-cabriolet-162/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1999-porsche-911-carrera-cabriolet-162/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4503,7 +5334,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 35,000 mi <span class="dot">&middot;</span> Glacier White</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-90/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-90/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-90/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4563,7 +5406,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 9,000 mi <span class="dot">&middot;</span> White</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2017-porsche-911-carrera-4s-coupe-26/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2017-porsche-911-carrera-4s-coupe-26/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2017-porsche-911-carrera-4s-coupe-26/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4623,7 +5478,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">12,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2003-porsche-911-turbo-coupe-106/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2003-porsche-911-turbo-coupe-106/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2003-porsche-911-turbo-coupe-106/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4683,7 +5550,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">97,441 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/1987-porsche-911-targa-22" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/1987-porsche-911-targa-22" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/1987-porsche-911-targa-22" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4743,7 +5622,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">10,200 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/2021-porsche-718-spyder-14" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/2021-porsche-718-spyder-14" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/2021-porsche-718-spyder-14" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4803,7 +5694,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 34,000 mi <span class="dot">&middot;</span> Orange</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2008-porsche-boxster-57/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2008-porsche-boxster-57/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2008-porsche-boxster-57/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4863,7 +5766,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 36,000 mi <span class="dot">&middot;</span> Guards Red</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2007-porsche-cayman-97/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2007-porsche-cayman-97/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2007-porsche-cayman-97/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4923,7 +5838,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 20,000 mi <span class="dot">&middot;</span> Arctic Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2010-porsche-911-targa-4s-3/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2010-porsche-911-targa-4s-3/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2010-porsche-911-targa-4s-3/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4983,7 +5910,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 42,000 mi <span class="dot">&middot;</span> Black</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2005-porsche-911-carrera-s-cabriolet-25/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2005-porsche-911-carrera-s-cabriolet-25/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2005-porsche-911-carrera-s-cabriolet-25/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5043,7 +5982,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 40,000 mi <span class="dot">&middot;</span> Carrara White</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2013-porsche-boxster-26/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2013-porsche-boxster-26/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2013-porsche-boxster-26/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5103,7 +6054,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 177 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2024-porsche-718-cayman-gt4-rs-23/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2024-porsche-718-cayman-gt4-rs-23/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2024-porsche-718-cayman-gt4-rs-23/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5163,7 +6126,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 346 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2024-porsche-911-dakar-41/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2024-porsche-911-dakar-41/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2024-porsche-911-dakar-41/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5223,7 +6198,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 18,000 mi <span class="dot">&middot;</span> Arctic Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2002-porsche-911-gt2-50/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2002-porsche-911-gt2-50/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2002-porsche-911-gt2-50/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5283,7 +6270,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 5,000 mi <span class="dot">&middot;</span> GT Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2017-porsche-911-carrera-4s-cabriolet-17/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2017-porsche-911-carrera-4s-cabriolet-17/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2017-porsche-911-carrera-4s-cabriolet-17/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5343,7 +6342,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> Arctic Silver Metallic</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1997-porsche-911-turbo-108/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1997-porsche-911-turbo-108/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1997-porsche-911-turbo-108/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5403,7 +6414,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">PDK <span class="dot">&middot;</span> 521 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2024-porsche-911-gt3-rs-70/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2024-porsche-911-gt3-rs-70/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2024-porsche-911-gt3-rs-70/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5463,7 +6486,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Tiptronic <span class="dot">&middot;</span> 12,000 mi <span class="dot">&middot;</span> Guards Red</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1997-porsche-911-carrera-cabriolet-129/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1997-porsche-911-carrera-cabriolet-129/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1997-porsche-911-carrera-cabriolet-129/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5523,7 +6558,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">Manual <span class="dot">&middot;</span> 12,000 mi <span class="dot">&middot;</span> Grand Prix White</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1997-porsche-911-carrera-coupe-65/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1997-porsche-911-carrera-coupe-65/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1997-porsche-911-carrera-coupe-65/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5583,7 +6630,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">2,737 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/2011-porsche-911-carrera-gts-10" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/2011-porsche-911-carrera-gts-10" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/2011-porsche-911-carrera-gts-10" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5643,7 +6702,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">24,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2013-porsche-911-carrera-4s-coupe-25-2/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2013-porsche-911-carrera-4s-coupe-25-2/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2013-porsche-911-carrera-4s-coupe-25-2/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5703,7 +6774,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">196 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1987-porsche-911-carrera-cabriolet-145/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1987-porsche-911-carrera-cabriolet-145/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1987-porsche-911-carrera-cabriolet-145/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5763,7 +6846,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">9,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1997-porsche-911-carrera-coupe-66/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1997-porsche-911-carrera-coupe-66/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1997-porsche-911-carrera-coupe-66/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5823,7 +6918,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">1,200 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2024-porsche-911-carrera-4-gts-coupe-4/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2024-porsche-911-carrera-4-gts-coupe-4/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2024-porsche-911-carrera-4-gts-coupe-4/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5883,7 +6990,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">17,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2010-porsche-boxster-s-23/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2010-porsche-boxster-s-23/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2010-porsche-boxster-s-23/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -5943,7 +7062,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">30,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2014-porsche-911-gt3-47/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2014-porsche-911-gt3-47/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2014-porsche-911-gt3-47/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6003,7 +7134,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1988-porsche-911-carrera-targa-106/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1988-porsche-911-carrera-targa-106/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1988-porsche-911-carrera-targa-106/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6063,7 +7206,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">41,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2011-porsche-911-turbo-s-49/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2011-porsche-911-turbo-s-49/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2011-porsche-911-turbo-s-49/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6123,7 +7278,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">35,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2017-porsche-911-carrera-gts-coupe-15/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2017-porsche-911-carrera-gts-coupe-15/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2017-porsche-911-carrera-gts-coupe-15/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6183,7 +7350,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">1,500 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2002-porsche-911-carrera-coupe-72/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2002-porsche-911-carrera-coupe-72/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2002-porsche-911-carrera-coupe-72/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6243,7 +7422,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">3,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2021-porsche-911-carrera-cabriolet-8/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2021-porsche-911-carrera-cabriolet-8/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2021-porsche-911-carrera-cabriolet-8/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6303,7 +7494,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">73,067 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/marketplace-2011-porsche-911-carrera-gts-10" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/marketplace-2011-porsche-911-carrera-gts-10" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/marketplace-2011-porsche-911-carrera-gts-10" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6363,7 +7566,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">1 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/1991-porsche-911-carrera-2-targa" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/1991-porsche-911-carrera-2-targa" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/1991-porsche-911-carrera-2-targa" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6423,7 +7638,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">7,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2021-porsche-911-carrera-s-coupe-30/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2021-porsche-911-carrera-s-coupe-30/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2021-porsche-911-carrera-s-coupe-30/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6483,7 +7710,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">381 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2012-porsche-cayman-r-78/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2012-porsche-cayman-r-78/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2012-porsche-cayman-r-78/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6543,7 +7782,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1990-porsche-911-carrera-2-targa-24/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1990-porsche-911-carrera-2-targa-24/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1990-porsche-911-carrera-2-targa-24/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6603,7 +7854,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">21,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1998-porsche-911-carrera-4s-43/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1998-porsche-911-carrera-4s-43/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1998-porsche-911-carrera-4s-43/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6663,7 +7926,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">16,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2011-porsche-boxster-spyder-84/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2011-porsche-boxster-spyder-84/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2011-porsche-boxster-spyder-84/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6723,7 +7998,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">12,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2011-porsche-boxster-20/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2011-porsche-boxster-20/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2011-porsche-boxster-20/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6783,7 +8070,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">50,086 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/marketplace-1991-porsche-911-carrera-2-targa" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/marketplace-1991-porsche-911-carrera-2-targa" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/marketplace-1991-porsche-911-carrera-2-targa" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6843,7 +8142,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">25,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2011-porsche-boxster-spyder-86/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2011-porsche-boxster-spyder-86/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2011-porsche-boxster-spyder-86/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6903,7 +8214,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2001-porsche-boxster-s-205/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2001-porsche-boxster-s-205/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2001-porsche-boxster-s-205/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6963,7 +8286,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1999-porsche-911-carrera-coupe-189/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1999-porsche-911-carrera-coupe-189/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1999-porsche-911-carrera-coupe-189/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7023,7 +8358,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">33,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2008-porsche-911-carrera-coupe-25/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2008-porsche-911-carrera-coupe-25/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2008-porsche-911-carrera-coupe-25/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7083,7 +8430,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">6,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2023-porsche-911-carrera-gts-coupe-22/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2023-porsche-911-carrera-gts-coupe-22/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2023-porsche-911-carrera-gts-coupe-22/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7143,7 +8502,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">46,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2006-porsche-911-carrera-s-coupe-106/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2006-porsche-911-carrera-s-coupe-106/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2006-porsche-911-carrera-s-coupe-106/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7203,7 +8574,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">158,522 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2002-porsche-911-carrera-coupe-76/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2002-porsche-911-carrera-coupe-76/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2002-porsche-911-carrera-coupe-76/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7263,7 +8646,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">31,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2001-porsche-911-turbo-coupe-127/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2001-porsche-911-turbo-coupe-127/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2001-porsche-911-turbo-coupe-127/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7323,7 +8718,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2015-porsche-911-turbo-s-cabriolet-32/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2015-porsche-911-turbo-s-cabriolet-32/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2015-porsche-911-turbo-s-cabriolet-32/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7383,7 +8790,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2022-porsche-911-turbo-s-coupe-74/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2022-porsche-911-turbo-s-coupe-74/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2022-porsche-911-turbo-s-coupe-74/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7443,7 +8862,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">3,400 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2006-porsche-911-carrera-s-cabriolet-129/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2006-porsche-911-carrera-s-cabriolet-129/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2006-porsche-911-carrera-s-cabriolet-129/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7503,7 +8934,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">1,500 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2004-porsche-911-carrera-coupe-32/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2004-porsche-911-carrera-coupe-32/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2004-porsche-911-carrera-coupe-32/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7563,7 +9006,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">27,100 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/2007-porsche-911-carrera-4s-2" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/2007-porsche-911-carrera-4s-2" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/2007-porsche-911-carrera-4s-2" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7623,7 +9078,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">125,000 mi</div>
-        <a class="go-link" href="https://www.pcarmarket.com/auction/2002-porsche-911-carrera-4s-12" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://www.pcarmarket.com/auction/2002-porsche-911-carrera-4s-12" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://www.pcarmarket.com/auction/2002-porsche-911-carrera-4s-12" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7683,7 +9150,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">6,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2004-porsche-boxster-34/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2004-porsche-boxster-34/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2004-porsche-boxster-34/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7743,7 +9222,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">356 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2023-porsche-911-gt3-touring-49/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2023-porsche-911-gt3-touring-49/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2023-porsche-911-gt3-touring-49/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7803,7 +9294,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">18,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2008-porsche-911-turbo-cabriolet-178/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2008-porsche-911-turbo-cabriolet-178/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2008-porsche-911-turbo-cabriolet-178/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7863,7 +9366,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">40,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2004-porsche-911-gt3-126/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2004-porsche-911-gt3-126/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2004-porsche-911-gt3-126/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7923,7 +9438,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">3,800 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2018-porsche-911-carrera-cabriolet-11/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2018-porsche-911-carrera-cabriolet-11/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2018-porsche-911-carrera-cabriolet-11/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -7983,7 +9510,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2009-porsche-cayman-46/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2009-porsche-cayman-46/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2009-porsche-cayman-46/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -8043,7 +9582,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">36,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2014-porsche-cayman-s-106-2/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2014-porsche-cayman-s-106-2/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2014-porsche-cayman-s-106-2/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -8103,7 +9654,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">42,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2014-porsche-boxster-s-34/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2014-porsche-boxster-s-34/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2014-porsche-boxster-s-34/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -8163,7 +9726,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1991-porsche-911-carrera-4-coupe-16/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1991-porsche-911-carrera-4-coupe-16/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1991-porsche-911-carrera-4-coupe-16/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -8223,7 +9798,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">38,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-96/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-96/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/1998-porsche-911-carrera-s-coupe-96/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -8283,7 +9870,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">1,800 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2003-porsche-911-turbo-coupe-107/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2003-porsche-911-turbo-coupe-107/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2003-porsche-911-turbo-coupe-107/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -8343,7 +9942,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block">31,000 mi</div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2002-porsche-911-turbo-coupe-98/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2002-porsche-911-turbo-coupe-98/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2002-porsche-911-turbo-coupe-98/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -8403,7 +10014,19 @@ a { color:inherit; text-decoration:none; }
           <div class="fmv-row"><span class="fmv-none">FMV: no data</span></div>
         </div>
         <div class="meta-block"></div>
-        <a class="go-link" href="https://bringatrailer.com/listing/2006-porsche-911-carrera-s-cabriolet-128/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        <div class="card-actions">
+          <button class="save-btn" data-url="https://bringatrailer.com/listing/2006-porsche-911-carrera-s-cabriolet-128/" onclick="toggleFav(event,this)" title="Save">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="4.5"/>
+              <circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>
+              <rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>
+              <rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>
+              <rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>
+            </svg>
+            <span class="save-lbl">Save</span>
+          </button>
+          <a class="go-link" href="https://bringatrailer.com/listing/2006-porsche-911-carrera-s-cabriolet-128/" target="_blank" onclick="event.stopPropagation()">&#x2197; Go to auction</a>
+        </div>
       </div>
     </div>
   </div>
@@ -8545,18 +10168,6 @@ function _setFavs(arr) {
   try { localStorage.setItem(_FAV_KEY, JSON.stringify(arr)); } catch(e) {}
 }
 
-function toggleFav(evt, btn) {
-  evt.stopPropagation();
-  var url = btn.dataset.url;
-  var favs = _getFavs();
-  var idx = favs.indexOf(url);
-  if (idx >= 0) { favs.splice(idx, 1); btn.classList.remove('active'); }
-  else          { favs.push(url);       btn.classList.add('active'); }
-  _setFavs(favs);
-  _updateFavCount();
-  if (_curView === 'favs') applyFilters();
-}
-
 function _updateFavCount() {
   var n = _getFavs().length;
   var el = document.getElementById('tab-count-favs');
@@ -8566,10 +10177,29 @@ function _updateFavCount() {
 function initFavs() {
   var favs = _getFavs();
   favs.forEach(function(url) {
-    var btns = document.querySelectorAll('.fav-btn[data-url="' + CSS.escape(url) + '"]');
-    btns.forEach(function(b){ b.classList.add('active'); });
+    document.querySelectorAll('.fav-btn[data-url], .save-btn[data-url]').forEach(function(b) {
+      if (b.dataset.url === url) b.classList.add('active');
+    });
   });
   _updateFavCount();
+}
+
+function toggleFav(evt, btn) {
+  evt.stopPropagation();
+  var url = btn.dataset.url;
+  var favs = _getFavs();
+  var idx = favs.indexOf(url);
+  var adding = idx < 0;
+  if (adding) favs.push(url); else favs.splice(idx, 1);
+  _setFavs(favs);
+  // sync all buttons for this url (fav-btn + save-btn)
+  document.querySelectorAll('[data-url]').forEach(function(b) {
+    if (b.dataset.url === url && (b.classList.contains('fav-btn') || b.classList.contains('save-btn'))) {
+      b.classList.toggle('active', adding);
+    }
+  });
+  _updateFavCount();
+  if (_curView === 'favs') applyFilters();
 }
 
 function cardClick(evt, url) {

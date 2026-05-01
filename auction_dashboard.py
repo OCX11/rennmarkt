@@ -673,6 +673,13 @@ def _push_rennauktion(html: str) -> None:
             .replace('<a class="logo" href="index.html">', '<a class="logo" href="/">')\
             .replace('href="index.html"', 'href="/"')
 
+        # Inject Supabase CDN + auth.js before </body>
+        auth_scripts = (
+            '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>\n'
+            '<script src="/auth.js"></script>\n'
+        )
+        branded = branded.replace('</body>', auth_scripts + '</body>')
+
         out = RENN_CLONE / "index.html"
         out.write_text(branded, encoding="utf-8")
 

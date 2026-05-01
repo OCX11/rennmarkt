@@ -633,7 +633,69 @@ def generate() -> str:
     )
     OUT_PATH.write_text(html, encoding="utf-8")
     print(f"[auction_dashboard] wrote {OUT_PATH} ({total} auctions)")
+
+    # ── Mirror to rennauktion repo ────────────────────────────────────────────
+    _push_rennauktion(html)
+
     return html
+
+
+def _push_rennauktion(html: str) -> None:
+    """Write rebranded index.html to the rennauktion repo clone and git push."""
+    import subprocess, shutil
+    RENN_CLONE = Path("/tmp/rennauktion_clone")
+    RENN_REPO  = "https://github.com/OCX11/rennauktion.git"
+
+    try:
+        # Clone if not present; pull if stale
+        if not (RENN_CLONE / ".git").exists():
+            subprocess.run(["git", "clone", RENN_REPO, str(RENN_CLONE)],
+                           check=True, capture_output=True)
+            subprocess.run(["git", "-C", str(RENN_CLONE), "config",
+                            "user.email", "openclawx1@protonmail.com"], check=True)
+            subprocess.run(["git", "-C", str(RENN_CLONE), "config",
+                            "user.name", "OCX11"], check=True)
+        else:
+            subprocess.run(["git", "-C", str(RENN_CLONE), "pull", "--ff-only"],
+                           check=True, capture_output=True)
+
+        # Rebrand: swap RennMarkt → RennAuktion in the live HTML
+        branded = html\
+            .replace('<tspan font-weight="800" fill="white">Renn</tspan>'
+                     '<tspan font-weight="300" fill="#D85A30">Markt</tspan>',
+                     '<tspan font-weight="800" fill="white">Renn</tspan>'
+                     '<tspan font-weight="300" fill="#D85A30">Auktion</tspan>')\
+            .replace('RennMarkt \u2014 Auction Watcher',
+                     'RennAuktion \u2014 Porsche Auction Intelligence')\
+            .replace('RennMarkt Auctions', 'RennAuktion')\
+            .replace('<a class="dd-item" href="index.html">\U0001f3ce\ufe0f Market</a>',
+                     '<a class="dd-item" href="https://www.rennmarkt.net">\U0001f3ce\ufe0f RennMarkt</a>')\
+            .replace('<a class="logo" href="index.html">', '<a class="logo" href="/">')\
+            .replace('href="index.html"', 'href="/"')
+
+        out = RENN_CLONE / "index.html"
+        out.write_text(branded, encoding="utf-8")
+
+        subprocess.run(["git", "-C", str(RENN_CLONE), "add", "index.html"], check=True)
+        result = subprocess.run(
+            ["git", "-C", str(RENN_CLONE), "diff", "--cached", "--quiet"],
+            capture_output=True
+        )
+        if result.returncode != 0:  # changes staged
+            subprocess.run(
+                ["git", "-C", str(RENN_CLONE), "commit", "-m", "Dashboard update"],
+                check=True, capture_output=True
+            )
+            subprocess.run(
+                ["git", "-C", str(RENN_CLONE), "push"],
+                check=True, capture_output=True
+            )
+            print("[rennauktion] pushed index.html")
+        else:
+            print("[rennauktion] no changes, skipping push")
+
+    except Exception as exc:
+        print(f"[rennauktion] push failed (non-fatal): {exc}")
 
 
 # ── HTML template ─────────────────────────────────────────────────────────────

@@ -1280,21 +1280,25 @@ function drawDotGraph(svg, card) {{
   var maxDate = dates.length ? Math.max.apply(null, dates) : Date.now();
   var dateRange = maxDate - minDate || 1;
 
-  var minPrice = Math.min.apply(null, prices) * 0.88;
-  var maxPrice = Math.max.apply(null, prices) * 1.08;
-  var priceRange = maxPrice - minPrice || 1;
+  // ── Outlier-resistant scale (95th percentile cap) ──
+  var sorted = dots.map(function(d){{return d.price;}}).sort(function(a,b){{return a-b;}});
+  var p05 = sorted[Math.floor(sorted.length*0.05)] || sorted[0];
+  var p95 = sorted[Math.floor(sorted.length*0.95)] || sorted[sorted.length-1];
+  var iqPad = (p95 - p05) * 0.12;
+  // Include bid + fmv in scale but don't let outliers beyond 1.5×IQR dominate
+  var scaleMin = Math.min(p05 - iqPad, bid || Infinity, fmv || Infinity) * 0.94;
+  var scaleMax = Math.max(p95 + iqPad, bid || 0, fmv || 0) * 1.06;
+  var priceRange = scaleMax - scaleMin || 1;
 
   function scaleX(ts) {{ return PAD_L + ((ts - minDate) / dateRange) * plotW; }}
-  function scaleY(p)  {{ return PAD_T + plotH - ((p - minPrice) / priceRange) * plotH; }}
+  function scaleY(p)  {{ return PAD_T + plotH - ((p - scaleMin) / priceRange) * plotH; }}
 
   // ── Axes ──
-  // Y axis line
   mk('line', {{x1:PAD_L, y1:PAD_T, x2:PAD_L, y2:PAD_T+plotH, stroke:'#222', 'stroke-width':1}});
-  // X axis line
   mk('line', {{x1:PAD_L, y1:PAD_T+plotH, x2:W-PAD_R, y2:PAD_T+plotH, stroke:'#222', 'stroke-width':1}});
 
-  // Y axis labels (3 ticks)
-  [minPrice, (minPrice+maxPrice)/2, maxPrice].forEach(function(p, i) {{
+  // Y axis labels (3 ticks) using clamped scale
+  [scaleMin, (scaleMin+scaleMax)/2, scaleMax].forEach(function(p) {{
     var y = scaleY(p);
     mk('line', {{x1:PAD_L-4, y1:y, x2:PAD_L, y2:y, stroke:'#333', 'stroke-width':1}});
     var t = mk('text', {{x:PAD_L-6, y:y+3, 'text-anchor':'end', fill:'#555', 'font-family':'DM Mono,monospace', 'font-size':'9'}});
@@ -1326,13 +1330,31 @@ function drawDotGraph(svg, card) {{
   // ── Comp dots ──
   dots.forEach(function(dot) {{
     if (!dot.date) return;
-    var ts = new Date(dot.date).getTime();
-    var cx = scaleX(ts), cy = scaleY(dot.price);
-    var c = mk('circle', {{cx:cx, cy:cy, r:5.5, fill:'#1e3a1e', stroke:'#3a6a3a', 'stroke-width':1, opacity:0.85, style:'cursor:pointer'}});
-    c.addEventListener('mouseenter', function(e) {{ _showTooltip(dot, e); c.setAttribute('fill','#4ade80'); c.setAttribute('r','7'); }});
-    c.addEventListener('mousemove',  function(e) {{ _posTooltip(e); }});
-    c.addEventListener('mouseleave', function()  {{ _hideTooltip(); c.setAttribute('fill','#1e3a1e'); c.setAttribute('r','5.5'); }});
-    if (dot.url) c.addEventListener('click', function(e) {{ e.stopPropagation(); window.open(dot.url,'_blank'); }});
+    var ts  = new Date(dot.date).getTime();
+    var cx  = scaleX(ts);
+    var isOutlier = dot.price > scaleMax || dot.price < scaleMin;
+    var cy  = isOutlier
+      ? (dot.price > scaleMax ? PAD_T + 5 : PAD_T + plotH - 5)
+      : scaleY(dot.price);
+
+    if (isOutlier) {{
+      // Diamond marker at edge — visually distinct, doesn't affect scale
+      var s = 5;
+      var diamond = mk('polygon', {{
+        points: cx+','+( cy-s)+' '+(cx+s)+','+cy+' '+cx+','+(cy+s)+' '+(cx-s)+','+cy,
+        fill:'#2a4a2a', stroke:'#4a8a4a', 'stroke-width':1, opacity:0.8, style:'cursor:pointer'
+      }});
+      diamond.addEventListener('mouseenter', function(e) {{ _showTooltip(dot, e); diamond.setAttribute('fill','#4ade80'); }});
+      diamond.addEventListener('mousemove',  function(e) {{ _posTooltip(e); }});
+      diamond.addEventListener('mouseleave', function()  {{ _hideTooltip(); diamond.setAttribute('fill','#2a4a2a'); }});
+      if (dot.url) diamond.addEventListener('click', function(e) {{ e.stopPropagation(); window.open(dot.url,'_blank'); }});
+    }} else {{
+      var c = mk('circle', {{cx:cx, cy:cy, r:5.5, fill:'#1e3a1e', stroke:'#3a6a3a', 'stroke-width':1, opacity:0.85, style:'cursor:pointer'}});
+      c.addEventListener('mouseenter', function(e) {{ _showTooltip(dot, e); c.setAttribute('fill','#4ade80'); c.setAttribute('r','7'); }});
+      c.addEventListener('mousemove',  function(e) {{ _posTooltip(e); }});
+      c.addEventListener('mouseleave', function()  {{ _hideTooltip(); c.setAttribute('fill','#1e3a1e'); c.setAttribute('r','5.5'); }});
+      if (dot.url) c.addEventListener('click', function(e) {{ e.stopPropagation(); window.open(dot.url,'_blank'); }});
+    }}
   }});
 
   // ── Current bid dot ──

@@ -272,7 +272,7 @@ a { color:inherit; text-decoration:none; }
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64"><g transform="translate(8,6)"><circle cx="26" cy="26" r="22" fill="none" stroke="#242424" stroke-width="2.5"/><path d="M6,38 A22,22 0 0,1 43.5,8.5" fill="none" stroke="#D85A30" stroke-width="2.5" stroke-linecap="round"/><g stroke="#333" stroke-width="1.2" stroke-linecap="round"><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-80,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-55,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-30,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-5,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(20,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(45,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(70,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(95,26,26)"/></g><line x1="26" y1="26" x2="43.5" y2="8.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><circle cx="26" cy="26" r="4" fill="#D85A30"/><circle cx="26" cy="26" r="1.6" fill="#0d0d0d"/><text x="62" y="34" font-family="'Helvetica Neue',Arial,sans-serif" font-size="32" letter-spacing="-0.5"><tspan font-weight="800" fill="white">Renn</tspan><tspan font-weight="300" fill="#D85A30">Markt</tspan></text></g></svg>
   </a>
   <div class="topbar-right">
-    <span class="topbar-time"><span class="live-dot"></span>May 01 15:59 UTC</span>
+    <span class="topbar-time"><span class="live-dot"></span>May 01 16:01 UTC</span>
     <button class="more-btn" onclick="toggleDD()">More &#x25BE;</button>
   </div>
 </header>
@@ -350,7 +350,7 @@ a { color:inherit; text-decoration:none; }
     <div class="section-hdr-left">
       <span class="section-icon">&#x25CF;</span>
       <span class="section-title">Ending Now</span>
-      <span class="section-count">12</span>
+      <span class="section-count">16</span>
     </div>
     <div class="section-sub">< 3 hours</div>
   </div>
@@ -1219,19 +1219,7 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div>
 </div>
-  </div>
-</div>
-  <div class="auc-section sec-soon">
-  <div class="section-hdr">
-    <div class="section-hdr-left">
-      <span class="section-icon">&#x25CF;</span>
-      <span class="section-title">Ending Today</span>
-      <span class="section-count">6</span>
-    </div>
-    <div class="section-sub">3 &ndash; 24 hours</div>
-  </div>
-  <div class="cards-list">
-    <div class="auc-card auc-urg-critical"
+<div class="auc-card auc-urg-critical"
  data-gen="992" data-src="pcarmarket" data-tier="TIER2"
  data-price="150000" data-fmv="347000"
  data-mileage="19825"
@@ -1519,7 +1507,19 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div>
 </div>
-<div class="auc-card auc-urg-soon"
+  </div>
+</div>
+  <div class="auc-section sec-soon">
+  <div class="section-hdr">
+    <div class="section-hdr-left">
+      <span class="section-icon">&#x25CF;</span>
+      <span class="section-title">Ending Today</span>
+      <span class="section-count">2</span>
+    </div>
+    <div class="section-sub">3 &ndash; 24 hours</div>
+  </div>
+  <div class="cards-list">
+    <div class="auc-card auc-urg-soon"
  data-gen="993" data-src="BaT" data-tier="TIER1"
  data-price="119993" data-fmv="86961"
  data-mileage="23000"
@@ -10411,21 +10411,25 @@ function drawDotGraph(svg, card) {
   var maxDate = dates.length ? Math.max.apply(null, dates) : Date.now();
   var dateRange = maxDate - minDate || 1;
 
-  var minPrice = Math.min.apply(null, prices) * 0.88;
-  var maxPrice = Math.max.apply(null, prices) * 1.08;
-  var priceRange = maxPrice - minPrice || 1;
+  // ── Outlier-resistant scale (95th percentile cap) ──
+  var sorted = dots.map(function(d){return d.price;}).sort(function(a,b){return a-b;});
+  var p05 = sorted[Math.floor(sorted.length*0.05)] || sorted[0];
+  var p95 = sorted[Math.floor(sorted.length*0.95)] || sorted[sorted.length-1];
+  var iqPad = (p95 - p05) * 0.12;
+  // Include bid + fmv in scale but don't let outliers beyond 1.5×IQR dominate
+  var scaleMin = Math.min(p05 - iqPad, bid || Infinity, fmv || Infinity) * 0.94;
+  var scaleMax = Math.max(p95 + iqPad, bid || 0, fmv || 0) * 1.06;
+  var priceRange = scaleMax - scaleMin || 1;
 
   function scaleX(ts) { return PAD_L + ((ts - minDate) / dateRange) * plotW; }
-  function scaleY(p)  { return PAD_T + plotH - ((p - minPrice) / priceRange) * plotH; }
+  function scaleY(p)  { return PAD_T + plotH - ((p - scaleMin) / priceRange) * plotH; }
 
   // ── Axes ──
-  // Y axis line
   mk('line', {x1:PAD_L, y1:PAD_T, x2:PAD_L, y2:PAD_T+plotH, stroke:'#222', 'stroke-width':1});
-  // X axis line
   mk('line', {x1:PAD_L, y1:PAD_T+plotH, x2:W-PAD_R, y2:PAD_T+plotH, stroke:'#222', 'stroke-width':1});
 
-  // Y axis labels (3 ticks)
-  [minPrice, (minPrice+maxPrice)/2, maxPrice].forEach(function(p, i) {
+  // Y axis labels (3 ticks) using clamped scale
+  [scaleMin, (scaleMin+scaleMax)/2, scaleMax].forEach(function(p) {
     var y = scaleY(p);
     mk('line', {x1:PAD_L-4, y1:y, x2:PAD_L, y2:y, stroke:'#333', 'stroke-width':1});
     var t = mk('text', {x:PAD_L-6, y:y+3, 'text-anchor':'end', fill:'#555', 'font-family':'DM Mono,monospace', 'font-size':'9'});
@@ -10457,13 +10461,31 @@ function drawDotGraph(svg, card) {
   // ── Comp dots ──
   dots.forEach(function(dot) {
     if (!dot.date) return;
-    var ts = new Date(dot.date).getTime();
-    var cx = scaleX(ts), cy = scaleY(dot.price);
-    var c = mk('circle', {cx:cx, cy:cy, r:5.5, fill:'#1e3a1e', stroke:'#3a6a3a', 'stroke-width':1, opacity:0.85, style:'cursor:pointer'});
-    c.addEventListener('mouseenter', function(e) { _showTooltip(dot, e); c.setAttribute('fill','#4ade80'); c.setAttribute('r','7'); });
-    c.addEventListener('mousemove',  function(e) { _posTooltip(e); });
-    c.addEventListener('mouseleave', function()  { _hideTooltip(); c.setAttribute('fill','#1e3a1e'); c.setAttribute('r','5.5'); });
-    if (dot.url) c.addEventListener('click', function(e) { e.stopPropagation(); window.open(dot.url,'_blank'); });
+    var ts  = new Date(dot.date).getTime();
+    var cx  = scaleX(ts);
+    var isOutlier = dot.price > scaleMax || dot.price < scaleMin;
+    var cy  = isOutlier
+      ? (dot.price > scaleMax ? PAD_T + 5 : PAD_T + plotH - 5)
+      : scaleY(dot.price);
+
+    if (isOutlier) {
+      // Diamond marker at edge — visually distinct, doesn't affect scale
+      var s = 5;
+      var diamond = mk('polygon', {
+        points: cx+','+( cy-s)+' '+(cx+s)+','+cy+' '+cx+','+(cy+s)+' '+(cx-s)+','+cy,
+        fill:'#2a4a2a', stroke:'#4a8a4a', 'stroke-width':1, opacity:0.8, style:'cursor:pointer'
+      });
+      diamond.addEventListener('mouseenter', function(e) { _showTooltip(dot, e); diamond.setAttribute('fill','#4ade80'); });
+      diamond.addEventListener('mousemove',  function(e) { _posTooltip(e); });
+      diamond.addEventListener('mouseleave', function()  { _hideTooltip(); diamond.setAttribute('fill','#2a4a2a'); });
+      if (dot.url) diamond.addEventListener('click', function(e) { e.stopPropagation(); window.open(dot.url,'_blank'); });
+    } else {
+      var c = mk('circle', {cx:cx, cy:cy, r:5.5, fill:'#1e3a1e', stroke:'#3a6a3a', 'stroke-width':1, opacity:0.85, style:'cursor:pointer'});
+      c.addEventListener('mouseenter', function(e) { _showTooltip(dot, e); c.setAttribute('fill','#4ade80'); c.setAttribute('r','7'); });
+      c.addEventListener('mousemove',  function(e) { _posTooltip(e); });
+      c.addEventListener('mouseleave', function()  { _hideTooltip(); c.setAttribute('fill','#1e3a1e'); c.setAttribute('r','5.5'); });
+      if (dot.url) c.addEventListener('click', function(e) { e.stopPropagation(); window.open(dot.url,'_blank'); });
+    }
   });
 
   // ── Current bid dot ──

@@ -1,18 +1,19 @@
 """
-auction_dashboard.py — PTOX11 auction watcher, redesigned.
+auction_dashboard.py — PTOX11 auction watcher, Concept D redesign.
 
-Design system matches new_dashboard.py (PTOX11 redesign):
-  --red #D6293E · --bg #0A0A0C · Syne + DM Mono fonts
-  Horizontal card layout: image left, timer + bid right
-  Urgency red bar on image bottom for ending-soon
+Layout: Wide horizontal cards — 200px image left, bid + FMV side by side,
+urgency stripe on left edge (color-coded), timer top-right.
+
+Design decisions (2026-04-30):
+  - Concept D selected: wide horiz, 200px image, bid + FMV inline at same level
+  - FMV always shown as stable reference estimate alongside current bid — no phased reveal
+  - FMV shown as "~$XX,XXX" estimate (not % delta from bid — bid moves constantly)
+  - Auction house filter chips: BaT, C&B, pcarmarket only (no PCA Mart — it's not an auction)
+  - Sort: ending soonest (default), FMV estimate, current bid, mileage
+  - Urgency stripe: red < 3hr, amber < 24hr, green 3d+
+  - Color-coded countdown timer: red / amber / green matching stripe
 
 Output: docs/auctions.html
-
-Sections:
-  Ending Soon  < 3 hr
-  Later Today  3–24 hr
-  Coming Up    1–7 days
-  No End Time  auction_ends_at IS NULL
 """
 from __future__ import annotations
 
@@ -75,14 +76,14 @@ _BADGE_CFG = {
 def _badge(dealer: str) -> str:
     k = (dealer or "").lower().strip()
     bg, fg, label = _BADGE_CFG.get(k, ("#18181F", "#6B6B7D", (dealer or "?")[:14]))
-    return f'<span class="badge" style="background:{bg};color:{fg}">{_h(label)}</span>'
+    return f'<span class="src-badge" style="background:{bg};color:{fg}">{_h(label)}</span>'
 
 def _badge_label(dealer: str) -> str:
     k = (dealer or "").lower().strip()
     return _BADGE_CFG.get(k, ("#18181F", "#6B6B7D", (dealer or "?")[:14]))[2]
 
 def _gen(year, model):
-    if not year: return "Unknown"
+    if not year: return ""
     y = int(year); m = (model or "").lower()
     if "911" in m or m in ("911","930","964","993","996","997","991","992"):
         if y <= 1989: return "G-Series"
@@ -99,58 +100,64 @@ def _gen(year, model):
         if y <= 2012: return "987"
         if y <= 2016: return "981"
         return "718"
-    return "Unknown"
+    return ""
 
-def _fmv_pct(price, fmv_val):
-    if not price or not fmv_val:
-        return None
-    try:
-        return (float(price) - float(fmv_val)) / float(fmv_val) * 100
-    except Exception:
-        return None
+# ── Urgency tier ─────────────────────────────────────────────────────────────
 
-def _delta_badge(pct):
-    if pct is None: return ""
-    if abs(pct) < 2:    cls, txt = "delta-flat",  "&#x2248;FMV"
-    elif pct < -10:     cls, txt = "delta-great", f"&#x2193;{abs(pct):.0f}%"
-    elif pct < 0:       cls, txt = "delta-good",  f"&#x2193;{abs(pct):.0f}%"
-    elif pct > 15:      cls, txt = "delta-high",  f"&#x2191;{pct:.0f}%"
-    else:               cls, txt = "delta-mid",   f"&#x2191;{pct:.0f}%"
-    return f'<span class="delta {cls}">{txt}</span>'
+def _urgency(ends_dt, now_utc):
+    """Returns: 'critical' | 'soon' | 'live' | 'noend'"""
+    if ends_dt is None or ends_dt <= now_utc:
+        return "noend"
+    secs = (ends_dt - now_utc).total_seconds()
+    if secs < 3 * 3600:   return "critical"
+    if secs < 24 * 3600:  return "soon"
+    return "live"
 
-def _fmv_line(price, fmv_val, conf, comp_count, price_low=None, price_high=None) -> str:
-    if not fmv_val or conf == "NONE":
-        return '<div class="fmv-none"><span class="fmv-none-dot"></span>No FMV &mdash; insufficient comps</div>'
-    pct = _fmv_pct(price, fmv_val)
-    fmv_str  = _p_short(fmv_val)
-    comp_str = f"{comp_count} comp{'s' if comp_count != 1 else ''}"
-    if pct is None:       rel = ""; cls = "fmv-neutral"
-    elif abs(pct) < 2:    rel = "at market"; cls = "fmv-neutral"
-    elif pct < -10:       rel = f"<strong>{abs(pct):.0f}% below</strong>"; cls = "fmv-great"
-    elif pct < 0:         rel = f"{abs(pct):.0f}% below"; cls = "fmv-good"
-    elif pct > 15:        rel = f"<strong>{pct:.0f}% above</strong>"; cls = "fmv-high"
-    else:                 rel = f"{pct:.0f}% above"; cls = "fmv-mid"
-    conf_span = {"HIGH": '<span class="conf-high">HIGH</span>',
-                 "MEDIUM": '<span class="conf-med">MED</span>',
-                 "LOW": '<span class="conf-low">LOW</span>'}.get(conf, "")
-    range_str = ""
-    if conf in ("HIGH", "MEDIUM") and price_low and price_high:
-        range_str = f' &middot; <span class="fmv-range">{_p_short(price_low)}&ndash;{_p_short(price_high)}</span>'
-    return (f'<div class="fmv-line {cls}">'
-            f'FMV {fmv_str} {conf_span}'
-            f'{(" &middot; " + rel) if rel else ""}'
-            f'{range_str}'
-            f' &middot; <span class="fmv-comps">{comp_str}</span>'
-            f'</div>')
+_URGENCY_BORDER = {
+    "critical": "#c0392b",
+    "soon":     "#3a3000",
+    "live":     "#0f2a0f",
+    "noend":    "var(--border)",
+}
 
-# ── Auction card (horizontal layout) ─────────────────────────────────────────
+_URGENCY_TIMER_CLASS = {
+    "critical": "timer-red",
+    "soon":     "timer-amber",
+    "live":     "timer-green",
+    "noend":    "timer-muted",
+}
 
-_PLACEHOLDER = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E"
-                "%3Crect width='400' height='200' fill='%2318181F'/%3E"
+
+# ── Placeholder SVG ──────────────────────────────────────────────────────────
+
+_PLACEHOLDER = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='220'%3E"
+                "%3Crect width='400' height='220' fill='%2318181F'/%3E"
                 "%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' "
                 "font-family='monospace' font-size='12' fill='%2325252E'%3ENo photo%3C/text%3E%3C/svg%3E")
 
-def _auction_card(car: dict, fmv_score: dict, urgent: bool = False) -> str:
+# ── FMV display (always shown — stable reference, not delta from bid) ─────────
+
+def _fmv_display(fmv_val, conf, comp_count) -> str:
+    """Returns the FMV estimate string for inline display next to current bid."""
+    if not fmv_val or conf == "NONE":
+        return '<span class="fmv-none">FMV: no data</span>'
+    conf_span = {
+        "HIGH":   '<span class="conf-pip conf-high"></span>',
+        "MEDIUM": '<span class="conf-pip conf-med"></span>',
+        "LOW":    '<span class="conf-pip conf-low"></span>',
+    }.get(conf, "")
+    fmv_str = _p_short(fmv_val)
+    comp_str = f"{comp_count}c"
+    return (
+        f'<span class="fmv-est">'
+        f'~{fmv_str}'
+        f'</span>'
+        f'<span class="fmv-meta">{conf_span}{comp_str}</span>'
+    )
+
+# ── Auction card — Concept D (wide horizontal) ────────────────────────────────
+
+def _auction_card(car: dict, fmv_score: dict, is_hero: bool = False) -> str:
     dealer   = car.get("dealer", "")
     year     = car.get("year", "")
     model    = car.get("model", "") or ""
@@ -160,64 +167,49 @@ def _auction_card(car: dict, fmv_score: dict, urgent: bool = False) -> str:
     url      = car.get("listing_url", "") or "#"
     img      = car.get("image_url", "") or ""
     ends_at  = car.get("auction_ends_at") or ""
-    tier     = car.get("tier", "") or ""
     trans    = car.get("transmission", "") or ""
+    color    = car.get("color", "") or ""
+    body     = car.get("body_style", "") or ""
+    tier     = car.get("tier", "") or ""
 
+    # CDN image path fix
     if img and img.startswith("/static/img_cache/"):
         img = "img_cache/" + img.split("/")[-1]
 
     fmv_val    = fmv_score.get("fmv")
     conf       = fmv_score.get("confidence", "NONE")
     comp_count = fmv_score.get("comp_count", 0)
-    price_low  = fmv_score.get("price_low")
-    price_high = fmv_score.get("price_high")
-    pct        = _fmv_pct(price, fmv_val) if conf != "NONE" else None
 
     gen_str    = _gen(year, model)
+    src_label  = _badge_label(dealer)
 
-    # Auction FMV phasing (65% threshold)
-    _fmv_hidden = False
-    if ends_at and fmv_val and conf != "NONE":
-        from datetime import datetime as _dt, timezone as _tz, timedelta as _td
+    # Parse end time
+    ends_dt = None
+    if ends_at:
         try:
-            _ends = _dt.fromisoformat(ends_at.replace("Z", "+00:00"))
-            _now = _dt.now(_tz.utc)
-            _left = _ends - _now
-            if _left.total_seconds() > 0:
-                if _left > _td(hours=24):
-                    delta_html = ""
-                    fmv_html = '<span style="color:#555;font-size:11px">Auction in progress</span>'
-                    _fmv_hidden = True
-                else:
-                    _bid_pct = (float(price) / float(fmv_val) * 100) if price and fmv_val else 0
-                    if _bid_pct >= 65:
-                        delta_html = _delta_badge(pct)
-                        fmv_html = _fmv_line(price, fmv_val, conf, comp_count, price_low, price_high)
-                    else:
-                        delta_html = ""
-                        fmv_html = '<span style="color:#555;font-size:11px">Auction ending soon</span>'
-                        _fmv_hidden = True
-            else:
-                delta_html = _delta_badge(pct)
-                fmv_html = _fmv_line(price, fmv_val, conf, comp_count, price_low, price_high)
+            ends_dt = datetime.fromisoformat(ends_at.replace("Z", "+00:00"))
         except Exception:
-            delta_html = _delta_badge(pct)
-            fmv_html = _fmv_line(price, fmv_val, conf, comp_count, price_low, price_high)
-    else:
-        delta_html = _delta_badge(pct)
-        fmv_html = _fmv_line(price, fmv_val, conf, comp_count, price_low, price_high)
+            pass
 
-    # Tier badge
-    tier_html = ""  # GT/Collector badge removed
+    now_utc = datetime.now(timezone.utc)
+    urg = _urgency(ends_dt, now_utc)
+    stripe_color = _URGENCY_BORDER[urg]
+    timer_cls    = _URGENCY_TIMER_CLASS[urg]
 
-    # Image
+    # Urgency label
+    urg_label = {
+        "critical": "ENDING NOW",
+        "soon":     "ENDING TODAY",
+        "live":     "",
+        "noend":    "NO END TIME",
+    }.get(urg, "")
+
+    # Image — PCA Mart needs auth header workaround
     is_pca = "mart.pca.org" in img
-    urgency_bar = '<div class="urgency-bar"></div>' if urgent else ""
     if img and is_pca:
         img_id = f"pcaimg_{abs(hash(img)) % 999999}"
-        img_html = (
-            f'<div class="img-col">'
-            f'<img id="{img_id}" src="{_PLACEHOLDER}" alt="{_h(str(year)+" "+model)}" class="auc-img">'
+        img_tag = (
+            f'<img id="{img_id}" src="{_PLACEHOLDER}" alt="" class="auc-img">'
             f'<script>(function(){{'
             f'var x=new XMLHttpRequest();x.open("GET","{_h(img)}",true);'
             f'x.setRequestHeader("Referer","https://mart.pca.org/");'
@@ -225,72 +217,108 @@ def _auction_card(car: dict, fmv_score: dict, urgent: bool = False) -> str:
             f'x.onload=function(){{if(x.status==200){{var u=URL.createObjectURL(x.response);document.getElementById("{img_id}").src=u;}}}};'
             f'x.send();'
             f'}})();</script>'
-            f'{urgency_bar}'
-            f'</div>'
         )
     elif img:
-        img_html = (
-            f'<div class="img-col">'
-            f'<img src="{_h(img)}" alt="{_h(str(year)+" "+model)}" class="auc-img" loading="lazy" '
-            f'onerror="this.src=\'{_PLACEHOLDER}\'">'
-            f'{urgency_bar}'
-            f'</div>'
-        )
+        img_tag = f'<img src="{_h(img)}" alt="" class="auc-img" loading="lazy" onerror="this.src=\'{_PLACEHOLDER}\'">'
     else:
-        img_html = (
-            f'<div class="img-col">'
-            f'<img src="{_PLACEHOLDER}" alt="No photo" class="auc-img">'
-            f'{urgency_bar}'
-            f'</div>'
-        )
+        img_tag = f'<img src="{_PLACEHOLDER}" alt="" class="auc-img">'
 
-    # Chips
-    chips = []
-    if trans:   chips.append(_h(trans))
-    if mileage: chips.append(f"{_m(mileage)} mi")
-    chips_html = " &middot; ".join(chips)
+    # Meta chips: transmission · mileage · body
+    meta_parts = []
+    if trans:   meta_parts.append(_h(trans))
+    if mileage: meta_parts.append(f"{_m(mileage)} mi")
+    if color:   meta_parts.append(_h(color))
+    meta_html = ' <span class="dot">&middot;</span> '.join(meta_parts)
+
+    # Subtitle: badge + gen
+    subtitle_parts = [_badge(dealer)]
+    if gen_str: subtitle_parts.append(f'<span class="gen-tag">{_h(gen_str)}</span>')
+    if urg_label: subtitle_parts.append(f'<span class="urg-tag urg-{urg}">{urg_label}</span>')
+    subtitle_html = ' '.join(subtitle_parts)
 
     # Timer
     if ends_at:
-        timer_html = (
-            f'<span class="countdown-timer" data-ends="{_h(ends_at)}">…</span>'
-        )
+        timer_html = f'<span class="countdown-timer {timer_cls}" data-ends="{_h(ends_at)}">…</span>'
     else:
-        timer_html = '<span class="no-end">No end time</span>'
+        timer_html = '<span class="countdown-timer timer-muted">—</span>'
 
-    urgent_cls = " urgent" if urgent else ""
-    src_label  = _badge_label(dealer)
+    # FMV display
+    fmv_html = _fmv_display(fmv_val, conf, comp_count)
+
+    # data-fmv for sort
+    fmv_sort_val = int(fmv_val) if fmv_val and conf != "NONE" else 0
+
+    # Unique card id for favorites
+    card_id = f"{_h(url)}"
+
+    # Hero extra panel (dot graph placeholder + FMV range)
+    fmv_low  = fmv_score.get("price_low")
+    fmv_high = fmv_score.get("price_high")
+    hero_extra_html = ""
+    if is_hero:
+        range_str = f"{_p_short(fmv_low)} &ndash; {_p_short(fmv_high)}" if fmv_low and fmv_high else "—"
+        hero_extra_html = (
+            f'<div class="hero-extra">'
+            f'  <div><div class="hero-extra-lbl">FMV Range</div>'
+            f'  <div class="hero-fmv-range">{range_str}</div></div>'
+            f'  <div><div class="hero-extra-lbl">Comps</div>'
+            f'  <div class="hero-extra-val">{comp_count}</div></div>'
+            f'  <div class="hero-dot-placeholder">dot graph coming</div>'
+            f'</div>'
+        )
+
+    hero_cls = " auc-card--hero" if is_hero else ""
 
     return (
-        f'<div class="auc-card{urgent_cls}"'
+        f'<div class="auc-card{hero_cls} auc-urg-{urg}"'
+        f' style="border-left:3px solid {stripe_color}"'
         f' data-gen="{_h(gen_str)}"'
         f' data-src="{_h(src_label)}"'
         f' data-tier="{_h(tier)}"'
         f' data-price="{price or 0}"'
+        f' data-fmv="{fmv_sort_val}"'
+        f' data-mileage="{int(mileage) if mileage else 999999}"'
         f' data-ends="{_h(ends_at)}"'
-        f' data-deal="{"1" if (pct is not None and pct <= -5 and not _fmv_hidden) else "0"}"'
-        f' onclick="openListing(\'{_h(url)}\')">\n'
-        f'  {img_html}\n'
-        f'  <div class="auc-body">\n'
-        f'    <div class="auc-top-row">\n'
-        f'      <div style="display:flex;align-items:center;gap:6px">'
-        f'{_badge(dealer)}'
-        f'<span class="gen-label">{_h(gen_str)}</span>'
-        f'</div>\n'
-        f'      {timer_html}\n'
-        f'    </div>\n'
-        f'    <div class="auc-title">{year} Porsche {_h(_dedup_model_trim(model, trim))}</div>\n'
-        f'    {tier_html}\n'
-        f'    <div class="auc-bid-row">\n'
-        f'      <span class="bid-label">Current Bid</span>\n'
-        f'      <span class="bid-val">{_p(price)}</span>\n'
-        f'      {delta_html}\n'
-        f'    </div>\n'
-        f'    {fmv_html}\n'
-        f'    <div class="auc-meta">{chips_html}</div>\n'
+        f' data-listed="{_h(car.get("date_first_seen","") or "")}"'
+        f' data-url="{_h(url)}"'
+        f' onclick="cardClick(event,\'{_h(url)}\')">\n'
+        f'  <div class="img-wrap">\n'
+        f'    {img_tag}\n'
         f'  </div>\n'
+        f'  <div class="card-body">\n'
+        f'    <div class="card-top">\n'
+        f'      <div class="card-subtitle">{subtitle_html}</div>\n'
+        f'      <div class="card-top-right">\n'
+        f'        <button class="fav-btn" data-url="{_h(url)}" onclick="toggleFav(event,this)" title="Save to watch list">'
+        f'<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">'
+        f'<circle cx="8" cy="8" r="4.5"/>'
+        f'<circle cx="8" cy="8" r="1.8" fill="var(--bg2)" stroke="none"/>'
+        f'<rect x="11.5" y="7" width="9" height="2.5" rx="1.25"/>'
+        f'<rect x="17" y="9.5" width="2.5" height="2.5" rx="0.8"/>'
+        f'<rect x="13.5" y="9.5" width="2.5" height="3.5" rx="0.8"/>'
+        f'</svg>'
+        f'</button>\n'
+        f'        <div class="card-timer">{timer_html}</div>\n'
+        f'      </div>\n'
+        f'    </div>\n'
+        f'    <div class="card-title">{year} Porsche {_h(_dedup_model_trim(model, trim))}</div>\n'
+        f'    <div class="card-bottom">\n'
+        f'      <div class="bid-block">\n'
+        f'        <div class="val-label">Current Bid</div>\n'
+        f'        <div class="bid-val">{_p(price)}</div>\n'
+        f'      </div>\n'
+        f'      <div class="divider-vert"></div>\n'
+        f'      <div class="fmv-block">\n'
+        f'        <div class="val-label">FMV Est.</div>\n'
+        f'        <div class="fmv-row">{fmv_html}</div>\n'
+        f'      </div>\n'
+        f'      <div class="meta-block">{meta_html}</div>\n'
+        f'    </div>\n'
+        f'  </div>\n'
+        f'{hero_extra_html}'
         f'</div>'
     )
+
 
 # ── Section builder ───────────────────────────────────────────────────────────
 
@@ -298,23 +326,22 @@ def _section(title, subtitle, cards_html, icon, count, sec_cls="", hide_if_empty
     if not cards_html:
         if hide_if_empty:
             return ""
-        cards_html = ('<div class="empty">'
-                      '<div class="empty-icon">&#x1F50D;</div>'
+        cards_html = ('<div class="empty-state">'
+                      '<div class="empty-icon">&#x25CB;</div>'
                       '<div class="empty-text">No auctions in this window</div>'
                       '</div>')
-    cls = "section" + (" " + sec_cls if sec_cls else "")
+    cls = "auc-section" + (" " + sec_cls if sec_cls else "")
     return (
         f'<div class="{cls}">\n'
         f'  <div class="section-hdr">\n'
-        f'    <div style="display:flex;align-items:center;gap:10px">\n'
+        f'    <div class="section-hdr-left">\n'
         f'      <span class="section-icon">{icon}</span>\n'
-        f'      <div>\n'
-        f'        <div class="section-title">{title} <span class="section-count">{count}</span></div>\n'
-        f'        <div class="section-sub">{subtitle}</div>\n'
-        f'      </div>\n'
+        f'      <span class="section-title">{title}</span>\n'
+        f'      <span class="section-count">{count}</span>\n'
         f'    </div>\n'
+        f'    <div class="section-sub">{subtitle}</div>\n'
         f'  </div>\n'
-        f'  <div class="cards-grid">\n'
+        f'  <div class="cards-list">\n'
         f'    {cards_html}\n'
         f'  </div>\n'
         f'</div>'
@@ -341,13 +368,15 @@ def generate() -> str:
                     "price_high": getattr(fmv_obj, "price_high", None),
                 }
             else:
-                fmv_by_id[row["id"]] = {"fmv": None, "confidence": "NONE", "comp_count": 0, "price_low": None, "price_high": None}
+                fmv_by_id[row["id"]] = {"fmv": None, "confidence": "NONE", "comp_count": 0}
 
+        # Active auction listings only
         rows = conn.execute(
             "SELECT * FROM listings WHERE source_category='AUCTION' AND status='active'"
         ).fetchall()
         cars = [dict(r) for r in rows]
 
+        # Stats for header bar
         n_listings_total = conn.execute(
             "SELECT COUNT(*) FROM listings WHERE status='active'"
         ).fetchone()[0]
@@ -367,13 +396,13 @@ def generate() -> str:
                float(r[1]) < float(fmv_by_id[r[0]]["fmv"]) * 0.90
         )
 
-        # Recently Completed — archived in last 48h, auction end time already passed
+        # Recently ended — archived in last 7 days
         ended_rows = conn.execute(
             """SELECT * FROM listings
                WHERE source_category='AUCTION' AND status='sold'
-               AND archived_at >= datetime('now', '-48 hours')
+               AND archived_at >= datetime('now', '-7 days')
                AND (auction_ends_at IS NULL OR auction_ends_at <= datetime('now'))
-               ORDER BY archived_at DESC"""
+               ORDER BY archived_at DESC LIMIT 100"""
         ).fetchall()
         ended_cars = [dict(r) for r in ended_rows]
 
@@ -384,47 +413,29 @@ def generate() -> str:
         except Exception:
             return None
 
+    # Attach FMV + parsed end time to each car
     for c in cars:
         c["_fmv"] = fmv_by_id.get(c["id"], {"fmv": None, "confidence": "NONE", "comp_count": 0})
+        c["_ends_dt"] = _parse_ends(c.get("auction_ends_at"))
 
     for c in ended_cars:
         c["_fmv"] = fmv_by_id.get(c["id"], {"fmv": None, "confidence": "NONE", "comp_count": 0})
         c["_ends_dt"] = _parse_ends(c.get("auction_ends_at"))
 
-    ending_critical = []  # < 3 hours
-    ending_soon  = []    # 3–24 hours
-    live_auction = []
-    no_end_time  = []
-
-    three_hours = now_utc + timedelta(hours=3)
-    one_day     = now_utc + timedelta(hours=24)
+    # Bucket by urgency
+    ending_critical = []
+    ending_soon     = []
+    live_auction    = []
+    no_end_time     = []
 
     for c in cars:
-        ends_dt = _parse_ends(c.get("auction_ends_at"))
-        c["_ends_dt"] = ends_dt
-        c["_gen"] = _gen(c.get("year"), c.get("model"))
-        c["_src"] = _badge_label(c.get("dealer", ""))
-        if ends_dt is None or ends_dt <= now_utc:
-            no_end_time.append(c)
-        elif ends_dt <= three_hours:
-            ending_critical.append(c)
-        elif ends_dt <= one_day:
-            ending_soon.append(c)
-        else:
-            live_auction.append(c)
+        urg = _urgency(c["_ends_dt"], now_utc)
+        if urg == "critical":  ending_critical.append(c)
+        elif urg == "soon":    ending_soon.append(c)
+        elif urg == "noend":   no_end_time.append(c)
+        else:                  live_auction.append(c)
 
-    # Unique generations and sources for filter chips
-    all_gens = sorted(set(c["_gen"] for c in cars if c["_gen"] and c["_gen"] != "Unknown"))
-    all_srcs = sorted(set(c["_src"] for c in cars if c["_src"]))
-    gen_chips_html = "".join(
-        f'<button class="auc-chip" data-val="{_h(g)}" data-filter="gen" onclick="toggleAucChip(this)">{_h(g)}</button>'
-        for g in all_gens
-    )
-    src_chips_html = "".join(
-        f'<button class="auc-chip" data-val="{_h(s)}" data-filter="src" onclick="toggleAucChip(this)">{_h(s)}</button>'
-        for s in all_srcs
-    )
-
+    # Sort each bucket by end time ascending
     def _sort_key(c):
         d = c.get("_ends_dt")
         return d if d else datetime(9999, 12, 31, tzinfo=timezone.utc)
@@ -433,19 +444,45 @@ def generate() -> str:
     ending_soon.sort(key=_sort_key)
     live_auction.sort(key=_sort_key)
 
-    def _cards(lst, urgent=False):
-        return "\n".join(_auction_card(c, c["_fmv"], urgent=urgent) for c in lst)
+    # Unique sources for filter chips — auction houses only
+    _AUCTION_SOURCES = {"BaT", "C&B", "pcarmarket"}
+    all_srcs = sorted(
+        s for s in set(
+            _badge_label(c.get("dealer", "")) for c in cars
+        )
+        if s in _AUCTION_SOURCES
+    )
+    src_chips_html = "".join(
+        f'<button class="filter-chip" data-val="{_h(s)}" data-filter="src" onclick="toggleChip(this)">{_h(s)}</button>'
+        for s in all_srcs
+    )
 
-    s_critical = _section("Ending Now",    "Less than 3 hours &mdash; act fast", _cards(ending_critical, urgent=True), "&#x1F6A8;", len(ending_critical), "ending-critical", hide_if_empty=True)
-    s_ending   = _section("Ending Soon",   "3&ndash;24 hours",                   _cards(ending_soon, urgent=True),     "&#x1F525;", len(ending_soon),     "ending-soon",     hide_if_empty=True)
-    s_live     = _section("Live Auctions", "Ending beyond 24 hours",             _cards(live_auction),                  "&#x1F7E2;", len(live_auction))
-    s_noend    = _section("No End Time",   "Buy-now / end time unknown",          _cards(no_end_time),                  "&#x1F3F7;", len(no_end_time))
-    s_ended    = _section("Ended Today",   "Final hammer prices",                 _cards(ended_cars),                   "&#x1F3C1;", len(ended_cars), "ended")
+    def _cards(lst, hero_first=False):
+        out = []
+        for i, c in enumerate(lst):
+            out.append(_auction_card(c, c["_fmv"], is_hero=(hero_first and i == 0)))
+        return "\n".join(out)
+
+    # Hero = soonest card across critical → soon → live buckets
+    _hero_in_critical = bool(ending_critical)
+    _hero_in_soon     = bool(ending_soon) and not _hero_in_critical
+    _hero_in_live     = bool(live_auction) and not _hero_in_critical and not _hero_in_soon
+
+    s_critical = _section("Ending Now",    "< 3 hours",           _cards(ending_critical, hero_first=_hero_in_critical), "&#x25CF;", len(ending_critical), "sec-critical", hide_if_empty=True)
+    s_ending   = _section("Ending Today",  "3 &ndash; 24 hours",  _cards(ending_soon,     hero_first=_hero_in_soon),     "&#x25CF;", len(ending_soon),     "sec-soon",     hide_if_empty=True)
+    s_live     = _section("Live Auctions", "Ending beyond 24h",   _cards(live_auction,    hero_first=_hero_in_live),     "&#x25CB;", len(live_auction))
+    s_noend    = _section("No End Time",   "End time unknown",     _cards(no_end_time),                                  "&#x25A1;", len(no_end_time),     "", hide_if_empty=True)
+    s_ended    = _section("Recently Ended","Final hammer prices",  _cards(ended_cars),                                   "&#x25A0;", len(ended_cars),      "sec-ended",    hide_if_empty=True)
 
     total   = len(cars)
-    now_str = now_utc.strftime("%b %d, %Y %H:%M UTC")
+    now_str = now_utc.strftime("%b %d %H:%M UTC")
 
-    html = _build_html(s_critical, s_ending, s_live, s_noend, s_ended, total, len(ending_critical), len(ending_soon), len(live_auction), len(ended_cars), now_str, n_listings_total, n_comps_total, n_new_today, n_deals, gen_chips_html, src_chips_html)
+    html = _build_html(
+        s_critical, s_ending, s_live, s_noend, s_ended,
+        total, len(ending_critical), len(ending_soon), len(live_auction), len(ended_cars),
+        now_str, n_listings_total, n_comps_total, n_new_today, n_deals,
+        src_chips_html
+    )
     OUT_PATH.write_text(html, encoding="utf-8")
     print(f"[auction_dashboard] wrote {OUT_PATH} ({total} auctions)")
     return html
@@ -453,244 +490,368 @@ def generate() -> str:
 
 # ── HTML template ─────────────────────────────────────────────────────────────
 
-def _build_html(s_critical, s_ending, s_live, s_noend, s_ended, total, n_critical, n_ending, n_live, n_ended, now_str, n_listings_total=0, n_comps_total=0, n_new_today=0, n_deals=0, gen_chips_html="", src_chips_html="") -> str:
+def _build_html(s_critical, s_ending, s_live, s_noend, s_ended,
+                total, n_critical, n_ending, n_live, n_ended,
+                now_str, n_listings_total, n_comps_total, n_new_today, n_deals,
+                src_chips_html) -> str:
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <script>(function(){{var t=localStorage.getItem('ptox_theme');if(t)document.documentElement.dataset.theme=t;}})()</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- pull-to-refresh replaces meta refresh -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RennMarkt Auctions">
 <meta name="theme-color" content="#0A0A0C">
 <title>RennMarkt &mdash; Auction Watcher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
-
 :root {{
   --red:    #c0392b;
   --bg:     #0d0d0d;
   --bg2:    #141414;
   --bg3:    #1c1c1c;
-  --border: #2a2a2a;
-  --text:   #e8e4df;
-  --muted:  #7a7570;
+  --border: #242424;
+  --border2:#2e2e2e;
+  --text:   #e2ddd8;
+  --muted:  #6a6560;
   --green:  #4ade80;
-  --yellow: #EAB308;
+  --amber:  #EAB308;
+  --blue:   #60a5fa;
 }}
-[data-theme="racing"] {{ --red:#e53e3e; --bg:#0c0809; --bg2:#160d0e; --bg3:#1e1213; --border:#2e1a1a; --text:#ede8e3; --muted:#7a6a6a; }}
-[data-theme="gulf"]   {{ --red:#2563eb; --bg:#08100c; --bg2:#0e1810; --bg3:#142016; --border:#1a3020; --text:#e2ede8; --muted:#5a7a6a; }}
-[data-theme="olive"]  {{ --red:#65a30d; --bg:#0a0c08; --bg2:#12140e; --bg3:#1a1c14; --border:#252a1a; --text:#e4e8de; --muted:#6a7258; }}
-[data-theme="purple"] {{ --red:#7c3aed; --bg:#09080d; --bg2:#100e16; --bg3:#17141e; --border:#221e2e; --text:#e6e2ee; --muted:#6a5a7a; }}
+[data-theme="racing"] {{ --red:#e53e3e; --bg:#0c0809; --bg2:#160d0e; --bg3:#1e1213; --border:#2e1a1a; }}
+[data-theme="gulf"]   {{ --red:#2563eb; --bg:#08100c; --bg2:#0e1810; --bg3:#142016; --border:#1a3020; }}
+[data-theme="olive"]  {{ --red:#65a30d; --bg:#0a0c08; --bg2:#12140e; --bg3:#1a1c14; --border:#252a1a; }}
+[data-theme="purple"] {{ --red:#7c3aed; --bg:#09080d; --bg2:#100e16; --bg3:#17141e; --border:#221e2e; }}
 [data-theme="light"]  {{ --red:#c0392b; --bg:#f5f4f2; --bg2:#edebe8; --bg3:#e2dfdb; --border:#ccc9c4; --text:#1a1814; --muted:#7a756e; }}
 
 *,*::before,*::after {{ box-sizing:border-box; margin:0; padding:0; }}
-html,body {{ background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.5; }}
+html,body {{ background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.5; min-height:100vh; }}
 a {{ color:inherit; text-decoration:none; }}
 
 /* ── Topbar ── */
 .topbar {{
-  height:68px; background:#141414; border-bottom:1px solid var(--border);
+  height:64px; background:var(--bg2); border-bottom:1px solid var(--border);
   display:flex; align-items:center; justify-content:space-between;
-  padding:0 24px; position:sticky; top:0; z-index:50;
+  padding:0 20px; position:sticky; top:0; z-index:50;
 }}
-.logo {{ display:flex; align-items:center; flex-shrink:0; text-decoration:none; line-height:0; }}
-.logo svg {{ height:56px; width:auto; }}
-.logo span {{ color:#c0392b; }}
-.stats-bar {{ display:flex; gap:1px; margin:0 12px 8px; background:#2a2a2a; border-radius:14px; overflow:hidden; border:1px solid #2a2a2a; }}
-.stat-cell {{ flex:1; padding:12px 8px 10px; text-align:center; background:#141414; cursor:pointer; transition:background 0.15s; position:relative; text-decoration:none; color:inherit; }}
-.stat-cell:first-child {{ border-radius:13px 0 0 13px; }}
-.stat-cell:last-child {{ border-radius:0 13px 13px 0; }}
-.stat-cell:hover {{ background:#1c1c1c; }}
-.stat-cell.active {{ background:#1e1e1e; }}
-.stat-cell.active::after {{ content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:#c0392b; }}
-.stat-cell + .stat-cell {{ border-left:1px solid #2a2a2a; }}
-.stat-number {{ font-size:22px; font-weight:700; letter-spacing:-0.5px; line-height:1.1; color:#e8e4df; }}
-.stat-number.green {{ color:#4ade80; }}
-.stat-number.red {{ color:#c0392b; }}
-.stat-label {{ font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:#666; margin-top:3px; }}
-.more-btn {{ padding:7px 11px; border-radius:14px; font-size:11px; font-weight:500; color:#666; background:transparent; border:1px solid #333; display:flex; align-items:center; gap:3px; cursor:pointer; flex-shrink:0; }}
-.more-btn:hover {{ border-color:#555; color:#aaa; }}
-.dropdown-overlay {{ display:none; }}
-.dropdown-overlay.show {{ display:block; }}
-.dropdown {{ position:fixed; right:14px; top:54px; background:#222; border:1px solid #333; border-radius:12px; padding:6px; min-width:180px; box-shadow:0 8px 32px rgba(0,0,0,0.5); z-index:200; }}
-.dd-item {{ padding:10px 14px; font-size:14px; color:#ccc; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:10px; }}
-.dd-item:hover {{ background:#2a2a2a; }}
-.dd-icon {{ font-size:15px; width:20px; text-align:center; }}
-.dd-divider {{ height:1px; background:#333; margin:4px 10px; }}
-.dd-backdrop {{ position:fixed; inset:0; z-index:199; }}
-.topbar-right {{ font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); display:flex; align-items:center; gap:16px; }}
-.filter-bar {{ background:var(--bg2); border-bottom:1px solid var(--border); padding:10px 16px; display:flex; flex-wrap:wrap; align-items:center; gap:8px; }}
-.filter-bar-group {{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; flex:1; }}
-.auc-chip {{ padding:4px 10px; border-radius:12px; border:1px solid var(--border); background:var(--bg3); color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; font-weight:600; cursor:pointer; transition:all 0.15s; white-space:nowrap; }}
-.auc-chip:hover {{ color:var(--text); border-color:#555; }}
-.auc-chip.active {{ background:#1A0810; border-color:var(--red); color:var(--red); }}
-.sort-select {{ padding:4px 8px; border:1px solid var(--border); border-radius:6px; background:var(--bg3); color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; cursor:pointer; outline:none; }}
+.logo {{ display:flex; align-items:center; line-height:0; }}
+.logo svg {{ height:52px; width:auto; }}
+.topbar-right {{ display:flex; align-items:center; gap:12px; }}
+.topbar-time {{ font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); }}
+.more-btn {{ padding:6px 10px; border-radius:6px; font-size:11px; color:var(--muted); background:transparent; border:1px solid var(--border2); cursor:pointer; }}
+.more-btn:hover {{ color:var(--text); border-color:#444; }}
+
+/* ── Stats bar ── */
+.stats-bar {{ display:flex; gap:1px; background:var(--border); border-bottom:1px solid var(--border); }}
+.stat-cell {{ flex:1; padding:10px 8px 9px; text-align:center; background:var(--bg2); cursor:pointer; transition:background 0.12s; text-decoration:none; color:inherit; position:relative; }}
+.stat-cell:hover {{ background:var(--bg3); }}
+.stat-cell.active {{ background:var(--bg3); }}
+.stat-cell.active::after {{ content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--red); }}
+.stat-num {{ font-family:'DM Mono',monospace; font-size:18px; font-weight:500; letter-spacing:-0.5px; line-height:1.1; color:var(--text); }}
+.stat-num.c-green {{ color:var(--green); }}
+.stat-num.c-red   {{ color:var(--red); }}
+.stat-lbl {{ font-size:9px; font-weight:500; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted); margin-top:2px; }}
+
+/* ── Filter + sort bar ── */
+.filter-bar {{
+  background:var(--bg2); border-bottom:1px solid var(--border);
+  padding:8px 16px; display:flex; flex-wrap:wrap; align-items:center; gap:6px;
+}}
+.filter-section {{ display:flex; gap:5px; align-items:center; }}
+.filter-label {{ font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; white-space:nowrap; margin-right:2px; }}
+.filter-chip {{
+  padding:3px 10px; border-radius:4px; border:1px solid var(--border2);
+  background:transparent; color:var(--muted); font-family:'DM Mono',monospace;
+  font-size:10px; font-weight:500; cursor:pointer; transition:all 0.12s; white-space:nowrap;
+}}
+.filter-chip:hover {{ color:var(--text); border-color:#444; }}
+.filter-chip.active {{ background:rgba(192,57,43,0.12); border-color:var(--red); color:var(--red); }}
+.filter-sep {{ width:1px; height:16px; background:var(--border2); margin:0 4px; }}
+.sort-select {{
+  padding:3px 8px; border:1px solid var(--border2); border-radius:4px;
+  background:var(--bg3); color:var(--muted); font-family:'DM Mono',monospace;
+  font-size:10px; cursor:pointer; outline:none;
+}}
 .sort-select:focus {{ border-color:var(--red); }}
-.filter-count {{ font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-left:auto; white-space:nowrap; }}
-.live-dot {{ display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--green); margin-right:5px; animation:pulse 1.5s infinite; }}
-@keyframes pulse {{ 0%,100% {{ opacity:1; }} 50% {{ opacity:0.4; }} }}
+.filter-count {{ font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-left:auto; }}
+.live-dot {{ display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--green); margin-right:4px; animation:pulse 1.8s infinite; }}
+@keyframes pulse {{ 0%,100%{{opacity:1}} 50%{{opacity:0.3}} }}
+
+/* ── Dropdown ── */
+.dd-overlay {{ display:none; }}
+.dd-overlay.show {{ display:block; }}
+.dd {{ position:fixed; right:12px; top:50px; background:var(--bg3); border:1px solid var(--border2); border-radius:8px; padding:5px; min-width:170px; box-shadow:0 8px 24px rgba(0,0,0,0.5); z-index:200; }}
+.dd-item {{ padding:9px 12px; font-size:13px; color:var(--muted); border-radius:5px; cursor:pointer; display:flex; align-items:center; gap:8px; }}
+.dd-item:hover {{ background:var(--bg2); color:var(--text); }}
+.dd-divider {{ height:1px; background:var(--border); margin:4px 8px; }}
+.dd-backdrop {{ position:fixed; inset:0; z-index:199; }}
 
 /* ── Page body ── */
-.page-body {{ max-width:1300px; margin:0 auto; padding:24px 20px 48px; }}
+.page {{ max-width:900px; margin:0 auto; padding:20px 16px 60px; }}
 
 /* ── Section ── */
-.section {{ margin-bottom:36px; }}
-.section-hdr {{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }}
-.section-icon {{ font-size:1.2em; }}
-.section-title {{ font-family:'Syne',sans-serif; font-size:15px; font-weight:700; color:var(--text); }}
-.section-count {{ display:inline-block; background:var(--bg3); border:1px solid var(--border); color:var(--muted); font-family:'DM Mono',monospace; font-size:9px; padding:1px 7px; border-radius:10px; margin-left:6px; vertical-align:middle; }}
-.section-sub {{ font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-top:2px; }}
-.ending-soon .section-title {{ color:var(--red); }}
-.ending-soon .section-count {{ background:#1A0508; border-color:#3A0A12; color:var(--red); }}
+.auc-section {{ margin-bottom:28px; }}
+.section-hdr {{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border);
+}}
+.section-hdr-left {{ display:flex; align-items:center; gap:8px; }}
+.section-icon {{ font-size:8px; }}
+.section-title {{ font-family:'Syne',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.5px; color:var(--text); text-transform:uppercase; }}
+.section-count {{ font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); background:var(--bg3); border:1px solid var(--border); padding:1px 6px; border-radius:3px; }}
+.section-sub {{ font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); }}
+.sec-critical .section-icon {{ color:var(--red); }}
+.sec-critical .section-title {{ color:var(--red); }}
+.sec-critical .section-count {{ background:rgba(192,57,43,0.1); border-color:rgba(192,57,43,0.3); color:var(--red); }}
+.sec-soon .section-icon {{ color:var(--amber); }}
+.sec-soon .section-title {{ color:var(--amber); }}
+.sec-ended {{ opacity:0.7; }}
 
-/* ── Cards grid ── */
-.cards-grid {{ display:grid; grid-template-columns:repeat(auto-fill, minmax(380px,1fr)); gap:10px; }}
+/* ── Cards list — single column ── */
+.cards-list {{ display:flex; flex-direction:column; gap:6px; padding:4px 2px; }}
 
-/* ── Auction card — horizontal ── */
+/* ── Auction card — Concept D ── */
 .auc-card {{
-  background:var(--bg2); border:1px solid var(--border); border-radius:6px;
-  overflow:hidden; cursor:pointer; display:flex; height:110px;
-  transition:border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  background:var(--bg2); border:1px solid var(--border); border-radius:10px;
+  overflow:hidden; cursor:pointer; display:flex; height:130px;
+  transition:border-color 0.35s cubic-bezier(0.34,1.56,0.64,1),
+             box-shadow   0.35s cubic-bezier(0.34,1.56,0.64,1),
+             transform    0.35s cubic-bezier(0.34,1.56,0.64,1),
+             height       0.22s ease;
+  position:relative; transform:translateY(0) scale(1);
 }}
-.auc-card:hover {{ border-color:var(--red); transform:translateY(-1px); box-shadow:0 4px 16px rgba(214,41,62,0.12); }}
-.auc-card.urgent {{ border-color:#2A0810; }}
-.auc-card.urgent:hover {{ border-color:var(--red); }}
-
-.img-col {{ width:110px; min-width:110px; position:relative; overflow:hidden; background:var(--bg3); flex-shrink:0; }}
-.auc-img {{ width:100%; height:100%; object-fit:cover; display:block; opacity:0.88; transition:transform 0.2s; }}
-.auc-card:hover .auc-img {{ transform:scale(1.04); }}
-.urgency-bar {{ position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--red); }}
-
-.auc-body {{ padding:10px 12px; flex:1; display:flex; flex-direction:column; gap:0; min-width:0; }}
-.auc-top-row {{ display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }}
-.gen-label {{ font-family:'DM Mono',monospace; font-size:9px; color:#4B4B5D; }}
-.auc-title {{ font-family:'DM Sans',sans-serif; font-size:12px; color:#C0C0D0; margin-bottom:4px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:1.3em; }}
-.tier-badge {{ display:inline-block; font-family:'DM Mono',monospace; font-size:8px; font-weight:500; background:#1A0A00; color:var(--yellow); padding:2px 6px; border-radius:3px; margin-bottom:4px; text-transform:uppercase; border:1px solid #3A2000; letter-spacing:0.5px; }}
-.auc-bid-row {{ display:flex; align-items:baseline; gap:7px; margin-bottom:4px; }}
-.bid-label {{ font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); }}
-.bid-val {{ font-family:'DM Mono',monospace; font-size:15px; font-weight:500; color:#fff; letter-spacing:-0.5px; }}
-.auc-meta {{ font-family:'DM Mono',monospace; font-size:9px; color:#3B3B4D; margin-top:auto; }}
-
-/* ── Countdown timer ── */
-.countdown-timer {{
-  font-family:'DM Mono',monospace; font-size:12px; font-weight:500;
-  color:var(--red); letter-spacing:0.5px; font-variant-numeric:tabular-nums;
+.auc-card:hover {{
+  border-color:var(--red);
+  border-left-color:var(--red);
+  box-shadow:0 12px 40px rgba(0,0,0,0.45), 0 4px 12px rgba(192,57,43,0.15);
+  transform:translateY(-5px) scale(1.01);
 }}
-.countdown-timer.urgent-tick {{ animation:urgPulse 1s infinite; }}
-@keyframes urgPulse {{ 0%,100% {{ opacity:1; }} 50% {{ opacity:0.5; }} }}
-.countdown-timer.done {{ color:var(--muted); }}
-.no-end {{ font-family:'DM Mono',monospace; font-size:10px; color:#3B3B4D; }}
+.auc-urg-critical {{ /* border-left handled via inline style */ }}
+.auc-urg-soon     {{ /* border-left handled via inline style */ }}
 
-/* ── FMV line ── */
-.fmv-line {{ font-family:'DM Mono',monospace; font-size:9px; padding:3px 7px; border-radius:3px; margin-bottom:3px; }}
-.fmv-none {{ display:flex; align-items:center; gap:4px; font-family:'DM Mono',monospace; font-size:9px; color:#3B3B4D; margin-bottom:3px; }}
-.fmv-none-dot {{ width:4px; height:4px; border-radius:50%; background:var(--border); flex-shrink:0; }}
-.fmv-comps {{ opacity:0.6; }}
-.fmv-neutral {{ background:transparent; color:var(--muted); }}
-.fmv-great  {{ background:transparent; color:var(--green); }}
-.fmv-good   {{ background:transparent; color:#86EFAC; }}
-.fmv-mid    {{ background:transparent; color:var(--yellow); }}
-.fmv-high   {{ background:transparent; color:#F87171; }}
-.conf-high {{ color:var(--green); }}
-.conf-med  {{ color:var(--yellow); }}
-.conf-low  {{ color:#F87171; }}
+/* ── Hero expansion on hover (Layout B hybrid) ────────────────────────────── */
+/* The soonest-ending card gets .auc-card--hero class stamped in Python.
+   On hover it expands: taller image, wider layout, extra detail panel visible. */
+.auc-card--hero {{ border-color:rgba(192,57,43,0.4); }}
+.auc-card--hero:hover {{
+  border-color:var(--red);
+  box-shadow:0 12px 40px rgba(0,0,0,0.45), 0 4px 12px rgba(192,57,43,0.15);
+  transform:translateY(-5px) scale(1.01);
+}}
+.auc-card--hero:hover .img-wrap {{ width:320px; min-width:320px; }}
+.auc-card--hero:hover .hero-extra {{ display:flex; }}
+.hero-extra {{
+  display:none; flex-direction:column; justify-content:flex-end;
+  padding:11px 14px 11px 0; gap:5px; min-width:140px; border-left:1px solid var(--border2);
+}}
+.hero-extra-lbl {{ font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:0.5px; }}
+.hero-extra-val {{ font-family:'DM Mono',monospace; font-size:13px; color:var(--text); }}
+.hero-fmv-range {{ font-family:'DM Mono',monospace; font-size:11px; color:#888; }}
+.hero-dot-placeholder {{
+  height:44px; border:1px dashed var(--border2); border-radius:4px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'DM Mono',monospace; font-size:9px; color:#2a2a2a; margin-top:4px;
+}}
 
-/* ── Delta badges ── */
-.delta {{ font-family:'DM Mono',monospace; font-size:10px; font-weight:500; padding:2px 6px; border-radius:3px; }}
-.delta-great {{ background:#052210; color:var(--green); }}
-.delta-good  {{ background:#052210; color:#86EFAC; }}
-.delta-flat  {{ background:var(--bg3); color:var(--muted); }}
-.delta-mid   {{ background:#1A1000; color:var(--yellow); }}
-.delta-high  {{ background:#1A0508; color:#F87171; }}
+/* Image */
+.img-wrap {{ width:200px; min-width:200px; overflow:hidden; background:var(--bg3); flex-shrink:0; transition:width 0.22s ease, min-width 0.22s ease; }}
+.auc-img {{ width:100%; height:100%; object-fit:cover; display:block; opacity:0.87; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.2s; }}
+.auc-card:hover .auc-img {{ transform:scale(1.08); opacity:0.95; }}
 
-/* ── Badge ── */
-.badge {{ font-family:'DM Mono',monospace; font-size:9px; font-weight:500; padding:2px 6px; border-radius:3px; }}
+/* Card body */
+.card-body {{ flex:1; padding:11px 14px; display:flex; flex-direction:column; justify-content:space-between; min-width:0; }}
+/* On hero hover, switch to gap-based top-down flow so nothing floats */
+.auc-card--hero:hover .card-body {{ justify-content:flex-start; gap:8px; padding:13px 16px; }}
+.card-top {{ display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }}
+.card-subtitle {{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }}
+.card-timer {{ flex-shrink:0; }}
 
-/* ── Empty ── */
-.empty {{ grid-column:1/-1; text-align:center; padding:40px 20px; }}
-.empty-icon {{ font-size:2em; margin-bottom:8px; }}
+/* Title */
+.card-title {{
+  font-family:'DM Sans',sans-serif; font-size:16px; font-weight:500;
+  color:#f0ece6; line-height:1.25;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  margin-bottom:0;
+}}
+.auc-card--hero:hover .card-title {{ font-size:18px; white-space:normal; }}
+
+/* Bottom row: bid | divider | FMV | meta */
+.card-bottom {{ display:flex; align-items:center; gap:16px; }}
+.bid-block, .fmv-block {{ flex-shrink:0; }}
+.val-label {{ font-family:'DM Mono',monospace; font-size:10px; color:#7a7570; letter-spacing:0.5px; margin-bottom:2px; }}
+.bid-val {{
+  font-family:'DM Mono',monospace; font-size:22px; font-weight:500; color:#fff;
+  letter-spacing:-0.5px; line-height:1.1;
+  transition:color 0.2s ease, transform 0.2s ease;
+  display:inline-block;
+}}
+.auc-card:hover .bid-val {{ color:var(--red); transform:scale(1.04); }}
+.fmv-row {{ display:flex; align-items:center; gap:5px; }}
+.fmv-est {{ font-family:'DM Mono',monospace; font-size:17px; color:#9a958f; letter-spacing:-0.3px; }}
+.fmv-meta {{ font-family:'DM Mono',monospace; font-size:10px; color:#555; display:flex; align-items:center; gap:3px; }}
+.fmv-none {{ font-family:'DM Mono',monospace; font-size:11px; color:#444; }}
+.divider-vert {{ width:1px; height:32px; background:var(--border2); flex-shrink:0; }}
+.meta-block {{ font-family:'DM Mono',monospace; font-size:10px; color:#5a5652; margin-left:auto; text-align:right; line-height:1.7; }}
+.dot {{ color:#3a3a3a; }}
+
+/* Badges + tags */
+.src-badge {{ font-family:'DM Mono',monospace; font-size:10px; font-weight:500; padding:2px 7px; border-radius:3px; }}
+.gen-tag {{ font-family:'DM Mono',monospace; font-size:10px; color:#4a4a4a; }}
+.urg-tag {{ font-family:'DM Mono',monospace; font-size:9px; font-weight:700; letter-spacing:1px; padding:1px 5px; border-radius:2px; }}
+.urg-critical {{ color:var(--red); background:rgba(192,57,43,0.12); }}
+.urg-soon {{ color:var(--amber); background:rgba(234,179,8,0.1); }}
+
+/* Card top row — fav + timer grouped right */
+.card-top-right {{ display:flex; align-items:center; gap:8px; flex-shrink:0; }}
+
+/* Favorites button — key silhouette SVG */
+.fav-btn {{
+  background:transparent; border:none; cursor:pointer; padding:0 2px;
+  line-height:1; transition:transform 0.12s; flex-shrink:0; display:flex; align-items:center;
+}}
+.fav-btn:hover {{ transform:scale(1.15); }}
+.fav-btn svg {{ width:15px; height:15px; transition:fill 0.15s, stroke 0.15s; }}
+.fav-btn:not(.active) svg {{ fill:none; stroke:#3a3a3a; stroke-width:1.5; }}
+.fav-btn.active svg {{ fill:var(--red); stroke:var(--red); stroke-width:1; }}
+
+/* View toggle tabs (Live / Ended / Favorites) */
+.view-tabs {{ display:flex; gap:1px; background:var(--border); border-bottom:1px solid var(--border); }}
+.view-tab {{
+  flex:1; padding:9px 8px 8px; text-align:center; background:var(--bg2);
+  cursor:pointer; border:none; color:var(--muted); font-family:'DM Mono',monospace;
+  font-size:10px; font-weight:500; letter-spacing:0.8px; text-transform:uppercase;
+  transition:background 0.12s,color 0.12s; position:relative;
+}}
+.view-tab:hover {{ background:var(--bg3); color:var(--text); }}
+.view-tab.active {{ background:var(--bg3); color:var(--text); }}
+.view-tab.active::after {{ content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--red); }}
+.view-tab .tab-count {{ font-size:9px; color:var(--muted); margin-left:5px; }}
+.view-tab.active .tab-count {{ color:var(--red); }}
+
+/* Ended section — muted bid label */
+.sec-ended .val-label::after {{ content:' (final)'; }}
+
+/* Confidence pip */
+.conf-pip {{ display:inline-block; width:5px; height:5px; border-radius:50%; flex-shrink:0; }}
+.conf-high {{ background:var(--green); }}
+.conf-med  {{ background:var(--amber); }}
+.conf-low  {{ background:#F87171; }}
+
+/* Countdown timer */
+.countdown-timer {{ font-family:'DM Mono',monospace; font-size:14px; font-weight:500; font-variant-numeric:tabular-nums; }}
+.timer-red   {{ color:var(--red); animation:timerPulse 1s infinite; }}
+.timer-amber {{ color:var(--amber); }}
+.timer-green {{ color:var(--green); }}
+.timer-muted {{ color:#555; }}
+@keyframes timerPulse {{ 0%,100%{{opacity:1}} 50%{{opacity:0.45}} }}
+
+/* Empty state */
+.empty-state {{ padding:32px 20px; text-align:center; }}
+.empty-icon {{ font-size:20px; color:var(--border2); margin-bottom:8px; }}
 .empty-text {{ font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); }}
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar {{ width:5px; height:5px; }}
+/* Scrollbar */
+::-webkit-scrollbar {{ width:4px; height:4px; }}
 ::-webkit-scrollbar-track {{ background:var(--bg); }}
-::-webkit-scrollbar-thumb {{ background:var(--border); border-radius:3px; }}
-::-webkit-scrollbar-thumb:hover {{ background:var(--muted); }}
+::-webkit-scrollbar-thumb {{ background:var(--border2); border-radius:2px; }}
 
 @media(max-width:640px) {{
-  .topbar-right {{ display:none; }}
-  .cards-grid {{ grid-template-columns:1fr; }}
-  .page-body {{ padding:12px 12px 32px; }}
-  .stats-bar {{ margin:0 8px 8px; }}
-  .stat-number {{ font-size:18px; }}
+  .topbar-time {{ display:none; }}
+  .img-wrap {{ width:120px; min-width:120px; }}
+  .auc-card {{ height:auto; min-height:110px; }}
+  .card-bottom {{ flex-wrap:wrap; gap:10px; }}
+  .meta-block {{ width:100%; text-align:left; margin-left:0; }}
+  .page {{ padding:12px 10px 48px; }}
+  .stat-num {{ font-size:15px; }}
+  .bid-val {{ font-size:16px; }}
+  .fmv-est {{ font-size:13px; }}
 }}
 </style>
 </head>
 <body>
 
 <header class="topbar">
-  <a class="logo" href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64"><g transform="translate(8,6)"><circle cx="26" cy="26" r="22" fill="none" stroke="#242424" stroke-width="2.5"/><path d="M6,38 A22,22 0 0,1 43.5,8.5" fill="none" stroke="#D85A30" stroke-width="2.5" stroke-linecap="round"/><g stroke="#333" stroke-width="1.2" stroke-linecap="round"><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-80,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-55,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-30,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-5,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(20,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(45,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(70,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(95,26,26)"/></g><line x1="26" y1="26" x2="43.5" y2="8.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><circle cx="26" cy="26" r="4" fill="#D85A30"/><circle cx="26" cy="26" r="1.6" fill="#0d0d0d"/><text x="62" y="34" font-family="'Helvetica Neue',Arial,sans-serif" font-size="32" letter-spacing="-0.5"><tspan font-weight="800" fill="white">Renn</tspan><tspan font-weight="300" fill="#D85A30">Markt</tspan></text></g></svg></a>
-  <button class="more-btn" onclick="toggleDropdown()">More &#x25BE;</button>
-</header>
-<div class="stats-bar">
-  <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
-    <div class="stat-number">{n_listings_total:,}</div>
-    <div class="stat-label">Active</div>
+  <a class="logo" href="index.html">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64"><g transform="translate(8,6)"><circle cx="26" cy="26" r="22" fill="none" stroke="#242424" stroke-width="2.5"/><path d="M6,38 A22,22 0 0,1 43.5,8.5" fill="none" stroke="#D85A30" stroke-width="2.5" stroke-linecap="round"/><g stroke="#333" stroke-width="1.2" stroke-linecap="round"><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-80,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-55,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-30,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(-5,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(20,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(45,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(70,26,26)"/><line x1="4" y1="26" x2="8.5" y2="26" transform="rotate(95,26,26)"/></g><line x1="26" y1="26" x2="43.5" y2="8.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><circle cx="26" cy="26" r="4" fill="#D85A30"/><circle cx="26" cy="26" r="1.6" fill="#0d0d0d"/><text x="62" y="34" font-family="'Helvetica Neue',Arial,sans-serif" font-size="32" letter-spacing="-0.5"><tspan font-weight="800" fill="white">Renn</tspan><tspan font-weight="300" fill="#D85A30">Markt</tspan></text></g></svg>
   </a>
-  <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
-    <div class="stat-number">{n_new_today}</div>
-    <div class="stat-label">New Today</div>
+  <div class="topbar-right">
+    <span class="topbar-time"><span class="live-dot"></span>{now_str}</span>
+    <button class="more-btn" onclick="toggleDD()">More &#x25BE;</button>
+  </div>
+</header>
+
+<div class="dd-overlay" id="dd-overlay">
+  <div class="dd-backdrop" onclick="closeDD()"></div>
+  <div class="dd">
+    <a class="dd-item" href="index.html">&#x1F3CE; Market</a>
+    <a class="dd-item" href="search.html">&#x1F50D; Search</a>
+    <div class="dd-divider"></div>
+    <a class="dd-item" href="calculator.html">&#x1F4B0; FMV Calculator</a>
+    <a class="dd-item" href="market_report.html">&#x1F4CA; Market Report</a>
+    <a class="dd-item" href="notify.html">&#x1F514; Notifications</a>
+    <div class="dd-divider"></div>
+    <div class="dd-item" onclick="cycleTheme()">&#x1F3A8; Theme</div>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <a class="stat-cell" href="index.html">
+    <div class="stat-num">{n_listings_total:,}</div>
+    <div class="stat-lbl">Active</div>
+  </a>
+  <a class="stat-cell" href="index.html">
+    <div class="stat-num">{n_new_today}</div>
+    <div class="stat-lbl">New Today</div>
   </a>
   <div class="stat-cell active">
-    <div class="stat-number red">{total}</div>
-    <div class="stat-label">Auctions</div>
+    <div class="stat-num c-red">{total}</div>
+    <div class="stat-lbl">Auctions</div>
   </div>
-  <a class="stat-cell" href="index.html#comps" style="text-decoration:none;color:inherit">
-    <div class="stat-number">{n_comps_total:,}</div>
-    <div class="stat-label">Comps</div>
+  <a class="stat-cell" href="index.html#comps">
+    <div class="stat-num">{n_comps_total:,}</div>
+    <div class="stat-lbl">Comps</div>
   </a>
-  <a class="stat-cell" href="index.html" style="text-decoration:none;color:inherit">
-    <div class="stat-number green">{n_deals}</div>
-    <div class="stat-label">Deals</div>
+  <a class="stat-cell" href="index.html">
+    <div class="stat-num c-green">{n_deals}</div>
+    <div class="stat-lbl">Deals</div>
   </a>
 </div>
-<div class="dropdown-overlay" id="dd-overlay">
-  <div class="dd-backdrop" onclick="closeDropdown()"></div>
-  <div class="dropdown">
-    <div class="dd-item"><span class="dd-icon">&#x2605;</span> My Cars</div>
-    <a class="dd-item" href="search.html"><span class="dd-icon">&#x1F50D;</span> Search</a>
-    <div class="dd-divider"></div>
-    <a class="dd-item" href="calculator.html"><span class="dd-icon">&#x1F4B0;</span> FMV Calculator</a>
-    <a class="dd-item" href="market_report.html"><span class="dd-icon">&#x1F4CA;</span> Market Reports</a>
-    <a class="dd-item" href="notify.html"><span class="dd-icon">&#x1F514;</span> Notifications</a>
-    <div class="dd-divider"></div>
-    <div class="dd-item"><span class="dd-icon">&#x1F3A8;</span> Theme</div>
-    <div class="dd-item"><span class="dd-icon">&#x2699;&#xFE0F;</span> Settings</div>
-  </div>
+
+<div class="view-tabs">
+  <button class="view-tab active" data-view="live" onclick="switchView('live',this)">
+    Live <span class="tab-count" id="tab-count-live">{total}</span>
+  </button>
+  <button class="view-tab" data-view="ended" onclick="switchView('ended',this)">
+    Ended <span class="tab-count" id="tab-count-ended">{n_ended}</span>
+  </button>
+  <button class="view-tab" data-view="favs" onclick="switchView('favs',this)">
+    Saved <span class="tab-count" id="tab-count-favs">0</span>
+  </button>
 </div>
 
 <div class="filter-bar">
-  <div class="filter-bar-group" id="gen-chips">
-    {gen_chips_html}
-  </div>
-  <div class="filter-bar-group" id="src-chips">
+  <span class="filter-label">Source</span>
+  <div class="filter-section" id="src-chips">
     {src_chips_html}
   </div>
-  <select class="sort-select" id="auc-sort" onchange="applyAucFilters()">
+  <div class="filter-sep"></div>
+  <span class="filter-label">Sort</span>
+  <select class="sort-select" id="auc-sort" onchange="applyFilters()">
     <option value="ends_asc">Ending Soonest</option>
-    <option value="ends_desc">Ending Latest</option>
-    <option value="price_asc">Price Low→High</option>
-    <option value="price_desc">Price High→Low</option>
-    <option value="new_first">Newest Listed</option>
+    <option value="listed_desc">Newest Listed</option>
+    <option value="fmv_desc">FMV High&#x2192;Low</option>
+    <option value="price_asc">Bid Low&#x2192;High</option>
+    <option value="price_desc">Bid High&#x2192;Low</option>
+    <option value="mileage_asc">Mileage Low&#x2192;High</option>
   </select>
-  <button class="auc-chip" id="auc-deals-chip" onclick="toggleAucDeals(this)" style="white-space:nowrap">&#x2193; Deals only</button>
-  <span class="filter-count" id="auc-filter-count"></span>
+  <span class="filter-count" id="filter-count"></span>
 </div>
 
-<div class="page-body" id="page-body">
+<div class="page" id="page-body">
   {s_critical}
   {s_ending}
   {s_live}
@@ -699,9 +860,10 @@ a {{ color:inherit; text-decoration:none; }}
 </div>
 
 <script>
-function pad(n) {{ return n < 10 ? '0' + n : '' + n; }}
+// ── Countdown ────────────────────────────────────────────────────────────────
+function pad(n) {{ return n < 10 ? '0'+n : ''+n; }}
 
-function fmtCountdown(secs) {{
+function fmtSecs(secs) {{
   if (secs <= 0) return 'ENDED';
   var d = Math.floor(secs / 86400);
   var h = Math.floor((secs % 86400) / 3600);
@@ -713,172 +875,189 @@ function fmtCountdown(secs) {{
 
 function tickAll() {{
   var now = Date.now();
-  var timers = document.querySelectorAll('.countdown-timer[data-ends]');
-  var endingSoon = 0;
-  timers.forEach(function(el) {{
-    var endMs = new Date(el.dataset.ends).getTime();
-    var secs = Math.floor((endMs - now) / 1000);
-    if (secs <= 0) {{
-      el.textContent = 'ENDED';
-      el.classList.add('done');
-      el.classList.remove('urgent-tick');
-    }} else {{
-      el.textContent = fmtCountdown(secs);
-      if (!el.dataset.localSet) {{
-        var endDate = new Date(el.dataset.ends);
-        el.title = 'Ends ' + endDate.toLocaleString([], {{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}});
-        el.dataset.localSet = '1';
-      }}
-      el.classList.remove('done');
-      if (secs < 3600) {{
-        el.classList.add('urgent-tick');
-        endingSoon++;
-      }} else {{
-        el.classList.remove('urgent-tick');
-      }}
+  document.querySelectorAll('.countdown-timer[data-ends]').forEach(function(el) {{
+    var secs = Math.floor((new Date(el.dataset.ends).getTime() - now) / 1000);
+    el.textContent = fmtSecs(secs);
+    if (!el._titled) {{
+      el.title = 'Ends ' + new Date(el.dataset.ends).toLocaleString([],{{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}});
+      el._titled = true;
     }}
   }});
 }}
-
 tickAll();
 setInterval(tickAll, 1000);
 
-// ── Pull-to-refresh ──────────────────────────────────────────────────────────
-(function() {{
-  var PTR_THRESHOLD = 80;
-  var startY = 0;
-  var pulling = false;
-  var indicator = null;
+// ── Filter + sort ─────────────────────────────────────────────────────────────
+var _srcs = [];
+var _curView = 'live';
 
-  function getIndicator() {{
-    if (!indicator) {{
-      indicator = document.createElement('div');
-      indicator.id = 'ptr-indicator';
-      indicator.style.cssText = [
-        'position:fixed','top:0','left:0','right:0',
-        'height:4px',
-        'background:linear-gradient(90deg,#e00400,#ffcc00)',
-        'transform:scaleX(0)','transform-origin:left',
-        'transition:transform 0.15s ease,opacity 0.3s ease',
-        'z-index:9999','pointer-events:none','opacity:0'
-      ].join(';');
-      document.body.appendChild(indicator);
+function toggleChip(btn) {{
+  var val = btn.dataset.val;
+  btn.classList.toggle('active');
+  var idx = _srcs.indexOf(val);
+  if (idx >= 0) _srcs.splice(idx, 1); else _srcs.push(val);
+  applyFilters();
+}}
+
+function applyFilters() {{
+  var sort = (document.getElementById('auc-sort')||{{}}).value || 'ends_asc';
+  var cards = Array.from(document.querySelectorAll('.auc-card'));
+  var vis = 0;
+  var favs = _getFavs();
+
+  cards.forEach(function(c) {{
+    var srcOk = _srcs.length === 0 || _srcs.includes(c.dataset.src);
+    var viewOk = true;
+    if (_curView === 'live')  viewOk = !c.closest('.sec-ended');
+    if (_curView === 'ended') viewOk = !!c.closest('.sec-ended');
+    if (_curView === 'favs')  viewOk = favs.includes(c.dataset.url || '');
+    var show = srcOk && viewOk;
+    c.style.display = show ? '' : 'none';
+    if (show) vis++;
+  }});
+
+  document.querySelectorAll('.cards-list').forEach(function(list) {{
+    var shown = Array.from(list.querySelectorAll('.auc-card')).filter(function(c){{ return c.style.display !== 'none'; }});
+    shown.sort(function(a,b) {{
+      if (sort === 'ends_asc')    return (a.dataset.ends||'z') < (b.dataset.ends||'z') ? -1 : 1;
+      if (sort === 'listed_desc') return (b.dataset.listed||'') > (a.dataset.listed||'') ? 1 : -1;
+      if (sort === 'fmv_desc')    return +b.dataset.fmv - +a.dataset.fmv;
+      if (sort === 'price_asc')   return +a.dataset.price - +b.dataset.price;
+      if (sort === 'price_desc')  return +b.dataset.price - +a.dataset.price;
+      if (sort === 'mileage_asc') return +a.dataset.mileage - +b.dataset.mileage;
+      return 0;
+    }});
+    shown.forEach(function(c) {{ list.appendChild(c); }});
+  }});
+
+  var el = document.getElementById('filter-count');
+  if (el) el.textContent = (_srcs.length || _curView !== 'live') ? vis + ' shown' : '';
+
+  // Hide section headers when all their cards are hidden
+  document.querySelectorAll('.auc-section').forEach(function(sec) {{
+    var anyVis = Array.from(sec.querySelectorAll('.auc-card')).some(function(c){{ return c.style.display !== 'none'; }});
+    sec.style.display = anyVis ? '' : 'none';
+  }});
+
+  // Favs empty state
+  var favsEmpty = document.getElementById('favs-empty');
+  if (_curView === 'favs' && vis === 0) {{
+    if (!favsEmpty) {{
+      favsEmpty = document.createElement('div');
+      favsEmpty.id = 'favs-empty';
+      favsEmpty.className = 'empty-state';
+      favsEmpty.innerHTML = '<div class="empty-icon">&#x2661;</div><div class="empty-text">No saved lots yet — tap &#x2661; on any card</div>';
+      document.getElementById('page-body').prepend(favsEmpty);
     }}
-    return indicator;
+  }} else if (favsEmpty) {{
+    favsEmpty.remove();
   }}
+}}
 
-  function setProgress(ratio) {{
-    var el = getIndicator();
-    el.style.opacity = ratio > 0 ? '1' : '0';
-    el.style.transform = 'scaleX(' + Math.min(ratio, 1) + ')';
-    el.style.transition = ratio > 0 ? 'none' : 'transform 0.15s ease,opacity 0.3s ease';
-  }}
+// ── View tabs ─────────────────────────────────────────────────────────────────
+function switchView(view, btn) {{
+  _curView = view;
+  document.querySelectorAll('.view-tab').forEach(function(t){{ t.classList.remove('active'); }});
+  btn.classList.add('active');
+  applyFilters();
+}}
 
-  function triggerRefresh() {{
-    setProgress(1);
-    getIndicator().style.background = '#00c853';
-    setTimeout(function() {{ location.reload(); }}, 300);
-  }}
+// ── Favorites ─────────────────────────────────────────────────────────────────
+var _FAV_KEY = 'ptox_auction_favs';
 
-  document.addEventListener('touchstart', function(e) {{
-    if (window.scrollY === 0 && e.touches.length === 1) {{
-      startY = e.touches[0].clientY;
-      pulling = true;
-    }}
-  }}, {{passive: true}});
+function _getFavs() {{
+  try {{ return JSON.parse(localStorage.getItem(_FAV_KEY) || '[]'); }} catch(e) {{ return []; }}
+}}
+function _setFavs(arr) {{
+  try {{ localStorage.setItem(_FAV_KEY, JSON.stringify(arr)); }} catch(e) {{}}
+}}
 
-  document.addEventListener('touchmove', function(e) {{
-    if (!pulling) return;
-    var dy = e.touches[0].clientY - startY;
-    if (dy <= 0) {{ pulling = false; setProgress(0); return; }}
-    setProgress(Math.min(dy / PTR_THRESHOLD, 1));
-  }}, {{passive: true}});
+function toggleFav(evt, btn) {{
+  evt.stopPropagation();
+  var url = btn.dataset.url;
+  var favs = _getFavs();
+  var idx = favs.indexOf(url);
+  if (idx >= 0) {{ favs.splice(idx, 1); btn.classList.remove('active'); }}
+  else          {{ favs.push(url);       btn.classList.add('active'); }}
+  _setFavs(favs);
+  _updateFavCount();
+  if (_curView === 'favs') applyFilters();
+}}
 
-  document.addEventListener('touchend', function(e) {{
-    if (!pulling) return;
-    var dy = (e.changedTouches[0].clientY - startY);
-    pulling = false;
-    if (dy >= PTR_THRESHOLD) {{ triggerRefresh(); }}
-    else {{ setProgress(0); }}
-  }}, {{passive: true}});
-}})();
+function _updateFavCount() {{
+  var n = _getFavs().length;
+  var el = document.getElementById('tab-count-favs');
+  if (el) el.textContent = n || '0';
+}}
 
-// ── PWA-safe listing navigation ───────────────────────────────────────────────
-function openListing(url) {{
+function initFavs() {{
+  var favs = _getFavs();
+  favs.forEach(function(url) {{
+    var btns = document.querySelectorAll('.fav-btn[data-url="' + CSS.escape(url) + '"]');
+    btns.forEach(function(b){{ b.classList.add('active'); }});
+  }});
+  _updateFavCount();
+}}
+
+function cardClick(evt, url) {{
+  if (evt.target.closest('.fav-btn')) return;
   window.open(url, '_blank');
 }}
 
-window.addEventListener('pageshow', function(e) {{
-  if (e.persisted) {{ /* page restored from bfcache — no action needed */ }}
-}});
 
-function toggleDropdown() {{
-  document.getElementById('dd-overlay').classList.toggle('show');
-}}
-function closeDropdown() {{
-  document.getElementById('dd-overlay').classList.remove('show');
-}}
-
-// ── Auction filter + sort ────────────────────────────────────────────────────
-var _aucActiveGens = [];
-var _aucActiveSrcs = [];
-var _aucDealsOnly = false;
-
-function toggleAucChip(btn) {{
-  var filter = btn.dataset.filter;
-  var val    = btn.dataset.val;
-  btn.classList.toggle('active');
-  if (filter === 'gen') {{
-    if (_aucActiveGens.includes(val)) _aucActiveGens = _aucActiveGens.filter(function(x){{ return x !== val; }});
-    else _aucActiveGens.push(val);
-  }} else {{
-    if (_aucActiveSrcs.includes(val)) _aucActiveSrcs = _aucActiveSrcs.filter(function(x){{ return x !== val; }});
-    else _aucActiveSrcs.push(val);
+// ── Pull-to-refresh ───────────────────────────────────────────────────────────
+(function() {{
+  var PTR = 80, startY = 0, pulling = false, ind = null;
+  function getInd() {{
+    if (!ind) {{
+      ind = document.createElement('div');
+      ind.style.cssText = 'position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#c0392b,#EAB308);transform:scaleX(0);transform-origin:left;transition:transform 0.12s ease,opacity 0.3s;z-index:9999;pointer-events:none;opacity:0';
+      document.body.appendChild(ind);
+    }}
+    return ind;
   }}
-  applyAucFilters();
-}}
-
-function toggleAucDeals(btn) {{
-  _aucDealsOnly = !_aucDealsOnly;
-  btn.classList.toggle('active', _aucDealsOnly);
-  applyAucFilters();
-}}
-
-function applyAucFilters() {{
-  var cards = Array.from(document.querySelectorAll('.auc-card'));
-  var sortVal = (document.getElementById('auc-sort') || {{}}).value || 'ends_asc';
-  var visible = 0;
-
-  cards.forEach(function(card) {{
-    var gen   = card.dataset.gen   || '';
-    var src   = card.dataset.src   || '';
-    var genOk  = _aucActiveGens.length === 0 || _aucActiveGens.includes(gen);
-    var srcOk  = _aucActiveSrcs.length === 0 || _aucActiveSrcs.includes(src);
-    var dealOk = !_aucDealsOnly || card.dataset.deal === '1';
-    var show   = genOk && srcOk && dealOk;
-    card.style.display = show ? '' : 'none';
-    if (show) visible++;
-  }});
-
-  // Sort within each section grid
-  document.querySelectorAll('.cards-grid').forEach(function(grid) {{
-    var visCards = Array.from(grid.querySelectorAll('.auc-card')).filter(function(c){{ return c.style.display !== 'none'; }});
-    visCards.sort(function(a, b) {{
-      if (sortVal === 'ends_asc')   return (a.dataset.ends || 'z') < (b.dataset.ends || 'z') ? -1 : 1;
-      if (sortVal === 'ends_desc')  return (a.dataset.ends || '') > (b.dataset.ends || '') ? -1 : 1;
-      if (sortVal === 'price_asc')  return parseInt(a.dataset.price||0) - parseInt(b.dataset.price||0);
-      if (sortVal === 'price_desc') return parseInt(b.dataset.price||0) - parseInt(a.dataset.price||0);
-      return 0;
-    }});
-    visCards.forEach(function(c){{ grid.appendChild(c); }});
-  }});
-
-  var countEl = document.getElementById('auc-filter-count');
-  if (countEl && (_aucActiveGens.length > 0 || _aucActiveSrcs.length > 0 || _aucDealsOnly)) {{
-    countEl.textContent = visible + ' shown';
-  }} else if (countEl) {{
-    countEl.textContent = '';
+  function setP(r) {{
+    var el = getInd();
+    el.style.opacity = r > 0 ? '1' : '0';
+    el.style.transform = 'scaleX(' + Math.min(r,1) + ')';
+    el.style.transition = r > 0 ? 'none' : 'transform 0.12s ease,opacity 0.3s';
   }}
+  document.addEventListener('touchstart', function(e) {{
+    if (window.scrollY === 0 && e.touches.length === 1) {{ startY = e.touches[0].clientY; pulling = true; }}
+  }}, {{passive:true}});
+  document.addEventListener('touchmove', function(e) {{
+    if (!pulling) return;
+    var dy = e.touches[0].clientY - startY;
+    if (dy <= 0) {{ pulling = false; setP(0); return; }}
+    setP(dy / PTR);
+  }}, {{passive:true}});
+  document.addEventListener('touchend', function(e) {{
+    if (!pulling) return;
+    pulling = false;
+    if (e.changedTouches[0].clientY - startY >= PTR) {{
+      setP(1);
+      getInd().style.background = '#4ade80';
+      setTimeout(function(){{ location.reload(); }}, 280);
+    }} else {{ setP(0); }}
+  }}, {{passive:true}});
+}})();
+
+// ── Nav + theme ───────────────────────────────────────────────────────────────
+function openListing(url) {{ window.open(url, '_blank'); }}
+function toggleDD() {{ document.getElementById('dd-overlay').classList.toggle('show'); }}
+function closeDD()  {{ document.getElementById('dd-overlay').classList.remove('show'); }}
+
+// Init favs on load
+initFavs();
+
+var _THEMES = ['', 'racing', 'gulf', 'olive', 'purple', 'light'];
+function cycleTheme() {{
+  var cur = document.documentElement.dataset.theme || '';
+  var idx = (_THEMES.indexOf(cur) + 1) % _THEMES.length;
+  var next = _THEMES[idx];
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem('ptox_theme', next);
+  closeDD();
 }}
 </script>
 </body>

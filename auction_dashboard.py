@@ -676,6 +676,21 @@ def _push_rennauktion(html: str) -> None:
             .replace('<a class="logo" href="index.html">', '<a class="logo" href="/">')\
             .replace('href="index.html"', 'href="/"')
 
+        # Inject auth button into topbar-right
+        branded = branded.replace(
+            '<button class="more-btn" onclick="toggleDD()">More &#x25BE;</button>',
+            '<button class="more-btn" onclick="toggleDD()">More &#x25BE;</button>'
+            '<button class="auth-login-btn" onclick="window.RA&&window.RA.openLoginModal()" style="'
+            'background:none;border:1px solid #333;color:#e2ddd8;font-size:11px;'
+            'font-family:\'DM Mono\',monospace;letter-spacing:1px;padding:5px 10px;'
+            'border-radius:6px;cursor:pointer;margin-left:8px;">Sign in</button>'
+            '<button class="auth-logout-btn" onclick="window.RA&&window.RA.signOut()" style="'
+            'display:none;background:none;border:1px solid #333;color:#888;font-size:11px;'
+            'font-family:\'DM Mono\',monospace;letter-spacing:1px;padding:5px 10px;'
+            'border-radius:6px;cursor:pointer;margin-left:8px;">'
+            '<span class="auth-user-label"></span> &middot; Sign out</button>'
+        )
+
         # Inject Supabase CDN + auth.js before </body>
         auth_scripts = (
             '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>\n'

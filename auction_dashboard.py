@@ -994,6 +994,7 @@ a {{ color:inherit; text-decoration:none; }}
   <div class="dd-backdrop" onclick="closeDD()"></div>
   <div class="dd">
     <a class="dd-item" href="index.html">&#x1F3CE; Market</a>
+    <a class="dd-item" href="https://rennauktion.com/saved.html">&#x2665; My Saved</a>
     <a class="dd-item" href="search.html">&#x1F50D; Search</a>
     <div class="dd-divider"></div>
     <a class="dd-item" href="calculator.html">&#x1F4B0; FMV Calculator</a>
@@ -1006,23 +1007,23 @@ a {{ color:inherit; text-decoration:none; }}
 
 <div class="stats-bar">
   <a class="stat-cell" href="index.html">
-    <div class="stat-num">{n_listings_total:,}</div>
+    <div class="stat-num" id="s-active">{n_listings_total:,}</div>
     <div class="stat-lbl">Active</div>
   </a>
   <a class="stat-cell" href="index.html">
-    <div class="stat-num">{n_new_today}</div>
+    <div class="stat-num" id="s-new">{n_new_today}</div>
     <div class="stat-lbl">New Today</div>
   </a>
   <div class="stat-cell active">
-    <div class="stat-num c-red">{total}</div>
+    <div class="stat-num c-red" id="s-auctions">{total}</div>
     <div class="stat-lbl">Auctions</div>
   </div>
   <a class="stat-cell" href="index.html#comps">
-    <div class="stat-num">{n_comps_total:,}</div>
+    <div class="stat-num" id="s-comps">{n_comps_total:,}</div>
     <div class="stat-lbl">Comps</div>
   </a>
   <a class="stat-cell" href="index.html">
-    <div class="stat-num c-green">{n_deals}</div>
+    <div class="stat-num c-green" id="s-deals">{n_deals}</div>
     <div class="stat-lbl">Deals</div>
   </a>
 </div>
@@ -1467,6 +1468,24 @@ function cycleTheme() {{
 }}
 </script>
 </body>
+
+<script>
+/* Live stats loader — overwrites baked-in counts with live stats.json on page load */
+(async () => {{
+  try {{
+    const r = await fetch('/stats.json', {{cache:'no-store'}});
+    if (!r.ok) return;
+    const s = await r.json();
+    const fmt = n => n >= 1000 ? n.toLocaleString() : String(n);
+    const set = (id, val) => {{ const el = document.getElementById(id); if (el && val != null) el.textContent = fmt(val); }};
+    set('s-active',   s.n_active);
+    set('s-new',      s.n_new);
+    set('s-auctions', s.n_auctions);
+    set('s-comps',    s.n_comps);
+    set('s-deals',    s.n_deals);
+  }} catch(e) {{}}
+}})();
+</script>
 </html>"""
 
 

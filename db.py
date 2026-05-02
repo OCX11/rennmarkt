@@ -166,22 +166,32 @@ def init_db():
         # Deduplicate sold_comps before creating the unique index to avoid
         # IntegrityError when executescript's implicit COMMIT enforces constraints.
         # Keep the row with the highest id (most recently inserted) for each duplicate.
-        idx_exists = conn.execute(
-            "SELECT name FROM sqlite_master WHERE type='index' AND name='ux_sold_comp_url'"
+        # Ensure unique index is on listing_url alone (not source+listing_url)
+        # so source name variants (BaT vs Bring a Trailer) cannot produce duplicates.
+        old_idx = conn.execute(
+            "SELECT sql FROM sqlite_master WHERE type='index' AND name='ux_sold_comp_url'"
         ).fetchone()
-        if not idx_exists:
+        idx_sql = (old_idx[0] or "") if old_idx else ""
+        need_recreate = not old_idx or ("source" in idx_sql and "listing_url" in idx_sql)
+        if need_recreate:
+            # Normalize source aliases before dedup
+            conn.execute("UPDATE sold_comps SET source='Bring a Trailer' WHERE source IN ('BaT','bat','bringatrailer')")
+            conn.execute("UPDATE sold_comps SET source='Cars & Bids' WHERE source IN ('carsandbids','cars and bids','Cars and Bids')")
+            conn.execute("UPDATE sold_comps SET source='pcarmarket' WHERE source IN ('PCarMarket','PCARMARKET')")
+            # Deduplicate: keep highest id per listing_url
             conn.execute("""
                 DELETE FROM sold_comps
                 WHERE listing_url IS NOT NULL
                   AND id NOT IN (
                       SELECT MAX(id) FROM sold_comps
                       WHERE listing_url IS NOT NULL
-                      GROUP BY source, listing_url
+                      GROUP BY listing_url
                   )
             """)
+            conn.execute("DROP INDEX IF EXISTS ux_sold_comp_url")
             conn.execute("""
-                CREATE UNIQUE INDEX IF NOT EXISTS ux_sold_comp_url
-                    ON sold_comps(source, listing_url) WHERE listing_url IS NOT NULL
+                CREATE UNIQUE INDEX ux_sold_comp_url
+                    ON sold_comps(listing_url) WHERE listing_url IS NOT NULL
             """)
             conn.commit()
 
@@ -657,6 +667,14 @@ def upsert_sold_comp(conn, source, year, make, model, trim, mileage, sold_price,
                 return  # future-dated — skip silently
         except Exception:
             pass
+    # Normalize source name aliases to canonical forms
+    _src_map = {
+        'bat': 'Bring a Trailer', 'bringatrailer': 'Bring a Trailer',
+        'bring a trailer': 'Bring a Trailer',
+        'carsandbids': 'Cars & Bids', 'cars and bids': 'Cars & Bids',
+        'pcarmarket': 'pcarmarket',
+    }
+    source = _src_map.get((source or '').lower().strip(), source)
     cat = source_category(source)
     tier = classify_tier(model, trim, year)
     gen = _infer_sold_comp_generation(year, model, trim)
